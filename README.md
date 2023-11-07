@@ -5,7 +5,7 @@
 ## Requirements
 [Workplace](https://github.com/ShrishRajGupta/Workplace) is a NodeJS application based.
 
-For codebase use the package manager [npm](https://www.npmjs.com/) to install [job-spot](https://github.com/ShrishRajGupta/Workplace).
+For codebase use the package manager [npm](https://www.npmjs.com/) to install [Workplace](https://github.com/ShrishRajGupta/Workplace).
 
 <br>
 
