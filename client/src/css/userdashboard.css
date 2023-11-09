@@ -1,0 +1,33 @@
+/* styles.css */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+  }
+  
+  .profile {
+  
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    margin-bottom: 5px;
+  }
+  .education{
+    
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+  
+  h2 {
+    font-size: 24px;
+  }
+  /* You can add more specific styling for each component as needed */
+  
