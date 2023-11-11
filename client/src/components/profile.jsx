@@ -17,11 +17,11 @@ const Profile = (user) => {
       <div><img src ={user.backgrndimg}></img></div>
       <Avatar src="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg" style={{width: "20%",height:"100%"}}/>
       <div>
-        <p>{user.name} Abhishek Yadav</p>
+        <p>{user.user.name}</p>
         <p>{user.about} Nothing</p>
       </div>
       
-      <div> {user.workexperience}</div>
+      <div> {user.user.email}</div>
       <div> {user.skills}</div>
     </div>
     <div className="education">
