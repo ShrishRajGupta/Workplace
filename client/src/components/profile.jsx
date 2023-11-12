@@ -11,9 +11,10 @@ import Typography from '@mui/material/Typography';
 const Profile = (user) => {
   return (
     <div>
-
+      
     <div className="profile">
       <h2>Profile</h2>
+      
       <div><img src ={user.backgrndimg}></img></div>
       <Avatar src="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg" style={{width: "20%",height:"100%"}}/>
       <div>
