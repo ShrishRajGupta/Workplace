@@ -28,7 +28,7 @@ const Profile = (user) => {
       {/* <div> {user.education}</div> */}
       <h2>Education</h2>
       <div>
-        <p>Collge Name</p>
+        <p>College Name</p>
         <p>Degree</p>
         <p>Year</p>
       </div>
@@ -47,7 +47,7 @@ const Profile = (user) => {
       {/* <div> {user.education}</div> */}
       <h2>Skills</h2>
       <div>
-        <p>Collge Name</p>
+        <p>College Name</p>
         <p>Degree</p>
         <p>Year</p>
       </div>
