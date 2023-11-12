@@ -1,4 +1,4 @@
-import UserModel from "../models/UserModel.js";
+import UserDB from "../models/UserModel.js";
 
 // @desc : Get dashboard of user
 // @route : GET /in/:username
@@ -6,7 +6,7 @@ const getDashboard = async (req, res) => {
     const username=req.params.username.toString();
     let user;
     try {
-        user = await UserModel.findOne({username:username});
+        user = await UserDB.findOne({username:username});
         if(!user)
             return res.status(404).json({msg:"User not found"});
         
@@ -24,10 +24,9 @@ const getDashboard = async (req, res) => {
 const populateDashboard = async (req, res) => {
     const { username,name, email, password } = req.body;
 
-    const form= await UserModel.create({
+    const form= await UserDB.create({
         username,name,email,password
     });
-    console.log(form);
 
     res.status(200).json({ msg: "populateDashboard" });
 };

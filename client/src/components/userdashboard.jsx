@@ -1,10 +1,10 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
+import React from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router";
 
-import {Profile,FriendsList} from './profile';
+import { Profile, FriendsList } from "./profile";
 import "../css/userdashboard.css";
-const home="http://localhost:3001";
+const home = "http://localhost:3001";
 
 // @desc    User dashboard
 // @route   GET /in/:username/dashboard
@@ -14,8 +14,8 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const { username } = useParams();
 
-  const getUser = async()=>{
-    const response = await fetch(`${home}/in/${username}`,{
+  const getUser = async () => {
+    const response = await fetch(`${home}/in/${username}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -24,7 +24,7 @@ const Dashboard = () => {
     });
     const data = await response.json();
     setUser(data);
-  }
+  };
 
   useEffect(() => {
     getUser();
@@ -33,15 +33,14 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <div style={{display: "flex"}}>
-      <div className="dashboard">
+    <div style={{ display: "flex" }}>
+      <div className="dashboard" style={{ width: "60%", height: "100%" }}>
         <p> </p>
         <Profile user={user} />
       </div>
-      <div style={{marginTop:"25px"}}>
-      <FriendsList />
+      <div style={{ marginTop: "25px" }}>
+        <FriendsList />
       </div>
-    
     </div>
   );
 };
@@ -73,8 +72,6 @@ function App() {
   );
 }
 */
-
-
 
 // const ll=this.props.match.params.id;
 // console.log(ll);

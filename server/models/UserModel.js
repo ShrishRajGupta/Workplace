@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const userSchema = Schema({
+const userSchema =  Schema({
     username:{
         type: String,
         required:[true,"Enter your username"],
@@ -13,6 +13,11 @@ const userSchema = Schema({
     email:{
         type: String,
         required:[true,"ENTER YOUR EMAIL"]
+    },
+    backgrndimg:
+    {
+        data: Buffer,
+        contentType: String
     },
     password:{
         type:String,
