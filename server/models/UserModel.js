@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const userSchema =  Schema({
+const userSchema = Schema({
     username:{
         type: String,
         required:[true,"Enter your username"],
@@ -8,32 +8,38 @@ const userSchema =  Schema({
     },
     name:{
         type: String,
-        required:[true,"Enter your name"]
+        default: ''
     },
     email:{
         type: String,
+        default: '',
         required:[true,"ENTER YOUR EMAIL"]
     },
-    backgrndimg:
+    photo:
     {
-        data: Buffer,
-        contentType: String
+        type:String,
+        default: ''
     },
     password:{
         type:String,
-        required:[true,"Enter your Password"]
+        default: ''
+        // required:[true,"Enter your Password"]
     },
     googleId:{
-        type:String
+        type:String,
+        default: ''
     },
     about:{
-        type:String
+        type:String,
+        default: ''
     },
     workexperience:{
-        type:String
+        type:String,
+        default: ''
     },
     skills:{
-        type:String
+        type:String,
+        default: ''
     },
     followers: [{ 
         type: Schema.Types.ObjectId,

@@ -8,6 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
+import axios from 'axios';
 
 const Profile = (props) => {
   const [name, setName] = useState(null);
@@ -20,15 +21,14 @@ const Profile = (props) => {
   const home = "http://localhost:3001";
 
   const updatePersonalInfo = (id) => {
-    fetch(`${home}/in/update/${id}/personel`, {
-      method: "PATCH",
+    fetch(`${home}/in/update/${id}`, {
+      method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         name,
-        backgrndimg,
         about,
       }),
     })
@@ -39,6 +39,38 @@ const Profile = (props) => {
       });
   };
 
+  
+
+  const [newUser, setNewAuthor] = useState(
+    {
+        photo: '',
+    }
+);
+
+useEffect(() => {
+  console.log(props.user);
+}, []);
+
+const handleSubmit = (e) => {
+  console.log(e.target);
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('photo', newUser.photo);
+
+    axios.post(`${home}/in/add/`, formData)
+         .then(res => {
+            console.log(res);
+         })
+         .catch(err => {
+            console.log(err);
+         });
+}
+
+
+const handlePhoto = (e) => {
+    setNewAuthor({photo: e.target.files[0]});
+}
+
   return (
     <div>
       <div className="profile">
@@ -48,16 +80,32 @@ const Profile = (props) => {
         </div>
         <Avatar
           style={{ width: "10%", height: "100%" }}
-          src={props.user.backgrndimg}
+          src={`${home}/img/${props.user.photo}`}
           alt="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
         />
+
+      <form onSubmit={handleSubmit} encType='multipart/form-data'>
+            <input 
+                type="file" 
+                accept=".png, .jpg, .jpeg"
+                name="photo"
+                onChange={handlePhoto}
+            />
+
+            <input 
+                type="submit"
+            />
+        </form>
+
         <div>
-          <p>{props.user.name}</p>
+          <p>Name {props.user.name}</p>
           <p>About - {props.user.about}</p>
         </div>
 
         <div> {props.user.email}</div>
       </div>
+
+
       <div className="profile">
         <label>Update Name</label>
         <input
@@ -73,17 +121,6 @@ const Profile = (props) => {
           placeholder="Add a about"
           onChange={(e) => {
             setAbout(e.target.value);
-          }}
-        />
-        <label>Update Background Image</label>
-        <input
-          type="file"
-          placeholder="Add a Background img"
-          name="myImage"
-          accept="image/x-png, image/jpeg"
-          onChange={(e) => {
-            console.log(e.target.files[0]);
-            setBackgrndimg(e.target.files[0]);
           }}
         />
         <button onClick={()=> updatePersonalInfo(props.user.username)}> Add + </button>
