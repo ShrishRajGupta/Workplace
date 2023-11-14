@@ -24,7 +24,7 @@ const UserWidget = ({userId, picturePath}) => {
 
 
     const getUser = async() => {
-        const response = await fetch(`{url}`, {
+        const response = await fetch(`{url}`, { 
             method: "GET",
             headers: {Authorization: `Bearer ${token}`},
         });
