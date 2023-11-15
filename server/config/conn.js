@@ -6,8 +6,6 @@ import { connect as _connect } from "mongoose";
 const connectDB= async ()=>{
     try{
         const connect= await _connect(process.env.MONGO_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
         
         }).then(() => {
             console.log("db connection success: ");                   

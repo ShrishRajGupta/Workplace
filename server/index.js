@@ -5,12 +5,14 @@ dotenv.config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import cors from "cors";
 
 
 const PORT = 3001;
 const app = express();
 import loginRouter from './routes/loginRouter.js';
 import registerRouter from './routes/registerRouter.js';
+import userRouter from './routes/userRouter.js';
 
 // DB
 import connectDB from "./config/conn.js";
@@ -18,6 +20,7 @@ connectDB();
 
 
 // middleware & statics
+app.use(cors());
 app.use(express.static('public'))
 app.use(express.json());
 // Body-parser middleware
@@ -28,6 +31,7 @@ app.use(cookieParser());
 // routes
 app.use('/user', registerRouter);
 app.use('/user',loginRouter );
+app.use('/in',userRouter );
 
 
 //404 route
