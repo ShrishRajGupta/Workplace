@@ -1,11 +1,15 @@
-import { Router } from "express";
+const Router = require("express");
 
 const registerRouter = Router();
-import { getRegisterForm, registerUser } from '../controllers/registerController.js';
+const { getRegisterForm, registerUser } = require('../controllers/registerController.js');
+const authenticateToken = require("../middlewares/validateJWT.js");
+const UserDB = require('../models/userModel.js');
 
 // route begins with '/user'
-registerRouter.route('/register')
-    .get(getRegisterForm)
-    .post(registerUser)
+registerRouter.route('/register').post(registerUser);
+registerRouter.get("/profile",authenticateToken,async function(req,res){
+        
+        res.status(200).send("HI");
+});
 
-export default registerRouter;
+module.exports = registerRouter;

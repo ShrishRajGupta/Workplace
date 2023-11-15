@@ -1,6 +1,6 @@
 
-import dotenv from "dotenv";
-dotenv.config();
+require('dotenv').config();
+
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -15,7 +15,7 @@ import registerRouter from './routes/registerRouter.js';
 import userRouter from './routes/userRouter.js';
 
 // DB
-import connectDB from "./config/conn.js";
+const connectDB = require("./config/conn.js");
 connectDB();
 
 
@@ -28,7 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cookieParser());
 
+
 // routes
+
 app.use('/user', registerRouter);
 app.use('/user',loginRouter );
 app.use('/in',userRouter );
