@@ -13,6 +13,9 @@ import {useSelector} from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const twitterlogo="https://cdn-icons-png.flaticon.com/512/124/124021.png";
+const linkedinlogo="https://cdn-icons-png.flaticon.com/512/174/174857.png";
+
 const UserWidget = ({userId, picturePath}) => {
     const [user, setUser] = useState(null);
     const {palette} = useTheme();
@@ -113,7 +116,7 @@ const UserWidget = ({userId, picturePath}) => {
                     </Typography>
                     <FlexBetween gap="1rem" mb="0.5rem">
                         <FlexBetween gap="1rem">
-                            <img src=`{twitterlogo}` alt="twitter" />
+                            <img src={twitterlogo} alt="twitter" />
                             <Box>
                                 <Typography color={main} fontWeight="500">
                                     Twitter
@@ -126,7 +129,7 @@ const UserWidget = ({userId, picturePath}) => {
 
                     <FlexBetween gap="1rem">
                         <FlexBetween gap="1rem">
-                            <img src=`{linkedinlogo}` alt="linkedin" />
+                            <img src={linkedinlogo} alt="linkedin" />
                             <Box>
                                 <Typography color={main} fontWeight="500">
                                     LinkedIn

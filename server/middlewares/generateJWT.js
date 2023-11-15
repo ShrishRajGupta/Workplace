@@ -1,10 +1,10 @@
 require('dotenv').config();
-const jwt = require('jsonwebtoken');
+import { sign } from 'jsonwebtoken';
 
 // Generates JWT
 const checkF = function (user) {
     try {
-        const token = jwt.sign({
+        const token = sign({
             user: { username: user.username, email: user.email, id: user._id }
         },
             process.env.ACCESS_TOKEN,
@@ -18,6 +18,6 @@ const checkF = function (user) {
         throw new Error('Validation Error');
     }
 }
-module.exports ={
+export default{
     checkF
 }

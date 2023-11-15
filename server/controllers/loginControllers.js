@@ -21,4 +21,4 @@ const logoutUser = (req, res) => {
     res.send('logout user');
 }
 
-module.exports= { getLoginForm, loginUser, logoutUser };
+export  { getLoginForm, loginUser, logoutUser };

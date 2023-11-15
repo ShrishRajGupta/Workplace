@@ -1,8 +1,9 @@
-const Router = require("express");
-const { getLoginForm, loginUser, logoutUser } = require('../controllers/loginControllers.js');
-const createPost = require("../controllers/createPost.js");
-const UserDB = require("../models/userModel.js");
+import Router from "express";
 const loginRouter = Router();
+
+import { getLoginForm, loginUser, logoutUser } from '../controllers/loginControllers.js';
+import createPost from "../controllers/createPost.js";
+
 
 // route begins with 'user'
 loginRouter.route('/login')
@@ -14,19 +15,8 @@ loginRouter.route('/logout')
 
 loginRouter.route('/jobpostform').post(createPost);
 loginRouter.route('/createProfile').post(async function(req,res){
-        const {firstName,lastName,About,Education,workExperience,Skills} = req.body;
-        let user = await UserDB.create({
-            username:{
-                firstName:firstName,
-                lastName: lastName
-            },
-            About:About,
-            Education:Education,
-            workExperience:workExperience,
-            Skills:Skills
-        });
-        console.log(user);
-        // res.send(user);
+        
+        res.send("user created");
 });
-module.exports = loginRouter;
+export default loginRouter;
 

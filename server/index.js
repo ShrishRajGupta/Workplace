@@ -1,5 +1,7 @@
+// config.js
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
 
 
 import express from 'express';
@@ -15,7 +17,7 @@ import registerRouter from './routes/registerRouter.js';
 import userRouter from './routes/userRouter.js';
 
 // DB
-const connectDB = require("./config/conn.js");
+import connectDB from "./config/conn.js";
 connectDB();
 
 
