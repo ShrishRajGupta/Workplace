@@ -1,11 +1,10 @@
 // Desc: connect to mongoDB
-import dotenv from "dotenv";
-dotenv.config();
+require("dotenv").config();
+const mongoose = require("mongoose");
 
-import { connect as _connect } from "mongoose";
 const connectDB= async ()=>{
     try{
-        const connect= await _connect(process.env.MONGO_URL, {
+        const connect= await mongoose.connect(process.env.MONGO_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         
@@ -18,4 +17,4 @@ const connectDB= async ()=>{
     }
 };
 
-export default connectDB;
+module.exports = connectDB;
