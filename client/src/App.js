@@ -3,6 +3,7 @@ import JobForm from "./components/jobpostform";
 import Navbar from "./components/navbar";
 import Dashboard from "./components/userdashboard";
 import UserWidget from "./widgets/UserWidget";
+import RegistrationForm from "./components/register";
 function App() {
   return (
     <div className="App" style={{backgroundColor:"#e5e8e3"}}>

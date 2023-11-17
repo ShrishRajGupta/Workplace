@@ -113,7 +113,7 @@ const UserWidget = ({userId, picturePath}) => {
                     </Typography>
                     <FlexBetween gap="1rem" mb="0.5rem">
                         <FlexBetween gap="1rem">
-                            <img src=`{twitterlogo}` alt="twitter" />
+                            <img src="#" alt="twitter" />
                             <Box>
                                 <Typography color={main} fontWeight="500">
                                     Twitter
@@ -126,7 +126,7 @@ const UserWidget = ({userId, picturePath}) => {
 
                     <FlexBetween gap="1rem">
                         <FlexBetween gap="1rem">
-                            <img src=`{linkedinlogo}` alt="linkedin" />
+                            <img src="#" alt="linkedin" />
                             <Box>
                                 <Typography color={main} fontWeight="500">
                                     LinkedIn
