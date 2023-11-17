@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const postSchema = mongoose.Schema({
+const postSchema = Schema({
         user_id:{
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref:"User"
         },
         jobTitle:{
@@ -24,4 +24,4 @@ const postSchema = mongoose.Schema({
             type: Number
         }
 });
-module.exports = mongoose.model("BlogDB",postSchema);
+export default model("BlogDB",postSchema);

@@ -1,23 +1,23 @@
-require('dotenv').config();
-const jwt = require('jsonwebtoken');
+import dotenv from 'dotenv';
+dotenv.config();
+import jsonwebtoken from 'jsonwebtoken';
 
 // Generates JWT
 const checkF = function (user) {
     try {
-        const token = jwt.sign({
+        const token = jsonwebtoken.sign({
             user: { username: user.username, email: user.email, id: user._id }
         },
-            process.env.ACCESS_TOKEN,
-            {
-                expiresIn: "2h"
-            }
-        );
+        process.env.ACCESS_TOKEN,
+        {
+            expiresIn: "2h"
+        });
+   
         return token;
-    }
-    catch {
+    } catch (error) {
+        console.error(error); // Log the error for debugging
         throw new Error('Validation Error');
     }
 }
-module.exports ={
-    checkF
-}
+
+export default checkF;

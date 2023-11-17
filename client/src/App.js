@@ -2,7 +2,10 @@ import {BrowserRouter,Route,Routes} from "react-router-dom";
 import JobForm from "./components/jobpostform";
 import Navbar from "./components/navbar";
 import Dashboard from "./components/userdashboard";
+import RegistrationForm from "./components/register";
 import UserWidget from "./widgets/UserWidget";
+import MyForm from "./components/createProfile";
+import Login from "./components/login";
 function App() {
   return (
     <div className="App" style={{backgroundColor:"#e5e8e3"}}>
@@ -10,8 +13,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path = "/jobpostform" element={<JobForm />}></Route>
-        <Route path = "/profile" element={<Dashboard />}></Route>
-        <Route path = "/" element={<UserWidget userId={_id} picturePath={picturePath}/>}></Route>
+        <Route path = "/user/profile" element={<Dashboard />}></Route>
+        <Route path="/user/register" element={<RegistrationForm />}></Route>
+        <Route path="/user/login" element={<Login />}></Route>
+        <Route path="/user/createProfile" element={<MyForm />}></Route>
+        <Route path = "/home" element={<UserWidget />}></Route>
       </Routes>
     </BrowserRouter>
     </div>

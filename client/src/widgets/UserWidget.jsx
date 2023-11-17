@@ -9,47 +9,36 @@ import {Box, Typography, Divider, useTheme } from "@mui/material";
 import userimage from "../components/userimage";
 import FlexBetween from "../components/FlexBetween";
 import widgetwrapper from "../components/widgetwrapper";
-import {useSelector} from "react-redux";
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const UserWidget = ({userId, picturePath}) => {
-    const [user, setUser] = useState(null);
+const UserWidget = () => {
+    const [user, setUser] = useState([]);
     const {palette} = useTheme();
     const navigate = useNavigate();
-    const token = useSelector((state)=>state.token);
-    const dark = palette.neutral.dark;
-    const medium = palette.neutral.medium;
-    const main = palette.neutral.main;
+  
+    // const dark = palette.neutral.dark;
+    // const medium = palette.neutral.medium;
+    // const main = palette.neutral.main;
 
 
-    const getUser = async() => {
-        const response = await fetch(`{url}`, {
-            method: "GET",
-            headers: {Authorization: `Bearer ${token}`},
-        });
-
-        const data = await response.json();
-        setUser(data);
-    };
+    const getUser = async () => {
+        try {
+          let response = await axios.get("/user/profile");
+          if (response.status === 200) {
+            console.log(response.data.user);
+            setUser(response.data.user);
+          }
+        } catch (error) {
+          console.error('Error fetching user:', error);
+        }
+      };
 
     useEffect(()=>{
         getUser();
     },[])
-
-    if(!user){
-        return null;
-    }
-
-    const {
-        firstName,
-        lastName,
-        location,
-        occupation,
-        viewedProfile,
-        impressions,
-        friends,
-    } = user;
 
     return (
         <widgetwrapper>
@@ -57,24 +46,24 @@ const UserWidget = ({userId, picturePath}) => {
             <FlexBetween
                 gap = "0.5rem"
                 pb = "1.1rem"
-                onClick = {()=>navigate(`/profile/${userId}`)}
+                // onClick = {()=>navigate(`/profile/${userId}`)}
             >
                 <FlexBetween gap="1rem">
-                    <userimage image={picturePath} />
+                    <userimage  />
                     <Box>
                         <Typography
                             variant="h4"
-                            color={dark}
+                            color="black"
                             fontWeight="500"
                             sx={{
                                 "&:hover":{
-                                    color: palette.primary.light,
+                                    color: 'black',
                                     cursor: "pointer"
                                 }
                             }}>
-                                {firstName} {lastName}
+                                {user.username}
                             </Typography>
-                            <Typography color={medium}>{friends.length} friends</Typography>
+                            {/* <Typography color={medium}>{friends.length} friends</Typography> */}
                     </Box>
                     <ManageAccountsOutlined />
                 </FlexBetween>
@@ -84,57 +73,57 @@ const UserWidget = ({userId, picturePath}) => {
                 {/*Second Row*/}
                 <Box p="1rem 0">
                     <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
-                        <LocationOnOutlined fontSize="large" sx={{color:main}} />
-                        <Typography color={medium}>{location}</Typography>
+                        <LocationOnOutlined fontSize="large" sx={{color:"black"}} />
+                        <Typography color="black">{user.About}</Typography>
                     </Box>
 
                     <Box display="flex" alignItems="center" gap="1rem">
-                        <WorkOutlineOutlined fontSize="large" sx={{color:main}} />
-                        <Typography color={medium}>{occupation}</Typography>
+                        <WorkOutlineOutlined fontSize="large" sx={{color:"black"}} />
+                        <Typography color="black">{user.Education}</Typography>
                     </Box>
                 </Box>
 
                 {/*Third Row*/}
                 <Box p="1rem 0">
                     <FlexBetween mb="0.5rem">
-                        <Typography color={medium}>Who's viewed your profile</Typography>
-                        <Typography color={main} fontWeight="500">{viewedProfile}</Typography>
+                        <Typography color="black">Who's viewed your profile</Typography>
+                        <Typography color="black" fontWeight="500">{user.workExperience}</Typography>
                     </FlexBetween>
 
                     <FlexBetween>
-                        <Typography color={medium}>Impressions of your project</Typography>
-                        <Typography color={main} fontWeight="500">{impressions}</Typography>
+                        <Typography color="black">Impressions of your project</Typography>
+                        <Typography color="black" fontWeight="500">{user.Skills}</Typography>
                     </FlexBetween>
                 </Box>
                 {/*Fourth Row*/}
                 <Box p="1rem 0">
-                    <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
+                    <Typography fontSize="1rem" color="black" fontWeight="500" mb="1rem">
                         Social Profiles
                     </Typography>
                     <FlexBetween gap="1rem" mb="0.5rem">
                         <FlexBetween gap="1rem">
-                            <img src=`{twitterlogo}` alt="twitter" />
+                            <img src="" alt="twitter" />
                             <Box>
-                                <Typography color={main} fontWeight="500">
+                                <Typography color="black" fontWeight="500">
                                     Twitter
                                 </Typography>
-                                <Typography color={medium}>Social Network</Typography>
+                                <Typography color="black">Social Network</Typography>
                             </Box>
                         </FlexBetween>
-                        <EditOutlined sx={{color:main}} />
+                        <EditOutlined sx={{color:"black"}} />
                     </FlexBetween>
 
                     <FlexBetween gap="1rem">
                         <FlexBetween gap="1rem">
-                            <img src=`{linkedinlogo}` alt="linkedin" />
+                            <img src="" alt="linkedin" />
                             <Box>
-                                <Typography color={main} fontWeight="500">
+                                <Typography color="black"fontWeight="500">
                                     LinkedIn
                                 </Typography>
-                                <Typography color={medium}>Network Platform</Typography>
+                                <Typography color="black">Network Platform</Typography>
                             </Box>
                         </FlexBetween>
-                        <EditOutlined sx={{color:main}} />
+                        <EditOutlined sx={{color:"black"}} />
                     </FlexBetween>
                 </Box>
             </FlexBetween>            

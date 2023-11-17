@@ -1,18 +1,18 @@
-const postModel = require("../models/postModel");
+import BlogDB from '../models/postModel.js';
 
-const createPost = async function(req,res){
+const newPost = async function(req,res){
     const {jobTitle,companyName,workPlace,jobLocation,jobType,salary} = req.body;
     
-    let post = await postModel.create({
+    let post = await BlogDB.create({
         jobTitle: jobTitle,
         companyName:companyName,
         workPlace:workPlace,
         jobLocation:jobLocation,
         jobType:jobType,
         salary:salary
-    })
+    });
 
     console.log(post);
 };
 
-module.exports = createPost;
+export default newPost;
