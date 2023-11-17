@@ -1,6 +1,6 @@
-const mongoose= require("mongoose");
+import { Schema, model } from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
     username:{
         type: String,
         required:true
@@ -11,10 +11,10 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type: String,
-       
+        required:true
     },
     posts:[{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         default:[],
         ref:"Post"
     }],
@@ -38,4 +38,4 @@ const userSchema = new mongoose.Schema({
         timestamps: true
     }
 )
-module.exports = mongoose.model("UserDB",userSchema);
+export default model("UserDB",userSchema);

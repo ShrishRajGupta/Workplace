@@ -1,5 +1,7 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config()
+import jsonwebtoken from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const secretKey = process.env.ACCESS_TOKEN;
 
@@ -18,7 +20,8 @@ const authenticateToken = (req, res, next) => {
 
     try {
         // Verify the token and decode its payload
-        const decodedToken = jwt.verify(token, secretKey);
+        const decodedToken = jsonwebtoken.verify(token, secretKey);
+        
         req.user = decodedToken.user; 
         console.log(`Token verified via JWT`);
         // Proceed to the next middleware or route handler
@@ -29,4 +32,4 @@ const authenticateToken = (req, res, next) => {
     }
 }
 
-module.exports = authenticateToken;
+export default authenticateToken;

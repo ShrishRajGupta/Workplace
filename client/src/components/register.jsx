@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+import { Context }from "../index";
+import { Navigate } from 'react-router-dom';
 const RegistrationForm = () => {
   // State to hold form data
+  const navigate = useNavigate();
+  const  {isAuthenticated,setisAuthenticated}= useContext(Context);
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -26,18 +32,21 @@ const RegistrationForm = () => {
       const response = await axios.post("/user/register", formData);
   
       if (response.status === 200) {
-        console.log(response);
         const data = response.data;
         console.log(data); // Handle the response as needed
-      } else {
-        // Handle registration errors
-        console.error('Failed to register user');
+        setisAuthenticated(true);
+        console.log(isAuthenticated);
       }
     } catch (error) {
+      setisAuthenticated(false);
       console.error('Error registering user', error);
     }
+    console.log(isAuthenticated);
+    
   };
-
+  if(isAuthenticated){
+    return <Navigate to={'/user/createProfile'} />;
+  }
   return (
     <div>
       <h2>Sign Up</h2>
