@@ -1,8 +1,9 @@
 // Desc: connect to mongoDB
-import dotenv from "dotenv";
-dotenv.config();
+import dotenv from 'dotenv';
 
+dotenv.config();
 import { connect as _connect } from "mongoose";
+
 const connectDB= async ()=>{
     try{
         const connect= await _connect(process.env.MONGO_URL, {

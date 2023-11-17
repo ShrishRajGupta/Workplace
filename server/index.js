@@ -1,16 +1,16 @@
+import dotenv from 'dotenv';
 
-import dotenv from "dotenv";
 dotenv.config();
-
-import express from 'express';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
+import express ,{static as stat, json as _json } from "express";
+import urlencoded from "body-parser";
+import cookieParser from "cookie-parser";
 
 
 const PORT = 3001;
 const app = express();
 import loginRouter from './routes/loginRouter.js';
-import registerRouter from './routes/registerRouter.js';
+import userRouter from './routes/userRoutes.js';
+
 
 // DB
 import connectDB from "./config/conn.js";
@@ -18,16 +18,19 @@ connectDB();
 
 
 // middleware & statics
-app.use(express.static('public'))
-app.use(express.json());
+app.use(stat('public'));
+app.use(_json());
 // Body-parser middleware
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+app.use(urlencoded({ extended: true }))
+app.use(_json())
 app.use(cookieParser());
 
+
 // routes
-app.use('/user', registerRouter);
-app.use('/user',loginRouter );
+
+app.use('/user',loginRouter);
+app.use('/user',userRouter);
+
 
 
 //404 route

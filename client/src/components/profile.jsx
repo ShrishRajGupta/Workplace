@@ -1,5 +1,5 @@
 // Profile.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Avatar} from "@mui/material";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -7,8 +7,28 @@ import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Typography from '@mui/material/Typography';
+import axios from "axios";
 
-const Profile = (user) => {
+const Profile =  () => {
+  const [user, setUser] = useState([]);
+
+  const getUser = async () => {
+    try {
+      let response = await axios.get("/user/profile");
+      if (response.status === 200) {
+        console.log(response.data.user);
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  },[]);
+
+
   return (
     <div>
       
@@ -18,20 +38,16 @@ const Profile = (user) => {
       <div><img src ={user.backgrndimg}></img></div>
       <Avatar src="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg" style={{width: "20%",height:"100%"}}/>
       <div>
-        <p>{user.name} Abhishek Yadav</p>
-        <p>{user.about} Nothing</p>
+        <p>{user.username} </p>
+        <p>{user.About}</p>
       </div>
       
-      <div> {user.workexperience}</div>
-      <div> {user.skills}</div>
     </div>
     <div className="education">
       {/* <div> {user.education}</div> */}
       <h2>Education</h2>
       <div>
-        <p>College Name</p>
-        <p>Degree</p>
-        <p>Year</p>
+        <div>{user.Education}</div>
       </div>
 
       </div>
@@ -39,8 +55,7 @@ const Profile = (user) => {
       {/* <div> {user.education}</div> */}
       <h2>Work Experience</h2>
       <div>
-        <p>Company Name</p>
-        <p>Year</p>
+        <div>{user.workExperience}</div>
       </div>
 
       </div>
@@ -48,9 +63,7 @@ const Profile = (user) => {
       {/* <div> {user.education}</div> */}
       <h2>Skills</h2>
       <div>
-        <p>College Name</p>
-        <p>Degree</p>
-        <p>Year</p>
+       <p>{user.Skills}</p>
       </div>
       </div>
     
