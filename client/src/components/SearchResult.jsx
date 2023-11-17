@@ -5,3 +5,4 @@ export const SearchResult = ({result}) => {
         <div className="search-result" onClick={(e)=>alert(`Person with name ${result.name} is clicked!!`)}>{result.name}</div>
     )
 };
+
