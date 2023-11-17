@@ -4,7 +4,6 @@ import Navbar from "./components/navbar";
 import Dashboard from "./components/userdashboard";
 import RegistrationForm from "./components/register";
 import UserWidget from "./widgets/UserWidget";
-import RegistrationForm from "./components/register";
 import { useState } from "react";
 import { SearchResultsList } from "./components/SearchResultsList";
 function App() {

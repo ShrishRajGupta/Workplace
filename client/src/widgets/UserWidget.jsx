@@ -24,7 +24,6 @@ const UserWidget = () => {
     // const main = palette.neutral.main;
 
 
-<<<<<<< HEAD
     const getUser = async() => {
         const response = await fetch(`{url}`, { 
             method: "GET",
@@ -34,19 +33,6 @@ const UserWidget = () => {
         const data = await response.json();
         setUser(data);
     };
-=======
-    const getUser = async () => {
-        try {
-          let response = await axios.get("/user/profile");
-          if (response.status === 200) {
-            console.log(response.data.user);
-            setUser(response.data.user);
-          }
-        } catch (error) {
-          console.error('Error fetching user:', error);
-        }
-      };
->>>>>>> 58f63d2bedb1fd8f6edd2dc4edb5ba9b99060a09
 
     useEffect(()=>{
         getUser();
@@ -114,11 +100,7 @@ const UserWidget = () => {
                     </Typography>
                     <FlexBetween gap="1rem" mb="0.5rem">
                         <FlexBetween gap="1rem">
-<<<<<<< HEAD
                             <img src="#" alt="twitter" />
-=======
-                            <img src="" alt="twitter" />
->>>>>>> ccb34bc3a3944cbc28d8a422765967a2e0b2d85a
                             <Box>
                                 <Typography color="black" fontWeight="500">
                                     Twitter
@@ -131,11 +113,7 @@ const UserWidget = () => {
 
                     <FlexBetween gap="1rem">
                         <FlexBetween gap="1rem">
-<<<<<<< HEAD
                             <img src="#" alt="linkedin" />
-=======
-                            <img src="" alt="linkedin" />
->>>>>>> ccb34bc3a3944cbc28d8a422765967a2e0b2d85a
                             <Box>
                                 <Typography color="black"fontWeight="500">
                                     LinkedIn
