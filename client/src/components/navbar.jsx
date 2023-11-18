@@ -15,6 +15,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { useState } from 'react';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -56,7 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar({ setResults }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -154,6 +155,24 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
 
+  const [input,setInput] = useState("");
+
+  const fetchData = (value) => {
+    fetch("https://jsonplaceholder.typicode.com/users").then((res)=>res.json()).then((json)=>{
+      
+    const results = json.filter((user)=>{
+      return value && user && user.name && user.name.toLowerCase().includes(value);
+    });
+    console.log(results)
+    setResults(results)
+    });
+  };
+
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -175,6 +194,7 @@ export default function PrimarySearchAppBar() {
           >
             WorkPlace
           </Typography>
+          <div className="my-nav">
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -182,8 +202,11 @@ export default function PrimarySearchAppBar() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              value={input}
+              onChange={(e)=>handleChange(e.target.value)}
             />
           </Search>
+          </div>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
