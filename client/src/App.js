@@ -6,18 +6,21 @@ import RegistrationForm from "./components/register";
 import UserWidget from "./widgets/UserWidget";
 import MyForm from "./components/createProfile";
 import Login from "./components/login";
+import Allposts from "./widgets/allposts";
 function App() {
   return (
     <div className="App" style={{backgroundColor:"#e5e8e3"}}>
     <Navbar />
     <BrowserRouter>
       <Routes>
-        <Route path = "/jobpostform" element={<JobForm />}></Route>
+        <Route path = "/home" element={<UserWidget />}></Route>
+        <Route path = "/user/jobpostform" element={<JobForm />}></Route>
         <Route path = "/user/profile" element={<Dashboard />}></Route>
         <Route path="/user/register" element={<RegistrationForm />}></Route>
         <Route path="/user/login" element={<Login />}></Route>
         <Route path="/user/createProfile" element={<MyForm />}></Route>
-        <Route path = "/home" element={<UserWidget />}></Route>
+        <Route path="/user/allposts" element={<Allposts />}></Route>
+
       </Routes>
     </BrowserRouter>
     </div>
