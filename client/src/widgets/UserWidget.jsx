@@ -12,7 +12,6 @@ import widgetwrapper from "../components/widgetwrapper";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import axios from "axios";
 
 const UserWidget = () => {
@@ -103,11 +102,7 @@ const UserWidget = () => {
                     </Typography>
                     <FlexBetween gap="1rem" mb="0.5rem">
                         <FlexBetween gap="1rem">
-<<<<<<< HEAD
-                            <img src="#" alt="twitter" />
-=======
                             <img src="" alt="twitter" />
->>>>>>> ccb34bc3a3944cbc28d8a422765967a2e0b2d85a
                             <Box>
                                 <Typography color="black" fontWeight="500">
                                     Twitter
@@ -120,11 +115,7 @@ const UserWidget = () => {
 
                     <FlexBetween gap="1rem">
                         <FlexBetween gap="1rem">
-<<<<<<< HEAD
-                            <img src="#" alt="linkedin" />
-=======
                             <img src="" alt="linkedin" />
->>>>>>> ccb34bc3a3944cbc28d8a422765967a2e0b2d85a
                             <Box>
                                 <Typography color="black"fontWeight="500">
                                     LinkedIn
