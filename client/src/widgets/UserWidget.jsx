@@ -3,6 +3,7 @@ import {
     EditOutlined,
     LocationOnOutlined,
     WorkOutlineOutlined,
+    Token,
 } from "@mui/icons-material";
 
 import {Box, Typography, Divider, useTheme } from "@mui/material";
@@ -25,9 +26,9 @@ const UserWidget = () => {
 
 
     const getUser = async() => {
-        const response = await fetch(`{url}`, { 
+        const response = await fetch("#", { 
             method: "GET",
-            headers: {Authorization: `Bearer ${token}`},
+            headers: {Authorization: `Bearer ${Token}`},
         });
 
         const data = await response.json();
