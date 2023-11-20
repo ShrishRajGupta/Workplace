@@ -1,6 +1,7 @@
 import Router from "express";
 import createPost from "../controllers/createPost.js";
 import UserDB from "../models/userModel.js";
+import BlogDB from "../models/postModel.js";
 import authenticateToken from "../middlewares/validateJWT.js";
 const userRouter = Router();
 
@@ -60,8 +61,50 @@ userRouter.get("/profile",authenticateToken,async function(req,res){
         }
     
 });
-userRouter.route('/jobpostform').post(createPost);
-
+userRouter.post('/jobpostform',authenticateToken,createPost);
+userRouter.get('/allposts',authenticateToken,async function(req,res){
+        
+        try{
+            let currentUser_id = req.user.id;
+            const allPosts = await BlogDB.find({"user_id": currentUser_id});
+            if(allPosts){
+                return res.status(200).json({
+                    message: "All Posts Recovered",
+                    allposts: allPosts
+                });
+            }else{
+                return res.status(200).json({
+                    message:"User dont have post"
+                });
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+});
+userRouter.get("/profile/:username/connect",authenticateToken,async function(req,res){
+    try {
+        const friends_username = req.params.username.toString();
+        const user_id = req.user.id;
+        const existingUser = await UserDB.findOne({"_id": user_id});
+        const friend = await UserDB.findOne({ "username": friends_username });
+      
+        existingUser.friends.push(friend._id);
+        friend.friends.push(existingUser._id);
+      
+        // Save changes to the database
+        await Promise.all([existingUser.save(), friend.save()]);
+      
+        console.log(existingUser);
+        res.status(200).json({
+          message: "Friends connected",
+          user: existingUser
+        });
+      } catch (err) {
+        console.log(err);
+      }
+        
+});
 // testing route
 userRouter.get('/testing',authenticateToken,async function(req,res){
     console.log(req.user);

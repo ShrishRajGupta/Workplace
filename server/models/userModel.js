@@ -31,7 +31,12 @@ const userSchema = new Schema({
     }],
     About:{
         type: String,
-    }
+    },
+    friends:[{
+        type: Schema.Types.ObjectId,
+        default:[],
+        ref:"UserDB"
+    }]
 
 },
     {
