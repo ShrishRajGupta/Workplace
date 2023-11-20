@@ -31,8 +31,6 @@ app.use(cookieParser());
 app.use('/user',loginRouter);
 app.use('/user',userRouter);
 
-
-
 //404 route
 app.use((req, res) => {
     res.status(404).send("Sorry can't find that!")
