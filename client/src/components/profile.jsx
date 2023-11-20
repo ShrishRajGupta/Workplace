@@ -9,25 +9,34 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Typography from '@mui/material/Typography';
 import axios from "axios";
 
-const Profile =  () => {
-  const [user, setUser] = useState([]);
+const Profile =  ({user}) => {
+    console.log(user);
+  // const getUser = async () => {
+  //   try {
+  //     let response = await axios.get("/user/profile");
+  //     if (response.status === 200) {
+  //       console.log(response.data.user);
+  //       setUser(response.data.user);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching user:', error);
+  //   }
+  // };
 
-  const getUser = async () => {
-    try {
-      let response = await axios.get("/user/profile");
-      if (response.status === 200) {
-        console.log(response.data.user);
-        setUser(response.data.user);
-      }
-    } catch (error) {
-      console.error('Error fetching user:', error);
+  // useEffect(() => {
+  //   getUser();
+  // },[]);
+    const handleClick = async ()=>{
+          try{
+            const response = await axios.get(`/user/profile/${user._id}/connect`);
+            if(response.status === 200){
+              console.log(response.data);
+            }
+          }
+          catch(err){
+            console.log(err);
+          }
     }
-  };
-
-  useEffect(() => {
-    getUser();
-  },[]);
-
 
   return (
     <div>
@@ -35,11 +44,12 @@ const Profile =  () => {
     <div className="profile">
       <h2>Profile</h2>
       
-      <div><img src ={user.backgrndimg}></img></div>
+      <div><img src =""></img></div>
       <Avatar src="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg" style={{width: "20%",height:"100%"}}/>
       <div>
         <p>{user.username} </p>
         <p>{user.About}</p>
+        <button onClick={handleClick}> + Connect</button>
       </div>
       
     </div>
@@ -72,16 +82,16 @@ const Profile =  () => {
   );
 };
 
-const FriendsList = function AlignItemsList() {
+const FriendsList = function AlignItemsList({props}) {
     return (
       <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      <h2 style={{textAlign:'center'}}>Friends</h2>
+   
         <ListItem alignItems="flex-start">
           <ListItemAvatar>
             <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
           </ListItemAvatar>
           <ListItemText
-            primary="Brunch this weekend?"
+            primary={props.username}
             secondary={
               <React.Fragment>
                 <Typography
@@ -90,57 +100,14 @@ const FriendsList = function AlignItemsList() {
                   variant="body2"
                   color="text.primary"
                 >
-                  Ali Connors
+                  {props.workExperience}
                 </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
+                {props.About}
               </React.Fragment>
             }
           />
         </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Summer BBQ"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: 'inline' }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  to Scott, Alex, Jennifer
-                </Typography>
-                {" — Wish I could come, but I'm out of town this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Oui Oui"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: 'inline' }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  Sandra Adams
-                </Typography>
-                {' — Do you have Paris recommendations? Have you ever…'}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
+        <Divider variant="inset" component="li" /> 
       </List>
     );
   }

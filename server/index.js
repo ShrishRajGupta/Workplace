@@ -10,7 +10,7 @@ const PORT = 3001;
 const app = express();
 import loginRouter from './routes/loginRouter.js';
 import userRouter from './routes/userRoutes.js';
-
+import mainRouter from './routes/mainRoutes.js';
 
 // DB
 import connectDB from "./config/conn.js";
@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 
 // routes
-
+app.use('/',mainRouter);
 app.use('/user',loginRouter);
 app.use('/user',userRouter);
 

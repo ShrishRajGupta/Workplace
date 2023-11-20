@@ -108,7 +108,7 @@ export const loginUser = async (req, res) => {
                 })
                 .status(200).json({
                     success: true,
-                    message:"Registered Successfully",
+                    message:"logged in Successfully",
                     user: user
                 });
         } else {

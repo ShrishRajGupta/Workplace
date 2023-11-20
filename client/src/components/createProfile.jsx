@@ -32,7 +32,9 @@ const MyForm = () => {
           console.log(response);
           if(response.status == 200){
             console.log(response.data);
-            navigate('/user/profile');
+            const userId = response.data.user._id;
+            console.log(userId);
+            navigate(`/user/profile/${userId}`);
           }
         } catch (error) {
           // Handle errors
