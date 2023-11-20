@@ -6,6 +6,7 @@ import RegistrationForm from "./components/register";
 import UserWidget from "./widgets/UserWidget";
 import { useState } from "react";
 import { SearchResultsList } from "./components/SearchResultsList";
+import MyForm from "./components/createProfile";
 function App() {
   const [results, setResults] = useState([]);
 
@@ -16,6 +17,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path = "/jobpostform" element={<JobForm />}></Route>
+        <Route path="/user/createProfile" element={<MyForm />}></Route>
         <Route path = "/profile" element={<Dashboard />}></Route>
         <Route path = "/" element={/*<UserWidget userId={_id} picturePath={picturePath}/>*/ <RegistrationForm />}></Route>
       </Routes>
