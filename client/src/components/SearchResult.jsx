@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../css/SearchResult.css";
-import axios from "axios";
-import {Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export const SearchResult = ({result,onResultClick}) => {
-    const [user,setUser] = useState("");
+export const SearchResult = ({result}) => {
+    
     const navigate = useNavigate();
     
     console.log(result);

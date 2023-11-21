@@ -131,6 +131,9 @@ userRouter.get("/:friend_id",async function(req,res){
         console.log(err);
     }
 })
+//@desc to do conversation b/w two connections
+//@route /messenger
+
 // testing route
 userRouter.get('/testing',authenticateToken,async function(req,res){
     console.log(req.user);

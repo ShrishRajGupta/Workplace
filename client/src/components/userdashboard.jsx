@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 const Dashboard = () => {
   const [userFriends, setUserFriends] = useState([]);
-  const [user,setUser] = useState([]);
+  var [user,setUser] = useState([]);
   const {userId}  = useParams();
   const getUser = async () => {
       try{
@@ -14,6 +14,7 @@ const Dashboard = () => {
         if(response.status === 200){
           console.log(response.data);
           setUser(response.data.user);
+          
         }
       }
       catch(err){
