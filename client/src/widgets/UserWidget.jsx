@@ -111,7 +111,6 @@ const UserWidget = () => {
                         </FlexBetween>
                         <EditOutlined sx={{color:"black"}} />
                     </FlexBetween>
-
                     <FlexBetween gap="1rem">
                         <FlexBetween gap="1rem">
                             <img src="" alt="linkedin" />

@@ -16,6 +16,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
+import axios from "axios";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -157,17 +158,19 @@ export default function PrimarySearchAppBar({ setResults }) {
 
   const [input,setInput] = useState("");
 
-  const fetchData = (value) => {
-    fetch("https://jsonplaceholder.typicode.com/users").then((res)=>res.json()).then((json)=>{
-      
-    const results = json.filter((user)=>{
-      return value && user && user.name && user.name.toLowerCase().includes(value);
-    });
-    console.log(results)
-    setResults(results)
-    });
+  const fetchData = async (value) => {
+    try {
+      const response = await axios.get(`/search/${value}`);
+  
+      if (response.status === 200) {
+        console.log(response.data);
+        setResults(response.data.user);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
-
+  
   const handleChange = (value) => {
     setInput(value);
     fetchData(value);
