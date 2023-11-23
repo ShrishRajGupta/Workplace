@@ -15,7 +15,6 @@ userRouter.post('/createProfile',authenticateToken,async function(req,res){
             
         const new_data = {
            "$set": {
-            "username": username,
             "About": About,
             "Education": Education,
             "workExperience": workExperience,
@@ -82,15 +81,26 @@ userRouter.get('/allposts',authenticateToken,async function(req,res){
             console.log(err);
         }
 });
-userRouter.get("/profile/:username/connect",authenticateToken,async function(req,res){
+// 
+userRouter.get("/profile/:userid/connect",authenticateToken,async function(req,res){
     try {
-        const friends_username = req.params.username.toString();
+        const friends_userid = req.params.userid.toString();
         const user_id = req.user.id;
-        const existingUser = await UserDB.findOne({"_id": user_id});
-        const friend = await UserDB.findOne({ "username": friends_username });
+        const existingUser = await UserDB.findOne({"_id": user_id}).populate('friends');
+        const friend = await UserDB.findOne({ "_id": friends_userid }).populate('friends');
+        // const existingRequest = await User.findOne({
+        //     "_id": user_id,
+        //     "existingUser.friends._id": friends_userid,
+        //   });
       
-        existingUser.friends.push(friend._id);
-        friend.friends.push(existingUser._id);
+        //   if (existingRequest) {
+        //     return res.json({ success: false, message: 'Connection request already sent.' });
+        //   }
+        if(user_id === friends_userid){
+            return res.json({ success: false, message: 'Same User' })
+        }
+        existingUser.friends.push(friend);
+        friend.friends.push(existingUser);
       
         // Save changes to the database
         await Promise.all([existingUser.save(), friend.save()]);
@@ -105,6 +115,25 @@ userRouter.get("/profile/:username/connect",authenticateToken,async function(req
       }
         
 });
+
+//@desc get all friends
+//@route /user/:friendID
+userRouter.get("/:friend_id",async function(req,res){
+    const friend_id = req.params.friend_id.toString();
+    try{
+        const friend = await UserDB.findOne({"_id": friend_id});
+        res.status(200).json({
+            message: "Friends retrieved success",
+            user: friend 
+        })
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+//@desc to do conversation b/w two connections
+//@route /messenger
+
 // testing route
 userRouter.get('/testing',authenticateToken,async function(req,res){
     console.log(req.user);

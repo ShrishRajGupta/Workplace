@@ -1,11 +1,10 @@
 import React, { useContext, useState } from 'react';
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
 import { Context }from "../index";
 import { Navigate } from 'react-router-dom';
 const RegistrationForm = () => {
   // State to hold form data
-  const navigate = useNavigate();
+  
   const  {isAuthenticated,setisAuthenticated}= useContext(Context);
 
   const [formData, setFormData] = useState({

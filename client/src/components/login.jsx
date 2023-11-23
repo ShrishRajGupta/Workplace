@@ -5,11 +5,11 @@ import { Link, Navigate } from "react-router-dom";
 import { Context } from "../index";
 
 const Login = () => {
-  const { isAuthenticated, setisAuthenticated, loading, setLoading } =
+  const { isAuthenticated, setisAuthenticated} =
     useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [userId,setuserId] = useState();
   const submitHandler = async (e) => {
     e.preventDefault();
     
@@ -30,14 +30,15 @@ const Login = () => {
 
       toast.success(response.message);
       setisAuthenticated(true);
-    
+      
+      setuserId(response.data.user._id);
     } catch (error) {
       
       setisAuthenticated(false);
     }
   };
 
-  if (isAuthenticated) return <Navigate to={"/user/profile"} />;
+  if (isAuthenticated) return <Navigate to={`/user/profile/${userId}`} />;
 
   return (
     <div className="login">
