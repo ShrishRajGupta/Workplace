@@ -15,8 +15,11 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import HomeIcon from '@mui/icons-material/Home';
 import { useState } from 'react';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+import "../css/navbar.css";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -61,7 +64,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar({ setResults }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  const navigate = useNavigate();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -197,7 +200,7 @@ export default function PrimarySearchAppBar({ setResults }) {
           >
             WorkPlace
           </Typography>
-          <div className="my-nav">
+          <div className="my-nav" style={{display:"flex"}}>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -209,9 +212,14 @@ export default function PrimarySearchAppBar({ setResults }) {
               onChange={(e)=>handleChange(e.target.value)}
             />
           </Search>
+          <button style={{backgroundColor:"blue"}}>Filter</button>
           </div>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <p className="home"onClick={()=>[
+            navigate("/home")
+          ]}><HomeIcon /></p>
+        
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
                 <MailIcon />

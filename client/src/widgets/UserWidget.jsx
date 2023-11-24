@@ -61,7 +61,9 @@ const UserWidget = () => {
                                     cursor: "pointer"
                                 }
                             }}>
-                                {user.username}
+                               <p onClick={()=>{
+                                navigate(`/user/profile/${user._id}`)
+                               }}>{user.username}</p> 
                             </Typography>
                             {/* <Typography color={medium}>{friends.length} friends</Typography> */}
                     </Box>

@@ -1,5 +1,5 @@
 // Profile.js
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {Avatar} from "@mui/material";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -7,10 +7,14 @@ import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Typography from '@mui/material/Typography';
+import "../css/profile.css";
 import axios from "axios";
-
+import { useNavigate } from 'react-router-dom';
+import { Context } from '..';
 const Profile =  ({user}) => {
     console.log(user);
+    const {isAuthenticated} = useContext(Context);
+    const navigate = useNavigate();
   // const getUser = async () => {
   //   try {
   //     let response = await axios.get("/user/profile");
@@ -49,7 +53,13 @@ const Profile =  ({user}) => {
       <div>
         <p>{user.username} </p>
         <p>{user.About}</p>
-        <button onClick={handleClick}> + Connect</button>
+        <div className='btndiv'>
+        <button onClick={handleClick} > {isAuthenticated ? "open to": "+ Connect"}</button>
+        <button className='postBtn' onClick={()=>{
+          navigate("/user/jobpostform");
+        }}>Post Job Here</button>
+        </div>
+        
       </div>
       
     </div>

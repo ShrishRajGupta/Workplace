@@ -34,7 +34,7 @@ const Home = ()=>{
     return (
         <div>
             <UserWidget />
-            <h2>All posts</h2>
+            <h2>Notifications</h2>
             {
                 posts.map(postCard)
             }

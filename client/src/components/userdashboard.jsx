@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import {Profile} from './profile';
 import "../css/userdashboard.css";
 import axios from "axios";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { colors } from '@mui/material';
+
 
 const Dashboard = () => {
   const [userFriends, setUserFriends] = useState([]);
   var [user,setUser] = useState([]);
   const {userId}  = useParams();
+  const navigate = useNavigate();
   const getUser = async () => {
       try{
         const response = await axios.get(`/user/profile/${userId}`);
@@ -60,12 +63,22 @@ const Dashboard = () => {
       <h2 style={{textAlign:'center'}}>Friends</h2>
       
         {userFriends.map((friend) => (
-            
-          <div key={friend._id} style={{margin:"4px 4px 4px 4px",border:"2px solid black"}}>
-              <p  key={friend._id} >{friend.username}</p>
-              <p  key={friend._id} >{friend.Education}</p>
-              <p  key={friend._id} >{friend.workExperience}</p>
-          </div>
+          <div key={friend._id} style={{
+           margin: "10px",
+           padding: "20px",
+          border: "2px solid #333",
+          borderRadius: "8px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          textAlign: "left",
+          maxWidth: "300px",
+          backgroundColor: "#fff",
+        }}>
+        <p style={{ fontWeight: "bold", fontSize: "18px", marginBottom: "8px",cursor:"pointer"}} onClick={()=>{
+          navigate(`/user/profile/${friend._id}`)
+        }}>{friend.username}</p>
+        <p style={{ marginBottom: "8px" }}>Education: {friend.Education}</p>
+        <p style={{ marginBottom: "8px" }}>Work Experience: {friend.workExperience}</p>
+      </div>
         ))}
       
       </div>

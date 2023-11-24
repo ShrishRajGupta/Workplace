@@ -4,9 +4,13 @@ import BlogDB from "../models/postModel.js";
 const mainRouter = Router();
 
 mainRouter.get("/search/:username",async function(req,res){
-        const username = req.params.username;
+        const username = req.params.username.toLowerCase();
         try{
-            const users = await UserDB.find({"username": username});
+            
+        
+               const users = await UserDB.find({"username": {$regex:username,$options:"i"}});
+            
+           
             if(users)
             res.status(200).json({
                 message: "Found users",

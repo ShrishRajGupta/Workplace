@@ -10,8 +10,7 @@ import MyForm from "./components/createProfile";
 import Login from "./components/login";
 import Allposts from "./widgets/allposts";
 import Chat from "./components/chat/chat";
-import axios from "axios";
-import {Context}  from ".";
+import Homepage from "./widgets/homepage";
 
 
 function App() {
@@ -19,21 +18,20 @@ function App() {
   
 
   return (
-    <div className="App" style={{backgroundColor:"white"}}>
-    <Navbar setResults={setResults}/>
-   
+    <div className="App">
+    
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SearchResultsList results={results}/>} ></Route>
+        <Route path="/" element={<><SearchResultsList results={results}/><Homepage /></>} ></Route>
         
-        <Route path ="/home" element={<Home />}></Route>
-        <Route path ="/user/jobpostform" element={<JobForm />}></Route>
-        <Route path="/user/register" element={<RegistrationForm />}></Route>
-        <Route path="/user/login" element={<Login/>}></Route>
-        <Route path="/user/createProfile" element={<MyForm />}></Route>
-        <Route path ="/user/profile/:userId" element={<Dashboard />}></Route>
-        <Route path="/user/allposts" element={<Allposts />}></Route>
-        <Route exact path="/messenger" element={<Chat />}></Route>
+        <Route path ="/home" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Home /></>}></Route>
+        <Route path ="/user/jobpostform" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><JobForm /></>}></Route>
+        <Route path="/user/register" element={<><SearchResultsList results={results}/><RegistrationForm /></>}></Route>
+        <Route path="/user/login" element={<><SearchResultsList results={results}/><Login/></>}></Route>
+        <Route path="/user/createProfile" element={<><SearchResultsList results={results}/><MyForm /></>}></Route>
+        <Route path ="/user/profile/:userId" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Dashboard /></>}></Route>
+        <Route path="/user/allposts" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Allposts /></>}></Route>
+        <Route exact path="/messenger" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Chat /></>}></Route>
       </Routes>
     </BrowserRouter>
     </div>

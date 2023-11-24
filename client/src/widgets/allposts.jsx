@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 
 const postCard = (props)=>{
     return <div style={{margin:"2px 2px 2px 2px",border:"2px solid black"}}>
-        <p>{props.jobTitle}</p>
-        <p>{props.companyName}</p>
-        <p>{props.workPlace}</p>
-        <p>{props.jobLocation}</p>
-        <p>{props.jobType}</p>
-        <p>{props.salary}</p>
+        <p>JobTitle : {props.jobTitle}</p>
+        <p>CompanyName : {props.companyName}</p>
+        <p>WorkPlace : {props.workPlace}</p>
+        <p>JobLocation : {props.jobLocation}</p>
+        <p>JobType : {props.jobType}</p>
+        <p>Salary : {props.salary}</p>
     </div>
 }
 const Allposts = ()=>{
@@ -32,7 +32,7 @@ const Allposts = ()=>{
         },[]);
     return (
         <div>
-            <h2>All posts</h2>
+            <h2>Notifications</h2>
             {
                 posts.map(postCard)
             }
