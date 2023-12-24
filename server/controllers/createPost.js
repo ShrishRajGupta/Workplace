@@ -1,6 +1,8 @@
 import BlogDB from '../models/postModel.js';
 import UserDB from "../models/userModel.js";
 
+// @route POST /user/jobpostform
+// @desc Create new post
 const newPost = async function(req,res){
     const {jobTitle,companyName,workPlace,jobLocation,jobType,salary} = req.body;
     try{

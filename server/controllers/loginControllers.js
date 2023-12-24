@@ -45,7 +45,7 @@ export const registerUser = async (req, res) => {
     
         return res.cookie("authorization", checkF(member), {
                 httpOnly: true,
-                secure: true,
+                secure: false,
             }).status(200).json({ 
                 success: true,
                 message: 'Registration successful!',
@@ -104,7 +104,7 @@ export const loginUser = async (req, res) => {
             return res
                 .cookie("authorization", token, {
                     httpOnly: true,
-                    secure: true,
+                    secure: false,
                 })
                 .status(200).json({
                     success: true,
@@ -130,7 +130,11 @@ export const loginUser = async (req, res) => {
 // @route   GET /user/logout
 // @access  Public
 export const logoutUser = (req, res) => {
-    res.send('logout user');
+    res.clearCookie('authorization');
+    res.status(200).json({
+        success:true,
+        message:"logged out successfully"
+    })    
 }
 
 
