@@ -1,15 +1,14 @@
-import { Router }  from "express";
-
+import Router from "express";
+import { getLoginForm, loginUser, logoutUser ,registerUser} from '../controllers/loginControllers.js';
 const loginRouter = Router();
-import { getLoginForm, loginUser, logoutUser } from '../controllers/loginControllers.js';
 
 // route begins with 'user'
-loginRouter.route('/login')
-    .get(getLoginForm)
-    .post(loginUser)
+loginRouter.route('/register').post(registerUser);
+loginRouter.route('/login').post(loginUser);
 
 loginRouter.route('/logout')
     .get(logoutUser);
+
 
 export default loginRouter;
 

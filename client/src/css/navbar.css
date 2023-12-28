@@ -24,3 +24,8 @@ nav {
     text-decoration: underline;
   }
   
+  .home{
+    cursor: pointer;
+    margin-right: 5px;
+    padding: 5px;
+  }

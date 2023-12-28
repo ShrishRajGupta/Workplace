@@ -4,42 +4,90 @@ import { useParams } from "react-router";
 
 import { Profile, FriendsList } from "./profile";
 import "../css/userdashboard.css";
+import axios from "axios";
+import { useNavigate, useParams } from 'react-router-dom';
+import { colors } from '@mui/material';
+
 const home = "http://localhost:3001";
 
 // @desc    User dashboard
 // @route   GET /in/:username/dashboard
 
 const Dashboard = () => {
-  // use-states
-  const [user, setUser] = useState(null);
-  const { username } = useParams();
-
+  const [userFriends, setUserFriends] = useState([]);
+  var [user,setUser] = useState([]);
+  const {userId}  = useParams();
+  const navigate = useNavigate();
   const getUser = async () => {
-    const response = await fetch(`${home}/in/${username}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-      // credentials: "include",
-    });
-    const data = await response.json();
-    setUser(data);
+      try{
+        const response = await axios.get(`/user/profile/${userId}`);
+        if(response.status === 200){
+          console.log(response.data);
+          setUser(response.data.user);
+          
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
+  }
+  const getUserFriends = async () => {
+    try {
+      const response = await axios.get(`/user/profile/${userId}`);
+      if (response.status === 200) {
+        // Assuming response.data.user.friends contains friend IDs
+        const friendIds = response.data.user.friends;
+
+        // Fetch details for each friend
+        const friendDetailsPromises = friendIds.map(async (friendId) => {
+          const friendResponse = await axios.get(`/user/${friendId}`);
+          return friendResponse.data.user;
+        });
+
+        // Wait for all friend details to be fetched
+        const friendDetails = await Promise.all(friendDetailsPromises);
+
+        setUserFriends(friendDetails);
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
   };
-
+  
   useEffect(() => {
+    getUserFriends();
     getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (!user) return null;
+  },[userId]);
 
   return (
-    <div style={{ display: "flex" }}>
-      <div className="dashboard" style={{ width: "60%", height: "100%" }}>
-        <p> </p>
-        <Profile user={user} />
+    <div style={{display: "flex"}}>
+      <div className="dashboard">
+        <Profile 
+          user={user}
+        />
       </div>
-      <div style={{ marginTop: "25px" }}>
-        <FriendsList />
+      <div style={{marginTop:"25px",}}>
+      <h2 style={{textAlign:'center'}}>Friends</h2>
+      
+        {userFriends.map((friend) => (
+          <div key={friend._id} style={{
+           margin: "10px",
+           padding: "20px",
+          border: "2px solid #333",
+          borderRadius: "8px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          textAlign: "left",
+          maxWidth: "300px",
+          backgroundColor: "#fff",
+        }}>
+        <p style={{ fontWeight: "bold", fontSize: "18px", marginBottom: "8px",cursor:"pointer"}} onClick={()=>{
+          navigate(`/user/profile/${friend._id}`)
+        }}>{friend.username}</p>
+        <p style={{ marginBottom: "8px" }}>Education: {friend.Education}</p>
+        <p style={{ marginBottom: "8px" }}>Work Experience: {friend.workExperience}</p>
+      </div>
+        ))}
+      
       </div>
     </div>
   );
@@ -87,3 +135,4 @@ function App() {
 //          console.log(err.message);
 //       });
 // }, []);
+

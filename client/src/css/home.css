@@ -1,0 +1,32 @@
+
+.home > img{
+    filter: blur(8px);
+    z-index: -1;
+    
+}
+.innerdiv1{
+    
+    position: absolute;
+    top: 300px;
+    right: auto;
+    left: auto;
+    width: 350px;
+    height: 100px;
+    z-index: 1;
+
+}
+.innerdiv{
+    position: absolute;
+    top: 80px;
+    right: auto;
+    left: auto;
+    width: 350px;
+    height: 100px;
+    z-index: 1;
+}
+.reg > img{
+    height: 100%;
+    width: 100%;
+    filter: blur(8px);
+    z-index: -1;
+}

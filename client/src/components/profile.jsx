@@ -1,4 +1,47 @@
 // Profile.js
+import React, { useContext, useEffect, useState } from 'react';
+import {Avatar} from "@mui/material";
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Typography from '@mui/material/Typography';
+import "../css/profile.css";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+import { Context } from '..';
+const Profile =  ({user}) => {
+    console.log(user);
+    const {isAuthenticated} = useContext(Context);
+    const navigate = useNavigate();
+  // const getUser = async () => {
+  //   try {
+  //     let response = await axios.get("/user/profile");
+  //     if (response.status === 200) {
+  //       console.log(response.data.user);
+  //       setUser(response.data.user);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching user:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getUser();
+  // },[]);
+    const handleClick = async ()=>{
+          try{
+            const response = await axios.get(`/user/profile/${user._id}/connect`);
+            if(response.status === 200){
+              console.log(response.data);
+            }
+          }
+          catch(err){
+            console.log(err);
+          }
+    }
+
 import React from "react";
 import { Avatar } from "@mui/material";
 import List from "@mui/material/List";
