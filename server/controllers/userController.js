@@ -1,4 +1,4 @@
-import UserDB from "../models/UserModel.js";
+import UserDB from "../models/userModel.js";
 
 // @desc : Get dashboard of user
 // @route : GET /in/:username

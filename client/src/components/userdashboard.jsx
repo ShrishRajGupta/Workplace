@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router";
 
 import { Profile, FriendsList } from "./profile";
 import "../css/userdashboard.css";

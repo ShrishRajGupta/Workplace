@@ -1,8 +1,8 @@
-import UserDB from "../models/UserModel.js";
+import UserDB from "../models/userModel.js";
 
 // @desc : Get dashboard of user
 // @route : GET /in/update/:username/:typeId
-// @type : patch request
+// @type : post request
 const updateInfo = async (req, res) => {
   const { username } = req.params;
 

@@ -1,20 +1,22 @@
 // Profile.js
-import React, { useContext, useEffect, useState } from 'react';
-import {Avatar} from "@mui/material";
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Typography from '@mui/material/Typography';
-import "../css/profile.css";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
-import { Context } from '..';
-const Profile =  ({user}) => {
-    console.log(user);
-    const {isAuthenticated} = useContext(Context);
-    const navigate = useNavigate();
+import { useNavigate } from "react-router-dom";
+import { Context } from "..";
+import { Avatar } from "@mui/material";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Divider from "@mui/material/Divider";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Typography from "@mui/material/Typography";
+
+import "../css/profile.css";
+
+const ProfileInfo = ({ user }) => {
+  console.log(user);
+  const { isAuthenticated } = useContext(Context);
+  const navigate = useNavigate();
   // const getUser = async () => {
   //   try {
   //     let response = await axios.get("/user/profile");
@@ -30,180 +32,166 @@ const Profile =  ({user}) => {
   // useEffect(() => {
   //   getUser();
   // },[]);
-    const handleClick = async ()=>{
-          try{
-            const response = await axios.get(`/user/profile/${user._id}/connect`);
-            if(response.status === 200){
-              console.log(response.data);
-            }
-          }
-          catch(err){
-            console.log(err);
-          }
+  const handleClick = async () => {
+    try {
+      const response = await axios.get(`/user/profile/${user._id}/connect`);
+      if (response.status === 200) {
+        console.log(response.data);
+      }
+    } catch (err) {
+      console.log(err);
     }
-
-import React from "react";
-import { Avatar } from "@mui/material";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Typography from "@mui/material/Typography";
-import { useState, useEffect } from "react";
-import axios from 'axios';
-
-const Profile = (props) => {
-  const [name, setName] = useState(null);
-  const [backgrndimg, setBackgrndimg] = useState(null);
-  const [about, setAbout] = useState(null);
-  const [skills, setSkills] = useState([]);
-  const [education, setEducation] = useState([]); //array of objects
-  const [workexp, setWorkexp] = useState([]);
-  const [friends, setFriends] = useState([]);
-  const home = "http://localhost:3001";
-
-  const updatePersonalInfo = (id) => {
-    fetch(`${home}/in/update/${id}`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        about,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        // setData(data);
-      });
   };
+};
 
-  
+  const Profile = (props) => {
+    const [name, setName] = useState(null);
+    const [backgrndimg, setBackgrndimg] = useState(null);
+    const [about, setAbout] = useState(null);
+    const [skills, setSkills] = useState([]);
+    const [education, setEducation] = useState([]); //array of objects
+    const [workexp, setWorkexp] = useState([]);
+    const [friends, setFriends] = useState([]);
+    const home = "http://localhost:3001";
 
-  const [newUser, setNewAuthor] = useState(
-    {
-        photo: '',
-    }
-);
+    const updatePersonalInfo = (id) => {
+      fetch(`${home}/in/update/${id}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          about,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          // setData(data);
+        });
+    };
 
-useEffect(() => {
-  console.log(props.user);
-}, []);
+    const [newUser, setNewAuthor] = useState({
+      photo: "",
+    });
 
-const handleSubmit = (e) => {
-  console.log(e.target);
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('photo', newUser.photo);
+    useEffect(() => {
+      console.log(props.user);
+    }, []);
 
-    axios.post(`${home}/in/add/`, formData)
-         .then(res => {
-            console.log(res);
-         })
-         .catch(err => {
-            console.log(err);
-         });
-}
+    const handlePhotoSubmit = (e) => {
+      console.log(e.target);
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("photo", newUser.photo);
 
+      axios
+        .post(`${home}/in/add/`, formData)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
 
-const handlePhoto = (e) => {
-    setNewAuthor({photo: e.target.files[0]});
-}
+    const handlePhotoChange = (e) => {
+      setNewAuthor({ photo: e.target.files[0] });
+    };
 
-  return (
-    <div>
-      <div className="profile">
-        <h2>Profile</h2>
-        <div>
-          {/* <img src={user.backgrndimg}></img> */}
-        </div>
-        <Avatar
-          style={{ width: "10%", height: "100%" }}
-          src={`${home}/img/${props.user.photo}`}
-          alt="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
-        />
+    return (
+      <div>
+        <div className="profile">
+          <h2>Profile</h2>
+          <div>{/* <img src={user.backgrndimg}></img> */}</div>
 
-      <form onSubmit={handleSubmit} encType='multipart/form-data'>
-            <input 
-                type="file" 
-                accept=".png, .jpg, .jpeg"
-                name="photo"
-                onChange={handlePhoto}
+          {/* user Photo */}
+          <Avatar
+            style={{ width: "10%", height: "100%" }}
+            src={`${home}/img/${props.user.photo}`}
+            alt="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
+          />
+
+          
+          <form onSubmit={handlePhotoSubmit} encType="multipart/form-data">
+            <input
+              type="file"
+              accept=".png, .jpg, .jpeg"
+              name="photo"
+              onChange={handlePhotoChange}
             />
 
-            <input 
-                type="submit"
-            />
-        </form>
+            <input type="submit" />
+          </form>
 
-        <div>
-          <p>Name {props.user.name}</p>
-          <p>About - {props.user.about}</p>
+          <div>
+            <p>Name {props.user.name}</p>
+            <p>About - {props.user.about}</p>
+          </div>
+
+          <div> {props.user.email}</div>
         </div>
 
-        <div> {props.user.email}</div>
-      </div>
-
-
-      <div className="profile">
-        <label>Update Name</label>
-        <input
-          type="text"
-          placeholder="Add a Name"
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
+        <div className="profile">
+          <label>Update Name</label>
+          <input
+            type="text"
+            placeholder="Add a Name"
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
           />
           <label>Update About</label>
-        <input
-          type="text"
-          placeholder="Add a about"
-          onChange={(e) => {
-            setAbout(e.target.value);
-          }}
-        />
-        <button onClick={()=> updatePersonalInfo(props.user.username)}> Add + </button>
-      </div>
+          <input
+            type="text"
+            placeholder="Add a about"
+            onChange={(e) => {
+              setAbout(e.target.value);
+            }}
+          />
+          <button  onClick={() => updatePersonalInfo(props.user.username)}>
+            {" "}
+            Add +{" "}
+          </button>
+        </div>
 
-      {/* --------------------------------------------- */}
-      <div className="education">
-        {/* <div> {user.education}</div> */}
-        {/* Array of education */}
-        <h2>Education{props.education}</h2>
-        <div>
-          <p>Collge Name </p>
-          <p>Degree</p>
-          <p>Year</p>
+        {/* --------------------------------------------- */}
+        <div className="education">
+          {/* <div> {user.education}</div> */}
+          {/* Array of education */}
+          <h2>Education{props.education}</h2>
+          <div>
+            <p>Collge Name </p>
+            <p>Degree</p>
+            <p>Year</p>
+          </div>
         </div>
-      </div>
-      {/* --------------------------------- */}
-      <div className="education">
-        {/* Array of work experience */}
-        <h2>Work Experience</h2>
-        <div>
-          <p>Company Name</p>
-          <p>Year</p>
+        {/* --------------------------------- */}
+        <div className="education">
+          {/* Array of work experience */}
+          <h2>Work Experience</h2>
+          <div>
+            <p>Company Name</p>
+            <p>Year</p>
+          </div>
         </div>
-      </div>
 
-      {/* --------------------------------- */}
-      <div className="education">
-        {/* <div> {user.education}</div> */}
-        {/* array of skills */}
-        <h2>Skills</h2>
-        <div>
-          <p>Collge Name</p>
-          <p>Degree</p>
-          <p>Year</p>
+        {/* --------------------------------- */}
+        <div className="education">
+          {/* <div> {user.education}</div> */}
+          {/* array of skills */}
+          <h2>Skills</h2>
+          <div>
+            <p>Collge Name</p>
+            <p>Degree</p>
+            <p>Year</p>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 const FriendsList = function AlignItemsList() {
   return (

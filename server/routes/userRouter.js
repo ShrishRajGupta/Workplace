@@ -1,6 +1,7 @@
+// @route = /in
 import { Router } from "express";
-const userRouter = Router();
-import UserDB from "../models/UserModel.js";
+const upgradeRouter = Router();
+import UserDB from "../models/userModel.js";
 
 import {
   getDashboard,
@@ -10,6 +11,7 @@ import { updateInfo } from "../controllers/updateInfoUser.js";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/img");
@@ -30,7 +32,7 @@ const fileFilter = (req, file, cb) => {
 
 let upload = multer({ storage, fileFilter });
 
-userRouter.route("/add").post(upload.single("photo"), async (req, res) => {
+upgradeRouter.route("/add").post(upload.single("photo"), async (req, res) => {
   // const {name} = req.body;
   const photo = req.file.filename;
 
@@ -45,12 +47,12 @@ userRouter.route("/add").post(upload.single("photo"), async (req, res) => {
 });
 
 // @route = /in
-userRouter.route("/:username").get(getDashboard);
+upgradeRouter.route("/:username").get(getDashboard);
 
-userRouter.route("/update/:username").post(updateInfo);
+upgradeRouter.route("/update/:username").post(updateInfo);
 
-userRouter.route("/populate").post(populateDashboard);
+upgradeRouter.route("/populate").post(populateDashboard);
 
-// userRouter.get("/profile/:id", userController.getProfileById);
+// upgradeRouter.get("/profile/:id", userController.getProfileById);
 
-export default userRouter;
+export default upgradeRouter;
