@@ -1,16 +1,15 @@
 import Router from "express";
 import UserDB from "../models/userModel.js";
 import BlogDB from "../models/postModel.js";
+import authenticateToken from "../middlewares/validateJWT.js";
 const mainRouter = Router();
-
+//@desc search Bar get request to search user
+//@route /search/:username
 mainRouter.get("/search/:username",async function(req,res){
         const username = req.params.username.toLowerCase();
         try{
             
-        
                const users = await UserDB.find({"username": {$regex:username,$options:"i"}});
-            
-           
             if(users)
             res.status(200).json({
                 message: "Found users",
@@ -28,7 +27,7 @@ mainRouter.get("/search/:username",async function(req,res){
 });
 
 //@desc to get another user profile through userid
-mainRouter.get("/user/profile/:userid",async function(req,res){
+mainRouter.get("/user/profile/:userid",authenticateToken,async function(req,res){
     const userid = req.params.userid.toString();
         try{
             const user = await UserDB.findOne({"_id":userid});
@@ -56,7 +55,7 @@ mainRouter.get("/user/profile/:userid",async function(req,res){
 //@desc to get all user posts
 //@route /home
 
-mainRouter.get('/home', async function(req,res){
+mainRouter.get('/home',authenticateToken, async function(req,res){
     const posts = await BlogDB.find({});
      console.log(posts);
     try{

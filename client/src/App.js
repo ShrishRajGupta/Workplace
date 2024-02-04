@@ -23,11 +23,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<><SearchResultsList results={results}/><Homepage /></>} ></Route>
-        
-        <Route path ="/home" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Home /></>}></Route>
-        <Route path ="/user/jobpostform" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><JobForm /></>}></Route>
         <Route path="/user/register" element={<><SearchResultsList results={results}/><RegistrationForm /></>}></Route>
         <Route path="/user/login" element={<><SearchResultsList results={results}/><Login/></>}></Route>
+        <Route path ="/home" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Home /></>}></Route>
+        <Route path ="/user/jobpostform" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><JobForm /></>}></Route>
         <Route path="/user/createProfile" element={<><SearchResultsList results={results}/><MyForm /></>}></Route>
         <Route path ="/user/profile/:userId" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Dashboard /></>}></Route>
         <Route path="/user/allposts" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Allposts /></>}></Route>

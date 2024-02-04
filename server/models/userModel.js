@@ -24,7 +24,6 @@ const userSchema = new Schema({
     },
     Education:{
         type: String,
-    
     },
     Skills:[{
         type: String,
@@ -36,6 +35,25 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         default:[],
         ref:"UserDB"
+    }],
+    friendRequests:[{
+        from:{
+            type: Schema.Types.ObjectId,
+            default:[],
+            ref:"UserDB"
+        },
+        to:{
+            type: Schema.Types.ObjectId,
+            default:[],
+            ref:"UserDB"
+        },
+        status:{
+            type:String,
+            enum:['pending','accepted','rejected']
+        },
+        username:{
+            type:String,
+        }
     }]
 
 },

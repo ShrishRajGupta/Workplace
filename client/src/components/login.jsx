@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { Context } from "../index";
 import "../css/home.css";
 const Login = () => {
-  const { isAuthenticated, setisAuthenticated} =
+  const { isAuthenticated, setisAuthenticated,setUser} =
     useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,10 +31,9 @@ const Login = () => {
 
       toast.success(response.message);
       setisAuthenticated(true);
-      
+      setUser(response.data.user);
       setuserId(response.data.user._id);
     } catch (error) {
-      
       setisAuthenticated(false);
     }
   };

@@ -3,144 +3,112 @@ import createPost from "../controllers/createPost.js";
 import UserDB from "../models/userModel.js";
 import BlogDB from "../models/postModel.js";
 import authenticateToken from "../middlewares/validateJWT.js";
+import { createProfile,Profile,allposts,connectFriends,friends } from "../controllers/userController.js";
 const userRouter = Router();
 
 //route begins with /user
 
-userRouter.post('/createProfile',authenticateToken,async function(req,res){
-        const {username,About,Education,workExperience,Skills} = req.body;
-        
-        try{
-            let user_id = req.user.id;
-            
-        const new_data = {
-           "$set": {
-            "About": About,
-            "Education": Education,
-            "workExperience": workExperience,
-            "Skills": Skills
-           }
-        };
-        const updatedUser = await UserDB.findOneAndUpdate({"_id" : user_id},new_data);
-        console.log(updatedUser);
-        if(updatedUser){
-            return res.status(200).json({
-                success:true,
-                message:"Profile created Successfully",
-                user:updatedUser
-            })
-        }else{
-            return console.log("ERROR");
-        }
-        }
-        catch(err){
-            console.log(err);
-            res.status(400).json({
-                success:false,
-                message:"error while creating Profile"
-            })
-        }
-        
-});
-userRouter.get("/profile",authenticateToken,async function(req,res){
-        try{
-            let user_id = req.user.id;
-            let matchedUser = await UserDB.findOne({"_id": user_id});
-
-            if(matchedUser){
-                return res.status(200).json({
-                    success: true,
-                    message:"User Profile",
-                    user: matchedUser
-                })
-            }
-        }
-        catch(err){
-            console.log(err);
-        }
-    
-});
+//@desc post request to create Profile
+//@route /user/createProfile
+userRouter.post('/createProfile',authenticateToken,createProfile);
+//@desc get req to get user Profile
+//@route /user/profile
+userRouter.get("/profile",authenticateToken,Profile);
+//@desc post req to createPost
+//@route /user/jobpostform
 userRouter.post('/jobpostform',authenticateToken,createPost);
-userRouter.get('/allposts',authenticateToken,async function(req,res){
-        
-        try{
-            let currentUser_id = req.user.id;
-            const allPosts = await BlogDB.find({"user_id": currentUser_id});
-            if(allPosts){
-                return res.status(200).json({
-                    message: "All Posts Recovered",
-                    allposts: allPosts
-                });
-            }else{
-                return res.status(200).json({
-                    message:"User dont have post"
-                });
-            }
-        }
-        catch(err){
-            console.log(err);
-        }
-});
-// 
-userRouter.get("/profile/:userid/connect",authenticateToken,async function(req,res){
-    try {
-        const friends_userid = req.params.userid.toString();
-        const user_id = req.user.id;
-        const existingUser = await UserDB.findOne({"_id": user_id}).populate('friends');
-        const friend = await UserDB.findOne({ "_id": friends_userid }).populate('friends');
-        // const existingRequest = await User.findOne({
-        //     "_id": user_id,
-        //     "existingUser.friends._id": friends_userid,
-        //   });
-      
-        //   if (existingRequest) {
-        //     return res.json({ success: false, message: 'Connection request already sent.' });
-        //   }
-        if(user_id === friends_userid){
-            return res.json({ success: false, message: 'Same User' })
-        }
-        existingUser.friends.push(friend);
-        friend.friends.push(existingUser);
-      
-        // Save changes to the database
-        await Promise.all([existingUser.save(), friend.save()]);
-      
-        console.log(existingUser);
-        res.status(200).json({
-          message: "Friends connected",
-          user: existingUser
-        });
-      } catch (err) {
-        console.log(err);
-      }
-        
-});
-
-//@desc get all friends
-//@route /user/:friendID
-userRouter.get("/:friend_id",async function(req,res){
-    const friend_id = req.params.friend_id.toString();
+//@desc get req to get allposts of a user
+//@route /user/allposts
+userRouter.get('/allposts',authenticateToken,allposts);
+//@desc get req to send request
+//@route /user/profile/:userid/connect
+userRouter.get("/profile/:userid/connect",authenticateToken,connectFriends);
+//@desc get req to connect with friends
+userRouter.put("/connect/:userId/:friendsId/:status/:id", authenticateToken,async function(req,res){
+    const userId = req.params.userId.toString();
+    const friendsId = req.params.friendsId.toString();
+    const status = req.params.status;
+    const friendRequestsId = req.params.id.toString();
+    console.log(userId,friendsId,status,friendRequestsId);
     try{
-        const friend = await UserDB.findOne({"_id": friend_id});
-        res.status(200).json({
-            message: "Friends retrieved success",
-            user: friend 
-        })
+        const User = await UserDB.findById({"_id":userId}).populate()
+        const Friend = await UserDB.findById({"_id":friendsId}).populate()
+        console.log(Friend);
+        if(status === "Accept"){
+            // if(!Friend.friends.includes(userId)){
+                await User.updateOne({
+                    $push:{
+                        friends: friendsId
+                    }
+                })
+                await Friend.updateOne({
+                    $push:{
+                        friends: userId
+                    }
+                })
+                const FriendRequest = {
+                    // "_id":friendRequestsId,
+                    from: userId,
+                    to: friendsId,
+                    status:'pending',
+                    username: User.username
+                }
+                await Friend.updateOne({
+                    $pull:{
+                        friendRequests: FriendRequest
+                    }
+                },
+                {
+                    "new":true
+                }
+                )
+                res.status(200).json({
+                    message: "Request Accepted",
+                    user: User
+                })
+            // }else{
+            //     res.status(100).json({
+            //         message: "Already Friend"
+            //     })
+            // }
+        }
+        else{   
+            // Save changes to the database
+            const FriendRequest = {
+                // "_id":friendRequestsId,
+                from: userId,
+                to: friendsId,
+                status:'pending',
+                username: User.username
+            }
+            await Friend.updateOne({
+                $pull:{
+                    friendRequests: FriendRequest
+                }
+            },
+            {
+                "new":true
+            }
+            )
+            await Friend.updateOne({
+                $pull:{
+                    friendRequests: friendRequestsId
+                }
+            })
+            res.status(200).json({
+                message:"Request Rejected",
+                user: User
+            })
+        }
     }
     catch(err){
         console.log(err);
     }
 })
-//@desc to do conversation b/w two connections
-//@route /messenger
 
-// testing route
-userRouter.get('/testing',authenticateToken,async function(req,res){
-    console.log(req.user);
-    res.json({
-        message: "testing done"
-    })
-});
+//@desc get req all friends
+//@route /user/:friendID
+userRouter.get("/:friend_id",friends);
 
 export default userRouter;
 

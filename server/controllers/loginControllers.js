@@ -130,7 +130,12 @@ export const loginUser = async (req, res) => {
 // @route   GET /user/logout
 // @access  Public
 export const logoutUser = (req, res) => {
-    res.send('logout user');
+    req.session=null;
+    req.logOut();
+    return res
+        .clearCookie("authorization")
+        .clearCookie('authorization.sig')
+        .status(200)
 }
 
 

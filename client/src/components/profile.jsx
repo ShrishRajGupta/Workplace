@@ -13,7 +13,10 @@ import { useNavigate } from 'react-router-dom';
 import { Context } from '..';
 const Profile =  ({user}) => {
     console.log(user);
-    const {isAuthenticated} = useContext(Context);
+
+    const {isAuthenticated,User} = useContext(Context);
+    console.log(User);
+    
     const navigate = useNavigate();
   // const getUser = async () => {
   //   try {
@@ -41,7 +44,7 @@ const Profile =  ({user}) => {
             console.log(err);
           }
     }
-
+    
   return (
     <div>
       
@@ -54,7 +57,7 @@ const Profile =  ({user}) => {
         <p>{user.username} </p>
         <p>{user.About}</p>
         <div className='btndiv'>
-        <button onClick={handleClick} > {isAuthenticated ? "open to": "+ Connect"}</button>
+        <button onClick={handleClick} > { User._id == user._id? "open to": "+ Connect"}</button>
         <button className='postBtn' onClick={()=>{
           navigate("/user/jobpostform");
         }}>Post Job Here</button>

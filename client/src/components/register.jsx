@@ -7,7 +7,7 @@ import "../css/home.css";
 const RegistrationForm = () => {
   // State to hold form data
   
-  const  {isAuthenticated,setisAuthenticated}= useContext(Context);
+  const  {isAuthenticated,setisAuthenticated,setUser}= useContext(Context);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
@@ -36,6 +36,7 @@ const RegistrationForm = () => {
         const data = response.data;
         console.log(data); // Handle the response as needed
         setisAuthenticated(true);
+        setUser(data.user);
         console.log(isAuthenticated);
       }
     } catch (error) {
