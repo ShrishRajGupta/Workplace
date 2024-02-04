@@ -9,16 +9,12 @@ import {
 } from "../controllers/userController.js";
 import { updateInfo } from "../controllers/updateInfoUser.js";
 import multer from "multer";
-import { v4 as uuidv4 } from "uuid";
-import path from "path";
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/img");
-  },
-  filename: function (req, file, cb) {
-    cb(null, uuidv4() + "-" + Date.now() + path.extname(file.originalname));
-  },
+import {v2 as cloudinary} from 'cloudinary';
+          
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUDNAME, 
+  api_key: process.env.CLOUDINARY_APIKEY, 
+  api_secret: process.env.CLOUDINARY_APISECRET 
 });
 
 const fileFilter = (req, file, cb) => {
@@ -30,21 +26,39 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-let upload = multer({ storage, fileFilter });
+let uploader = multer({ storage:multer.diskStorage({})
+, fileFilter 
+});
 
-upgradeRouter.route("/add").post(upload.single("photo"), async (req, res) => {
+upgradeRouter.route("/add").post(uploader.single("photo"), async (req, res) => {
   // const {name} = req.body;
+  const id=req.body.user;
   const photo = req.file.filename;
 
-  const user = await UserDB.findOne({ username: "testing" });
-  if (!user) return res.status(404).json({ msg: "User not found" });
-  user.photo = photo;
-
-  await user
+  const user = await UserDB.findOne({ _id:id });
+  if (!user) 
+  return res.status(404).json({ msg: "User not found" });
+  else{
+    const upload= await cloudUp(req.file.path);
+    user.photo = upload.secure_url;  
+    await user
     .save()
     .then(() => res.json("User Added"))
     .catch((err) => res.status(400).json("Error: " + err));
+  }
 });
+
+
+const cloudUp = async(filepath)=>{
+  try {
+    const result = await cloudinary.uploader.upload(filepath);
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+
+}
 
 // @route = /in
 upgradeRouter.route("/:username").get(getDashboard);
