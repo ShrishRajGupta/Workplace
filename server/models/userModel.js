@@ -33,14 +33,37 @@ const userSchema = Schema({
         type:String,
         default: ''
     },
-    workexperience:{
-        type:String,
-        default: ''
-    },
-    skills:{
-        type:String,
-        default: ''
-    },
+    education:[{
+        collegeName:{
+            type:String,
+            default: ''
+        },
+        degree:{
+            type:String,
+            default: ''
+        },
+        year:{
+            type:String,
+            default: ''
+        }
+    }],
+    workexperience:[{
+        companyName:{
+            type:String,
+            default:''
+        },
+        year:{
+            type:String,
+            default:''
+        }
+    }
+    ],
+    skills:[{
+        description:{
+            type:String,
+            default:''
+        }
+    }],
     friends:[{
         type: Schema.Types.ObjectId,
         default:[],

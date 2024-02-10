@@ -15,9 +15,14 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
+
+import {
+  CloudUpload as CloudUploadIcon,
+} from "@mui/icons-material";
 
 import "../css/profile.css";
+import { Skills, WorkEx } from "./profile/userExp";
+import CollegeDesc from "./profile/collegeDesc";
 
 const style = {
   position: "absolute",
@@ -30,63 +35,35 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+function LoadingSpinner() {
+  return (
+    <div className="spinner-container">
+      <div className="loading-spinner"></div>
+    </div>
+  );
+}
 
-const ProfileInfo = ({ user }) => {
-  console.log(user);
-  const { isAuthenticated } = useContext(Context);
-  const navigate = useNavigate();
-  // const getUser = async () => {
-  //   try {
-  //     let response = await axios.get("/user/profile");
-  //     if (response.status === 200) {
-  //       console.log(response.data.user);
-  //       setUser(response.data.user);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching user:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getUser();
-  // },[]);
-
-  const handleClick = async () => {
-    try {
-      const response = await axios.get(`/user/profile/${user._id}/connect`);
-      if (response.status === 200) {
-        console.log(response.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-};
 
 const Profile = (props) => {
+  const home = "http://localhost:3001";
+  const [isLoading, setLoading] = useState(false);
+
   const [name, setName] = useState(null);
   const [about, setAbout] = useState(null);
-  const [image, setImage] = useState(null);
-  const [skills, setSkills] = useState([]);
-  const [education, setEducation] = useState([]); //array of objects
-  const [workexp, setWorkexp] = useState([]);
-  const [friends, setFriends] = useState([]);
-
-  const [name_about_modal, setNameAboutModal] = useState(false);
-  const [photo_modal, setPhotoModal] = useState(false);
-  const [photo_loader_modal, setPhotoLoaderModal] = useState(false);
-
-  const home = "http://localhost:3001";
   const [newUser, setNewAuthor] = useState({
     photo: "",
   });
+
+  // Modals -------------------------------
+  const [name_about_modal, setNameAboutModal] = useState(false);
+  const [photo_modal, setPhotoModal] = useState(false);
+
+  // Toggle Functions ----------------------
   const handleOpen = () => setNameAboutModal(true);
   const handleClose = () => setNameAboutModal(false);
   const photoOpen = () => setPhotoModal(true);
   const photoClose = () => setPhotoModal(false);
-  const photoLoaderOpen = () => setPhotoLoaderModal(true);
-  const photoLoaderClose = () => setPhotoLoaderModal(false);
-
+ 
   const updatePersonalInfo = (username) => {
     fetch(`${home}/in/update/${username}`, {
       method: "POST",
@@ -104,34 +81,44 @@ const Profile = (props) => {
       });
   };
 
-  useEffect(() => {
-    console.log();
-  }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     formData.append("photo", newUser.photo);
     formData.append("user", props.user._id);
 
     const local = await axios.post(`${home}/in/add/`, formData);
+    props.user.photo = local.data.url;
+    setLoading(false);
     photoClose();
   };
 
   const handlePhoto = (e) => {
     setNewAuthor({ photo: e.target.files[0] });
   };
+  // Add username to local storage
+  localStorage.setItem("username", props.user.username);
 
+  useEffect(() => { 
+  }, []);
   return (
-    <div>
+    <div className=" wrapper">
       <div className="profile">
         <h2>Profile</h2>
         <Avatar
-          style={{ width: "15%", height: "25%" }}
+          style={{ width: "50px", height: "75px" }}
           src={`${props.user.photo}`}
           alt="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
         />
-        <Button onClick={photoOpen}>Upload</Button>
+        <Button
+          variant="contained"
+          startIcon={<CloudUploadIcon />}
+          color="success"
+          onClick={photoOpen}
+        >
+          Upload
+        </Button>
         <Modal
           open={photo_modal}
           onClose={photoClose}
@@ -143,7 +130,7 @@ const Profile = (props) => {
               <Typography id="modal-modal-title" variant="h6" component="h2">
                 Profile update
               </Typography>
-
+              {isLoading ? <LoadingSpinner /> : null}
               <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <input
                   type="file"
@@ -152,7 +139,14 @@ const Profile = (props) => {
                   onChange={handlePhoto}
                 />
 
-                <input type="submit" />
+                <button
+                  type="submit"
+                  className="51"
+                  role="button"
+                  disabled={isLoading}
+                >
+                  Update
+                </button>
               </form>
             </div>
           </Box>
@@ -161,11 +155,15 @@ const Profile = (props) => {
         <div>
           <p>
             {" "}
-            <h3>Name {props.user.name}</h3>
+            <h3>Username {props.user.username}</h3>
           </p>
-          <p>Username {props.user.username}</p>
-          <p>About - {props.user.about}</p>
-          <Button onClick={handleOpen}>Update</Button>
+          <p>Name {props.user.name}</p>
+          <blockquote>
+            <i>About -</i> {props.user.about}
+          </blockquote>
+          <Button color="secondary" onClick={handleOpen}>
+            Update
+          </Button>
           <Modal
             open={name_about_modal}
             onClose={handleClose}
@@ -190,6 +188,8 @@ const Profile = (props) => {
                       onChange={(e) => setAbout(e.target.value)}
                     />
                     <button
+                      className="button-36"
+                      role="button"
                       onClick={() => updatePersonalInfo(props.user.username)}
                     >
                       Update
@@ -204,34 +204,22 @@ const Profile = (props) => {
       </div>
       {/* --------------------------------------------- */}
       <div className="education">
-        {/* <div> {user.education}</div> */}
         {/* Array of education */}
-        <h2>Education{props.education}</h2>
-        <div>
-          <p>Collge Name </p>
-          <p>Degree</p>
-          <p>Year</p>
-        </div>
+        <h2>Education</h2>
+        <CollegeDesc props={props.user.education} />
       </div>
       {/* --------------------------------- */}
-      <div className="education">
+      <div className="flyby">
         {/* Array of work experience */}
         <h2>Work Experience</h2>
-        <div>
-          <p>Company Name</p>
-          <p>Year</p>
-        </div>
+        <WorkEx props={props.user.workexperience} />
       </div>
+
       {/* --------------------------------- */}
-      <div className="education">
-        {/* <div> {user.education}</div> */}
+      <div className="flyby">
         {/* array of skills */}
         <h2>Skills</h2>
-        <div>
-          <p>Collge Name</p>
-          <p>Degree</p>
-          <p>Year</p>
-        </div>
+        <Skills props={props.user.skills} />
       </div>
     </div>
   );
