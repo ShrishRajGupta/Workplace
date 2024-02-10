@@ -11,6 +11,7 @@ import Login from "./components/login";
 import Allposts from "./widgets/allposts";
 import Chat from "./components/chat/chat";
 import Homepage from "./widgets/homepage";
+import Resume from "./components/ResumeBuilder/App";
 
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<><SearchResultsList results={results}/><Homepage /></>} ></Route>
-        
+        <Route path="/resume" element={<><Resume /></>}></Route>
         <Route path ="/home" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Home /></>}></Route>
         <Route path ="/user/jobpostform" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><JobForm /></>}></Route>
         <Route path="/user/register" element={<><SearchResultsList results={results}/><RegistrationForm /></>}></Route>

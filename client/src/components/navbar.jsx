@@ -1,21 +1,10 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import HomeIcon from "@mui/icons-material/Home";
+import {AppBar,Box,Toolbar,IconButton,Typography,InputBase,Badge,Menu,MenuItem,} 
+from "@mui/material";
+import {Menu as MenuIcon,Search as SearchIcon,AccountCircle,Mail as MailIcon,Notifications as NotificationsIcon,MoreVert as MoreIcon,Home as HomeIcon,PictureAsPdf as PictureAsPdfIcon,} 
+from "@mui/icons-material";
+
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -231,6 +220,10 @@ export default function PrimarySearchAppBar({ setResults }) {
               aria-label="show 4 new mails"
               color="inherit"
             >
+              <p className="home" onClick={() => [navigate("/resume")]}>
+                <PictureAsPdfIcon />
+              </p>
+
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
