@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 import express ,{static as stat, json as _json } from "express";
-import urlencoded from "body-parser";
+import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -23,8 +23,8 @@ connectDB();
 app.use(stat('public'));
 app.use(_json());
 // Body-parser middleware
-app.use(urlencoded({ extended: true }))
-app.use(_json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(cookieParser());
 
 // routes

@@ -25,6 +25,10 @@ mainRouter.get("/search/:username",async function(req,res){
             console.log(err);
         }
 });
+import { displayAllPost, searchApi } from "../controllers/searchBarApi.js";
+// const mainRouter = Router();
+
+mainRouter.get("/search/:value",searchApi);
 
 //@desc to get another user profile through userid
 mainRouter.get("/user/profile/:userid",authenticateToken,async function(req,res){
@@ -55,28 +59,7 @@ mainRouter.get("/user/profile/:userid",authenticateToken,async function(req,res)
 //@desc to get all user posts
 //@route /home
 
-mainRouter.get('/home',authenticateToken, async function(req,res){
-    const posts = await BlogDB.find({});
-     console.log(posts);
-    try{
-        if(posts){
-            res.status(200).json({
-                message:"posts Retrieved",
-                posts:posts
-            })
-        }else{
-            res.status(400).json({
-                message:"Unable to retreive posts"
-            })
-        }
-    }catch(err){
-        console.log(err);
-        res.status(500).json({
-            message:"internal Server error"
-        })
-    }
-    
-})
+mainRouter.get('/home', displayAllPost )
 
 
 export default mainRouter;

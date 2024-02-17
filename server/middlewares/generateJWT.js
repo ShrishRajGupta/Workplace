@@ -12,7 +12,7 @@ const checkF = function (user) {
         {
             expiresIn: "2h"
         });
-   
+        console.log(token);
         return token;
     } catch (error) {
         console.error(error); // Log the error for debugging
