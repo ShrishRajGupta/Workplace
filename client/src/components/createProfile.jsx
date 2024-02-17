@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 const MyForm = () => {
   // State variables for form fields
   const navigate = useNavigate();
-  const [user,setUser] = useState({});
+  const {user} = useContext(AuthContext);
   const [formData,setFormData] = useState({
         username:"",
         About:"",
@@ -12,7 +14,6 @@ const MyForm = () => {
         workExperience:"",
         Skills:""
   });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -32,9 +33,7 @@ const MyForm = () => {
           console.log(response);
           if(response.status == 200){
             console.log(response.data);
-            const userId = response.data.user._id;
-            console.log(userId);
-            navigate(`/user/profile/${userId}`);
+            navigate(`/user/profile/${response.data.user._id}`);
           }
         } catch (error) {
           // Handle errors

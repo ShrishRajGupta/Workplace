@@ -3,12 +3,12 @@ import {Profile} from './profile';
 import "../css/userdashboard.css";
 import axios from "axios";
 import { useNavigate, useParams } from 'react-router-dom';
-import { colors } from '@mui/material';
+
 
 
 const Dashboard = () => {
   const [userFriends, setUserFriends] = useState([]);
-  var [user,setUser] = useState([]);
+  const [user,setUser] = useState([]);
   const {userId}  = useParams();
   const navigate = useNavigate();
   const getUser = async () => {
@@ -17,7 +17,6 @@ const Dashboard = () => {
         if(response.status === 200){
           console.log(response.data);
           setUser(response.data.user);
-          
         }
       }
       catch(err){
@@ -56,8 +55,9 @@ const Dashboard = () => {
     <div style={{display: "flex"}}>
       <div className="dashboard">
         <Profile 
-          user={user}
+          User={user}
         />
+        
       </div>
       <div style={{marginTop:"25px",}}>
       <h2 style={{textAlign:'center'}}>Friends</h2>

@@ -106,9 +106,28 @@ userRouter.put("/connect/:userId/:friendsId/:status/:id", authenticateToken,asyn
     }
 })
 
-//@desc get req all friends
-//@route /user/:friendID
+//@desc get req for details of a friend
+//@route /users/:friendID
 userRouter.get("/:friend_id",friends);
+
+userRouter.get("/friends/:userId", async (req, res) => {
+    try {
+      const user = await UserDB.findById(req.params.userId);
+      const friends = await Promise.all(
+        user.friends.map((friendId) => {
+          return UserDB.findById(friendId);
+        })
+      );
+      let friendList = [];
+      friends.map((friend) => {
+        const { _id, username } = friend;
+        friendList.push({ _id, username });
+      });
+      res.status(200).json(friendList);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
 
 export default userRouter;
 

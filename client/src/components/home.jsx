@@ -1,7 +1,7 @@
 import { useEffect, useState ,useContext} from "react"
 import UserWidget from "../widgets/UserWidget"
 import axios from "axios"
-import { Context } from '..';
+import { AuthContext } from "../context/AuthContext";
 
 const postCard = (props)=>{
     return <div style={{margin:"2px 2px 2px 2px",border:"2px solid black"}}>
@@ -15,12 +15,11 @@ const postCard = (props)=>{
 }
 
 const Requests = (props)=>{
-  const {isAuthenticated,User,setUser} = useContext(Context);
+  const {user} = useContext(AuthContext);
   const handleClick = async (e)=>{
     const value = e.target.value;
     try{
       const response = await axios.put(`/user/connect/${props.from}/${props.to}/${value}/${props._id}`);
-      setUser(response.data.user);
       console.log(response);
     }
     catch(error){
@@ -38,11 +37,9 @@ const Requests = (props)=>{
     </div>
 }
 const Home = ()=>{
-      const {isAuthenticated,User} = useContext(Context);
+      const {user} = useContext(AuthContext);
         const [posts,setposts] = useState([]);
-        const getUser = async()=>{
-
-        }
+        
         const getPosts = async () => {
             try {
               let response = await axios.get("/home");
@@ -57,14 +54,13 @@ const Home = ()=>{
           };
         useEffect(()=>{
             getPosts();
-            getUser();
         },[]);
     return (
         <div>
             <UserWidget />
             <h2>Notifications</h2>
             {
-              (User.friendRequests !== undefined ?User.friendRequests.map(Requests): <h1>You are not logged in</h1>)
+              (user.friendRequests !== undefined ?user.friendRequests.map(Requests): <h1>You are not logged in</h1>)
             }
             {
                 posts.map(postCard)

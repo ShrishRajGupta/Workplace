@@ -1,45 +1,25 @@
-import axios from "axios";
-import React, { useContext, useState } from "react";
+
+import React, { useContext, useState,useRef,useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Context } from "../index";
+import {AuthContext} from "../context/AuthContext";
+import {loginCall} from "../apiCalls";
 import "../css/home.css";
 const Login = () => {
-  const { isAuthenticated, setisAuthenticated,setUser} =
-    useContext(Context);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userId,setuserId] = useState();
+  const email = useRef();
+  const password = useRef();
   const navigate = useNavigate();
-  const submitHandler = async (e) => {
+  const { user,dispatch } = useContext(AuthContext);
+  
+  const handleClick = async (e) => {
     e.preventDefault();
-    
-
-    try {
-      const response = await axios.post("/user/login",
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-
-      toast.success(response.message);
-      setisAuthenticated(true);
-      setUser(response.data.user);
-      setuserId(response.data.user._id);
-    } catch (error) {
-      setisAuthenticated(false);
-    }
+    await loginCall(
+      { email: email.current.value, password: password.current.value },
+      dispatch
+    );
+      
   };
-
-  if (isAuthenticated) return <Navigate to={`/user/profile/${userId}`} />;
-
+  
   return (
     <div className="reg" style={{fontFamily: "sans-serif", fontSize: "20px", display:"flex", justifyContent:"center"}}>
         <img src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"></img>
@@ -47,20 +27,21 @@ const Login = () => {
       <div className="innerdiv">
       <h1>Login</h1>
       
-        <form onSubmit={submitHandler}>
+        <form onSubmit={handleClick}>
           <input
-            type="email"
             placeholder="Email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+              className="loginInput"
+              ref={email}
           />
           <input
-            type="password"
-            required
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+              minLength="6"
+              className="loginInput"
+              ref={password}
           />
           <button type="submit" style={{width:"35%"}}>
             Login

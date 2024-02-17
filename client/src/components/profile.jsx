@@ -10,32 +10,18 @@ import Typography from '@mui/material/Typography';
 import "../css/profile.css";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import { Context } from '..';
-const Profile =  ({user}) => {
-    console.log(user);
-
-    const {isAuthenticated,User} = useContext(Context);
+import {AuthContext} from "../context/AuthContext";
+const Profile =  ({User}) => {
     console.log(User);
+
+    const {user} = useContext(AuthContext);
+    console.log(user);
+  
     
     const navigate = useNavigate();
-  // const getUser = async () => {
-  //   try {
-  //     let response = await axios.get("/user/profile");
-  //     if (response.status === 200) {
-  //       console.log(response.data.user);
-  //       setUser(response.data.user);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching user:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getUser();
-  // },[]);
     const handleClick = async ()=>{
           try{
-            const response = await axios.get(`/user/profile/${user._id}/connect`);
+            const response = await axios.get(`/user/profile/${User._id}/connect`);
             if(response.status === 200){
               console.log(response.data);
             }
@@ -54,13 +40,16 @@ const Profile =  ({user}) => {
       <div><img src =""></img></div>
       <Avatar src="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg" style={{width: "20%",height:"100%"}}/>
       <div>
-        <p>{user.username} </p>
-        <p>{user.About}</p>
+        <p>{User.username} </p>
+        <p>{User.About}</p>
         <div className='btndiv'>
-        <button onClick={handleClick} > { User._id == user._id? "open to": "+ Connect"}</button>
+        <button onClick={handleClick} > { User._id == user.user._id? "open to": "+ Connect"}</button>
         <button className='postBtn' onClick={()=>{
           navigate("/user/jobpostform");
         }}>Post Job Here</button>
+        <button className='messenger' onClick={()=>{
+          navigate("/user/messenger");
+        }}>Messenger</button>
         </div>
         
       </div>
@@ -70,7 +59,7 @@ const Profile =  ({user}) => {
       {/* <div> {user.education}</div> */}
       <h2>Education</h2>
       <div>
-        <div>{user.Education}</div>
+        <div>{User.Education}</div>
       </div>
 
       </div>
@@ -78,7 +67,7 @@ const Profile =  ({user}) => {
       {/* <div> {user.education}</div> */}
       <h2>Work Experience</h2>
       <div>
-        <div>{user.workExperience}</div>
+        <div>{User.workExperience}</div>
       </div>
 
       </div>
@@ -86,7 +75,7 @@ const Profile =  ({user}) => {
       {/* <div> {user.education}</div> */}
       <h2>Skills</h2>
       <div>
-       <p>{user.Skills}</p>
+       <p>{User.Skills}</p>
       </div>
       </div>
     
