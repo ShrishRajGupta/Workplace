@@ -144,6 +144,13 @@ userRouter.get("/profile/:userid/connect",authenticateToken,async function(req,r
         
 });
 
+userRouter.get("/mail",async function(req,res){
+    console.log("mail route");
+    res.json({
+        message:"mail route"
+    })
+});
+
 
 //@desc get all friends
 //@route /user/:friendID

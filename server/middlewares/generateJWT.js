@@ -10,7 +10,7 @@ const checkF = function (user) {
         },
         process.env.ACCESS_TOKEN,
         {
-            expiresIn: "2h"
+            expiresIn: "24h"
         });
         console.log(token);
         return token;

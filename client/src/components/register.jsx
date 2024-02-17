@@ -4,6 +4,7 @@ import { Context }from "../index";
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 import "../css/home.css";
+import { removeCookie,setCookie,getCookie } from '../hooks/cookie';
 const RegistrationForm = () => {
   // State to hold form data
   
@@ -33,8 +34,13 @@ const RegistrationForm = () => {
       const response = await axios.post("/user/register", formData);
   
       if (response.status === 200) {
-        const data = response.data;
-        console.log(data); // Handle the response as needed
+      removeCookie("token");
+        const cookieVal={
+          id:response.data.user._id,
+          username:response.data.user.username,
+        };
+        setCookie("token",JSON.stringify(cookieVal), { path: "/" });
+       
         setisAuthenticated(true);
         console.log(isAuthenticated);
       }

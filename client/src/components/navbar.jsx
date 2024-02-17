@@ -2,13 +2,14 @@ import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import {AppBar,Box,Toolbar,IconButton,Typography,InputBase,Badge,Menu,MenuItem,} 
 from "@mui/material";
-import {Menu as MenuIcon,Search as SearchIcon,AccountCircle,Mail as MailIcon,Notifications as NotificationsIcon,MoreVert as MoreIcon,Home as HomeIcon,PictureAsPdf as PictureAsPdfIcon,} 
+import {Logout as LogoutIcon, Menu as MenuIcon,Search as SearchIcon,AccountCircle,Mail as MailIcon,Notifications as NotificationsIcon,MoreVert as MoreIcon,Home as HomeIcon,PictureAsPdf as PictureAsPdfIcon,} 
 from "@mui/icons-material";
 
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../css/navbar.css";
+import LogoutFunc from "./logout"
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -26,14 +27,7 @@ const Search = styled("div")(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+const SearchIconWrapper = styled("div")(({ theme }) => ({ padding: theme.spacing(0, 2), height: "100%", position: "absolute", pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -220,9 +214,11 @@ export default function PrimarySearchAppBar({ setResults }) {
               aria-label="show 4 new mails"
               color="inherit"
             >
-              <p className="home" onClick={() => [navigate("/resume")]}>
+              {/* Resume Bulider  */}
+              <p className="home" title="Resume Bulider" onClick={() => [navigate("/resume")]}>
                 <PictureAsPdfIcon />
               </p>
+              
 
               <Badge badgeContent={4} color="error">
                 <MailIcon />
@@ -250,17 +246,28 @@ export default function PrimarySearchAppBar({ setResults }) {
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
+            <IconButton size="large" aria-label="show more" aria-controls={mobileMenuId} aria-haspopup="true" onClick={handleMobileMenuOpen} color="inherit">
               <MoreIcon />
             </IconButton>
           </Box>
+
+          {/* logout button */}
+          <IconButton
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
+              onClick={() => LogoutFunc()}
+            >
+              <button title="Logout" className="home">
+                <LogoutIcon/>
+              </button>              
+
+              <Badge badgeContent={4} color="error">
+                <MailIcon />
+              </Badge>
+            </IconButton>
+
+          
         </Toolbar>
       </AppBar>
       {renderMobileMenu}

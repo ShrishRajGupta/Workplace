@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Context } from "../index";
 import "../css/home.css";
+import { removeCookie,setCookie,getCookie } from "../hooks/cookie";
 const Login = () => {
   const { isAuthenticated, setisAuthenticated} =
     useContext(Context);
@@ -28,6 +29,18 @@ const Login = () => {
           withCredentials: true,
         }
       );
+      removeCookie("token");
+      removeCookie("authorization");
+
+      // console.log(response.data);
+      const cookieVal={
+        id:response.data.user._id,
+        username:response.data.user.username,
+      };
+      setCookie("token",JSON.stringify(cookieVal), { path: "/" });
+      // const tt=await getCookie("token");
+      // console.log(tt.id);
+      window.localStorage.setItem("isLogged", true);
 
       toast.success(response.message);
       setisAuthenticated(true);

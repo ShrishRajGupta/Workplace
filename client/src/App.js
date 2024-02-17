@@ -13,26 +13,25 @@ import Chat from "./components/chat/chat";
 import Homepage from "./widgets/homepage";
 import Resume from "./components/ResumeBuilder/App";
 
-
 function App() {
   const [results, setResults] = useState([]);
-  
+  const isLogged = localStorage.getItem("isLogged");
 
   return (
     <div className="App">
     
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<><SearchResultsList results={results}/><Homepage /></>} ></Route>
-        <Route path="/resume" element={<><Resume /></>}></Route>
-        <Route path ="/home" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Home /></>}></Route>
-        <Route path ="/user/jobpostform" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><JobForm /></>}></Route>
-        <Route path="/user/register" element={<><SearchResultsList results={results}/><RegistrationForm /></>}></Route>
-        <Route path="/user/login" element={<><SearchResultsList results={results}/><Login/></>}></Route>
-        <Route path="/user/createProfile" element={<><SearchResultsList results={results}/><MyForm /></>}></Route>
-        <Route path ="/user/profile/:userId" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Dashboard /></>}></Route>
-        <Route path="/user/allposts" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Allposts /></>}></Route>
-        <Route exact path="/messenger" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Chat /></>}></Route>
+        <Route path="/" element={<><Homepage /></>} ></Route>
+        <Route path="/user/register" element={<><RegistrationForm /></>}></Route>
+        <Route path="/user/login" element={<><Login/></>}></Route>
+        <Route path="/resume" element={isLogged?<><Resume /></>:<><Login/> </>}></Route>
+        <Route path ="/home" element={isLogged?<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Home /></>:<><Login/></>}></Route>
+        <Route path ="/user/jobpostform" element={isLogged?<><Navbar setResults={setResults}/><SearchResultsList results={results}/><JobForm /></>:<><Login/></>}></Route>
+        <Route path="/user/createProfile" element={isLogged?<><SearchResultsList results={results}/><MyForm /></>:<><Login/></>}></Route>
+        <Route path ="/user/profile/:userId" element={isLogged?<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Dashboard /></>:<><Login/></>}></Route>
+        <Route path="/user/allposts" element={isLogged?<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Allposts /></>:<><Login/></>}></Route>
+        <Route exact path="/messenger" element={isLogged?<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Chat /></>:<><Login/></>}></Route>
       </Routes>
     </BrowserRouter>
     </div>
