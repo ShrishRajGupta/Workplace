@@ -36,7 +36,7 @@ export {
     populateDashboard
     
 };
-import UserDB from "../models/userModel.js";
+// import UserDB from "../models/userModel.js";
 import BlogDB from "../models/postModel.js";
 // Create profile
 const createProfile = async function(req,res){

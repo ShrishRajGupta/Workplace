@@ -129,14 +129,19 @@ export const loginUser = async (req, res) => {
 // @route   GET /user/logout
 // @access  Public
 export const logoutUser = (req, res) => {
-  console.log(`logout success from server`);
-  req.session=null;
-  // logout user and delete cookie  and redirect to login
-  res.clearCookie("authorization");
-  res
+  try{
+
+    console.log(`logout success from server`);
+    req.session=null;
+    // logout user and delete cookie  and redirect to login
+    res.clearCookie("authorization");
+    res
     .status(200)
     .json({
       success: true,
       message: "logged out successfully",
     })
+  }catch{
+    res.status(500).json({ msg: "Server error" }); // render 500
+  }
 };

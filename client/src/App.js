@@ -4,7 +4,7 @@ import Navbar from "./components/navbar";
 import Dashboard from "./components/userdashboard";
 import RegistrationForm from "./components/register";
 import Home from "./components/home";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SearchResultsList } from "./components/SearchResultsList";
 import MyForm from "./components/createProfile";
 import Login from "./components/login";
@@ -30,7 +30,7 @@ function App() {
         <Route path="/user/createProfile" element={isLogged?<><SearchResultsList results={results}/><MyForm /></>:<><Login/></>}></Route>
         <Route path ="/user/profile/:userId" element={isLogged?<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Dashboard /></>:<><Login/></>}></Route>
         <Route path="/user/allposts" element={isLogged?<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Allposts /></>:<><Login/></>}></Route>
-        <Route exact path="/user/messenger" element={<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Messenger /></>}></Route>
+        <Route exact path="/user/messenger" element={isLogged?<><Navbar setResults={setResults}/><SearchResultsList results={results}/><Messenger /></>:<React.Fragment><Login/></React.Fragment>}></Route>
       </Routes>
     </BrowserRouter>
     </div>

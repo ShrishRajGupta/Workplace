@@ -23,6 +23,7 @@ import {
 import "../css/profile.css";
 import { Skills, WorkEx } from "./profile/userExp";
 import CollegeDesc from "./profile/collegeDesc";
+import { AuthContext } from "../context/AuthContext";
 
 const style = {
   position: "absolute",
@@ -44,9 +45,10 @@ function LoadingSpinner() {
 }
 
 
-const Profile = (props) => {
+const Profile = ({User}) => {
   const home = "http://localhost:3001";
   const [isLoading, setLoading] = useState(false);
+  const {user} = useContext(AuthContext);
 
   const [name, setName] = useState(null);
   const [about, setAbout] = useState(null);
@@ -63,6 +65,19 @@ const Profile = (props) => {
   const handleClose = () => setNameAboutModal(false);
   const photoOpen = () => setPhotoModal(true);
   const photoClose = () => setPhotoModal(false);
+
+  const navigate = useNavigate();
+    const handleClick = async ()=>{
+          try{
+            const response = await axios.get(`/user/profile/${User._id}/connect`);
+            if(response.status === 200){
+              console.log(response.data);
+            }
+          }
+          catch(err){
+            console.log(err);
+          }
+    }
  
   const updatePersonalInfo = (username) => {
     fetch(`${home}/in/update/${username}`, {
@@ -86,10 +101,10 @@ const Profile = (props) => {
     setLoading(true);
     const formData = new FormData();
     formData.append("photo", newUser.photo);
-    formData.append("user", props.user._id);
+    formData.append("user", User._id);
 
     const local = await axios.post(`${home}/in/add/`, formData);
-    props.user.photo = local.data.url;
+    User.photo = local.data.url;
     setLoading(false);
     photoClose();
   };
@@ -98,9 +113,10 @@ const Profile = (props) => {
     setNewAuthor({ photo: e.target.files[0] });
   };
   // Add username to local storage
-  localStorage.setItem("username", props.user.username);
+  localStorage.setItem("username", User.username);
 
   useEffect(() => { 
+    console.log(User)
   }, []);
   return (
     <div className=" wrapper">
@@ -108,7 +124,7 @@ const Profile = (props) => {
         <h2>Profile</h2>
         <Avatar
           style={{ width: "50px", height: "75px" }}
-          src={`${props.user.photo}`}
+          src={`${User.photo}`}
           alt="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
         />
         <Button
@@ -155,11 +171,11 @@ const Profile = (props) => {
         <div>
           <p>
             {" "}
-            <h3>Username {props.user.username}</h3>
+            <h3>Username {User.username}</h3>
           </p>
-          <p>Name {props.user.name}</p>
+          <p>Name {User.name}</p>
           <blockquote>
-            <i>About -</i> {props.user.about}
+            <i>About -</i> {User.about}
           </blockquote>
           <Button color="secondary" onClick={handleOpen}>
             Update
@@ -190,7 +206,7 @@ const Profile = (props) => {
                     <button
                       className="button-36"
                       role="button"
-                      onClick={() => updatePersonalInfo(props.user.username)}
+                      onClick={() => updatePersonalInfo(User.username)}
                     >
                       Update
                     </button>
@@ -200,11 +216,9 @@ const Profile = (props) => {
             </Box>
           </Modal>
         </div>
-        <div> {props.user.email}</div>
+        <div> {User.email}</div>
       </div>
       <div>
-        <p>{User.username} </p>
-        <p>{User.About}</p>
         <div className='btndiv'>
         <button onClick={handleClick} > { User._id == user.user._id? "open to": "+ Connect"}</button>
         <button className='postBtn' onClick={()=>{
@@ -218,20 +232,20 @@ const Profile = (props) => {
       <div className="education">
         {/* Array of education */}
         <h2>Education</h2>
-        <CollegeDesc props={props.user.education} />
+        <CollegeDesc props={User.education} />
       </div>
       {/* --------------------------------- */}
       <div className="flyby">
         {/* Array of work experience */}
         <h2>Work Experience</h2>
-        <WorkEx props={props.user.workexperience} />
+        <WorkEx props={User.workexperience} />
       </div>
 
       {/* --------------------------------- */}
       <div className="flyby">
         {/* array of skills */}
         <h2>Skills</h2>
-        <Skills props={props.user.skills} />
+        <Skills props={User.skills} />
       </div>
     </div>
   );

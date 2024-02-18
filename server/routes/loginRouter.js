@@ -8,7 +8,7 @@ loginRouter.route('/register').post(registerUser);
 loginRouter.route('/login').post(loginUser);
 
 loginRouter.route('/logout')
-    .get(authenticateToken,logoutUser);
+    .get(logoutUser);
 
 
 export default loginRouter;
