@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import {Profile} from './profile';
+import React from "react";
+import { useState, useEffect } from "react";
+
+import { Profile, FriendsList } from "./profile";
 import "../css/userdashboard.css";
 import axios from "axios";
 import { useNavigate, useParams } from 'react-router-dom';
 
 
+const home = "http://localhost:3001";
+
+// @desc    User dashboard
+// @route   GET /in/:username/dashboard
 
 const Dashboard = () => {
   const [userFriends, setUserFriends] = useState([]);
@@ -82,9 +88,50 @@ const Dashboard = () => {
         ))}
       
       </div>
-    
     </div>
   );
 };
 
 export default Dashboard;
+
+/*
+Search bar 
+import * as React from "react";
+import { View, SearchForm, TextInput } from "react-native";
+import { useSearchParams } from "react-router-native";
+
+function App() {
+  let [searchParams, setSearchParams] = useSearchParams();
+  let [query, setQuery] = React.useState(
+    searchParams.get("query")
+    );
+
+  function handleSubmit() {
+    setSearchParams({ query });
+  }
+  
+  return (
+    <View>
+      <SearchForm onSubmit={handleSubmit}>
+        <TextInput value={query} onChangeText={setQuery} />
+      </SearchForm>
+    </View>
+  );
+}
+*/
+
+// const ll=this.props.match.params.id;
+// console.log(ll);
+
+// useEffect(() => {
+//    fetch(`${home}/in/${username}/dashboard`)
+//       .then((res) => res.json())
+//       .then((data) => {
+//          console.log(data);
+//          setData(data);
+//       })
+//       .catch((err) => {
+//          console.log(err.message);
+//       });
+// }, []);
+

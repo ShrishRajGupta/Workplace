@@ -1,36 +1,69 @@
 import { Schema, model } from "mongoose";
 
-const userSchema = new Schema({
+const userSchema = Schema({
     username:{
         type: String,
-        required:true
+        required:[true,"Enter your username"],
+        unique:true
+    },
+    name:{
+        type: String,
+        default: ''
     },
     email:{
+        type: String,
+        default: '',
+        required:[true,"ENTER YOUR EMAIL"]
+    },
+    photo:
+    {
         type:String,
-        required:true
+        default: ''
     },
     password:{
-        type: String,
-        required:true
+        type:String,
+        default: ''
+        // required:[true,"Enter your Password"]
     },
-    posts:[{
-        type: Schema.Types.ObjectId,
-        default:[],
-        ref:"Post"
+    googleId:{
+        type:String,
+        default: ''
+    },
+    about:{
+        type:String,
+        default: ''
+    },
+    education:[{
+        collegeName:{
+            type:String,
+            default: ''
+        },
+        degree:{
+            type:String,
+            default: ''
+        },
+        year:{
+            type:String,
+            default: ''
+        }
     }],
-    workExperience:{
-        type: String,
-       
-    },
-    Education:{
-        type: String,
-    },
-    Skills:[{
-        type: String,
+    workexperience:[{
+        companyName:{
+            type:String,
+            default:''
+        },
+        year:{
+            type:String,
+            default:''
+        }
+    }
+    ],
+    skills:[{
+        description:{
+            type:String,
+            default:''
+        }
     }],
-    About:{
-        type: String,
-    },
     friends:[{
         type: Schema.Types.ObjectId,
         default:[],
@@ -55,10 +88,8 @@ const userSchema = new Schema({
             type:String,
         }
     }]
+},{
+    timestamps:true
+});
 
-},
-    {
-        timestamps: true
-    }
-)
 export default model("UserDB",userSchema);

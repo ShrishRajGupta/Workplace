@@ -5,6 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 import {loginCall} from "../apiCalls";
 import "../css/home.css";
+import { removeCookie,setCookie,getCookie } from "../hooks/cookie";
 const Login = () => {
   const email = useRef();
   const password = useRef();
@@ -17,6 +18,18 @@ const Login = () => {
       { email: email.current.value, password: password.current.value },
       dispatch
     );
+      removeCookie("token");
+      removeCookie("authorization");
+
+      // console.log(response.data);
+      const cookieVal={
+        id:response.data.user._id,
+        username:response.data.user.username,
+      };
+      setCookie("token",JSON.stringify(cookieVal), { path: "/" });
+      // const tt=await getCookie("token");
+      // console.log(tt.id);
+      window.localStorage.setItem("isLogged", true);
       
   };
   

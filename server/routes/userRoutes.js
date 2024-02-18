@@ -100,6 +100,41 @@ userRouter.put("/connect/:userId/:friendsId/:status/:id", authenticateToken,asyn
                 user: User
             })
         }
+        // existingUser.friends.push(friend);
+        // friend.friends.push(existingUser);
+      
+        // // Save changes to the database
+        // await Promise.all([existingUser.save(), friend.save()]);
+      
+        // console.log(existingUser);
+        // res.status(200).json({
+        //   message: "Friends connected",
+        //   user: existingUser
+        // });
+      } catch (err) {
+        console.log(err);
+      }
+        
+});
+
+userRouter.get("/mail",async function(req,res){
+    console.log("mail route");
+    res.json({
+        message:"mail route"
+    })
+});
+
+
+//@desc get all friends
+//@route /user/:friendID
+userRouter.get("/:friend_id",async function(req,res){
+    const friend_id = req.params.friend_id.toString();
+    try{
+        const friend = await UserDB.findOne({"_id": friend_id});
+        res.status(200).json({
+            message: "Friends retrieved success",
+            user: friend 
+        })
     }
     catch(err){
         console.log(err);
