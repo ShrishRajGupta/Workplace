@@ -1,11 +1,14 @@
 
 import React, { useContext, useState,useRef,useEffect } from "react";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 import {loginCall} from "../apiCalls";
 import "../css/home.css";
 import { removeCookie, setCookie } from "../hooks/cookie";
+
+const server = `http://localhost:3001`;
 const Login = () => {
   const email = useRef();
   const password = useRef();
@@ -25,6 +28,8 @@ const Login = () => {
 
       if(user){
         navigate(`/user/profile/${user.user._id}`);
+        const emailDispatch = await axios.post(`${server}/email/intro`, {userEmail: user.user.email, userName: user.user.username});
+        console.log(emailDispatch.data);
       }  
   };
   

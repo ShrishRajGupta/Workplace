@@ -39,6 +39,7 @@ export const registerUser = async (req, res) => {
       username,
       email,
       password: hashPasscode,
+      photo: "https://upload.wikimedia.org/wikipedia/commons/4/46/Jennifer_Lawrence_at_the_83rd_Academy_Awards.jpg"
     });
 
     // Token generation and storage

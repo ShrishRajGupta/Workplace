@@ -26,11 +26,12 @@ const RegistrationForm = () => {
       };
       try {
         const response = await axios.post("http://localhost:3001/user/register", user);
-        console.log(response);
         removeCookie("user");
         setCookie("user", {id: response.data.user._id ,username: response.data.user.username});
         localStorage.setItem("isLogged", true);
-        navigate("/user/createProfile");
+        const email= await axios.post("http://localhost:3001/email/intro", {userEmail: user.email, userName: user.username});
+        console.log(email);
+        navigate("/user/login");
       } catch (err) {
         console.log(err);
       }

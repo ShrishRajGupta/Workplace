@@ -19,6 +19,7 @@ const io = new Server(httpServer, {
 });
 import loginRouter from "./routes/loginRouter.js";
 import userRouter from "./routes/userRoutes.js";
+import emailRouter from "./routes/emailRoutes.js";
 import mainRouter from "./routes/mainRoutes.js";
 import upgradeRouter from "./routes/userRouter.js";
 import conversationRoute from "./routes/conversations.js"
@@ -35,9 +36,13 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+// template engine
+app.set("view engine", "ejs");
+app.set("views", "./views");
 
 // routes
 app.use("/", mainRouter);
+app.use("/email", emailRouter);
 app.use("/in", upgradeRouter);
 app.use("/user", loginRouter);
 app.use("/user", userRouter);
