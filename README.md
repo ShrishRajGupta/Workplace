@@ -1,5 +1,5 @@
-<div align="centre">
-
+<div align="centre"  max-width="fit-content" margin-left= "auto"  margin-right= "auto">
+  
   # Workplace  ![Workplace](/client/public/icons8-job-64.png)
 </div>
 
@@ -22,10 +22,10 @@
 
 ## Images
 <div align="centre">
-<img src="./client/public/images/Demo/photo_4.jpg" width ="450px" title="Profile page" alt="Profile page">
-<img src="./client/public/images/Demo/photo_1.jpg" title="Chat" alt ="Demo img" width="450px">
-<img src="./client/public/images/Demo/photo_2.jpg" width ="450px" title="Resume Builder" alt ="Resume Builder">
-<img src="./client/public/images/Demo/photo_3.jpg" width ="450px" title="Login page">
+<img src="./client/public/images/Demo/photo_4.jpg" width ="350px" title="Profile page" alt="Profile page">
+<img src="./client/public/images/Demo/photo_1.jpg" title="Chat" alt ="Demo img" width="350px">
+<img src="./client/public/images/Demo/photo_2.jpg" width ="350px" title="Resume Builder" alt ="Resume Builder">
+<img src="./client/public/images/Demo/photo_3.jpg" width ="350px" title="Login page">
 <!-- <img src="./client/public/images/Demo/photo_5.jpeg"> -->
 </div>
 
