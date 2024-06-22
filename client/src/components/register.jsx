@@ -25,12 +25,11 @@ const RegistrationForm = () => {
         password: password.current.value,
       };
       try {
-        const response = await axios.post("/user/register", user);
+        const response = await axios.post("http://localhost:3001/user/register", user);
         console.log(response);
         removeCookie("user");
         setCookie("user", {id: response.data.user._id ,username: response.data.user.username});
         localStorage.setItem("isLogged", true);
-
         navigate("/user/createProfile");
       } catch (err) {
         console.log(err);

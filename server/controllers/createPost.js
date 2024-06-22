@@ -8,7 +8,7 @@ const newPost = async function(req,res){
     try{
         let currentUser_id = req.user.id;
         const currentUser = await UserDB.findOne({"_id": currentUser_id});
-        let post = await BlogDB.create({
+        const post = await BlogDB.create({
             user_id:currentUser_id,
             jobTitle: jobTitle,
             companyName:companyName,
@@ -17,6 +17,7 @@ const newPost = async function(req,res){
             jobType:jobType,
             salary:salary
         });
+        console.log(post);
         await post.save();
         currentUser.posts.push(post);
         await currentUser.save();

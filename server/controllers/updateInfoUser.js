@@ -28,10 +28,12 @@ const updateInfo = async (req, res) => {
 
 const addEducation = async (req, res) => {
   const { username } = req.params;
+  username.toString();
+  console.log(username);
   // console.log(req.body);
   const { collegeName, degree, year } = req.body;
   try {
-    const user= await UserDB.findOne({ username: username});
+    const user= await UserDB.findOne({ "username": username});
     if (!user) 
       return res.status(404).json({ msg: "User not found" });
     user.education.push({ collegeName, degree, year });

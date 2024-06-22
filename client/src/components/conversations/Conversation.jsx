@@ -23,8 +23,14 @@ export default function Conversation({conversation,currentUser}){
 
     return <div className="conversation">
         <img className="conversationImg" 
-        src="/images/person/noAvatar.png" 
-        alt=""/>
+         src={`${user?.photo}`}
+          alt="Profile"
+          style={{
+            width: "50px",
+            height: "50px",
+            borderRadius: "50%",
+            marginRight: "10px",
+          }}/>
         <span className="conversationName">{user?.username}</span>
     </div>
 }

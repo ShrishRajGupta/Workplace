@@ -1,14 +1,19 @@
-import { useEffect, useState ,useContext} from "react"
+import { useEffect, useState ,useContext} from "react";
+import { useNavigate } from "react-router-dom";
 import UserWidget from "../widgets/UserWidget"
 import axios from "axios"
 import { AuthContext } from "../context/AuthContext";
+import "../css/home.css";
+const PostCard = (props)=>{
 
-const postCard = (props)=>{
-    return <div style={{margin:"2px 2px 2px 2px",border:"2px solid black"}}>
+    return <div className="post-card">
+        <div style={{display:"flex",justifyContent:"space-between"}}>
         <p>JOB Title: {props.jobTitle}</p>
+        <a href="/user/applyform"><button className="apply-button" >Apply Now</button></a>
+        </div>
         <p>Company Name : {props.companyName}</p>
         <p>WorkPlace : {props.workPlace}</p>
-        <p>Job Loacation : {props.jobLocation}</p>
+        <p>Job Location : {props.jobLocation}</p>
         <p>Job Type : {props.jobType}</p>
         <p>Salary : {props.salary}</p>
     </div>
@@ -38,8 +43,28 @@ const Requests = (props)=>{
 }
 const Home = ()=>{
       const {user} = useContext(AuthContext);
-        const [posts,setposts] = useState([]);
+      console.log(user);
         
+        document.addEventListener('DOMContentLoaded', function() {
+          const loading = document.getElementById('loading');
+      
+          // Show loading spinner before the window unloads
+          window.addEventListener('beforeunload', function() {
+              loading.style.display = 'flex';
+          });
+      
+          // Optional: Show loading spinner on link clicks
+          document.querySelectorAll('a').forEach(link => {
+              link.addEventListener('click', function(event) {
+                  event.preventDefault();
+                  loading.style.display = 'flex';
+                  setTimeout(() => {
+                      window.location.href = this.href;
+                  }, 500); // Delay for visual effect
+              });
+          });
+      });
+      const [posts,setposts] = useState([]);
         const getPosts = async () => {
             try {
               let response = await axios.get("/home");
@@ -56,17 +81,31 @@ const Home = ()=>{
             getPosts();
         },[]);
     return (
-        <div>
-            <UserWidget />
-            <h2>Notifications</h2>
-            {
-              (user.friendRequests !== undefined ?user.friendRequests.map(Requests): <h1>You are not logged in</h1>)
-            }
-            {
-                posts.map(postCard)
-            }
+      <div>
+            <div id="loading" class="loading">
+                <div class="spinner">
+                </div>
+          </div>
+        <div className="homediv">
+          <div className="userInfodiv">
+                <UserWidget />
+          </div>
 
+          <div className="notidiv">
+              <h2>Notifications</h2>
+              <div>
+              <div className="friendRequestsdiv">
+              {
+                (user.user.friendRequests !== undefined ?user.user.friendRequests.map(Requests): <h1>You are not logged in</h1>)
+              }
+              </div>
+              {
+                posts.map(PostCard)
+              }
+              </div>
+          </div>
         </div>
+      </div>
     )
 }
 

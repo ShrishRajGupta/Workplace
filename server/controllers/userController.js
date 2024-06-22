@@ -115,6 +115,26 @@ const allposts = async function(req,res){
     }
 };
 
+const anyUserPosts = async function(req,res){
+    const userId = req.params.userId.toString();
+    try{
+        const allPosts = await BlogDB.find({"user_id": userId});
+        if(allPosts){
+            return res.status(200).json({
+                message: "All Posts Recovered",
+                allposts: allPosts
+            });
+        }else{
+            return res.status(200).json({
+                message:"User dont have post"
+            });
+        }
+    }
+    catch(err){
+        res.status(500).json({message:"Internal Server Error"});
+        console.log(err);
+    }
+}
 const connectFriends = async function(req,res){
     try {
         const friends_userid = req.params.userid.toString();
@@ -166,4 +186,4 @@ const friends = async function(req,res){
     }
 };
 
-export {createProfile,Profile,allposts,connectFriends,friends};
+export {createProfile,Profile,allposts,connectFriends,friends,anyUserPosts};

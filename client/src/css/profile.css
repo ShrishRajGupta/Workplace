@@ -1,10 +1,25 @@
 .btndiv{
         display: flex;
+        flex-direction: row;
+        justify-content: space-between;
 }
-.postBtn{
-    margin-left: 75%;
+.workExp{
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        margin-bottom: 5px;
+        margin-top: 5px;
+}
+.skills{
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        margin-bottom: 5px;
+        margin-top: 5px;
+}
 
-}
 /* <!-- HTML !-->
 <button class="button-36" role="button">Button 36</button> */
 

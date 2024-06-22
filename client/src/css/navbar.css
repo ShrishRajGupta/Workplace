@@ -30,3 +30,9 @@ nav {
     margin-right: 5px;
     padding: 5px;
   }
+  .mynav{
+    display: flex;
+    flex-direction: column;
+    width:80%;
+  }
+  

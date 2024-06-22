@@ -1,11 +1,26 @@
-.results-list{
-    width: 100%;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0px 0px 8px #ddd;
-    border-radius: 10px;
-    margin-top: 1rem;
-    max-height: 300px;
-    overflow-y: scroll;
+.searchBar{
+    position: absolute;
+    display: inline-block;
+    left:14%;
+    width: 20%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.searchBar.dropdown-content {
+        position: absolute;
+        display: inline;
+        width:25%;
+        border: 1px solid #e0dfdf;
+        background-color: rgb(237, 230, 230);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+}
+
+.dropdown-item {
+        padding: 10px;
+        cursor: pointer;
+}
+    
+.dropdown-item:hover {
+        background-color: #f1f1f1;
 }

@@ -3,7 +3,7 @@ import createPost from "../controllers/createPost.js";
 import UserDB from "../models/userModel.js";
 import BlogDB from "../models/postModel.js";
 import authenticateToken from "../middlewares/validateJWT.js";
-import { createProfile,Profile,allposts,connectFriends,friends } from "../controllers/userController.js";
+import { createProfile,Profile,allposts,connectFriends,friends,anyUserPosts } from "../controllers/userController.js";
 const userRouter = Router();
 
 //route begins with /user
@@ -17,9 +17,14 @@ userRouter.get("/profile",authenticateToken,Profile);
 //@desc post req to createPost
 //@route /user/jobpostform
 userRouter.post('/jobpostform',authenticateToken,createPost);
-//@desc get req to get allposts of a user
+
+//@desc get req to get allposts of any user
 //@route /user/allposts
-userRouter.get('/allposts',authenticateToken,allposts);
+userRouter.get('/allposts/:userId',authenticateToken,anyUserPosts);
+// //@desc get req to get allposts of a currently logged in user
+// //@route /user/allposts
+// userRouter.get('/allposts',authenticateToken,allposts);
+
 //@desc get req to send request
 //@route /user/profile/:userid/connect
 userRouter.get("/profile/:userid/connect",authenticateToken,connectFriends);
@@ -132,7 +137,7 @@ userRouter.get("/:friend_id",async function(req,res){
     try{
         const friend = await UserDB.findOne({"_id": friend_id});
         res.status(200).json({
-            message: "Friends retrieved success",
+            message: "Friend retrieved success",
             user: friend 
         })
     }

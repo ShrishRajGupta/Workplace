@@ -2,18 +2,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Context } from "..";
 import {
-  Avatar,
   Box,
   Button,
   Modal,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Typography,
-  Divider,
 } from "@mui/material";
 
 import {
@@ -114,20 +107,34 @@ const Profile = ({User}) => {
   };
   // Add username to local storage
   localStorage.setItem("username", User.username);
+  const [isFriend, setIsFriend] = useState(false);
+  const checkFriend = async () => {
+    try {
+      const response = await axios.get(`/user/${user.user._id}`);
+      if (response.status === 200) {
+        console.log(response.data.user.friends.length);
+        if(response.data.user.friends.length > 0)
+        setIsFriend(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(isFriend);
+  }
 
   useEffect(() => { 
-    console.log(User)
+    checkFriend();
   }, []);
   return (
     <div className=" wrapper">
       <div className="profile">
         <h2>Profile</h2>
-        <Avatar
-          style={{ width: "50px", height: "75px" }}
+        <img className="card-img-top"  style={{ }}
           src={`${User.photo}`}
-          alt="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
-        />
-        <Button
+          alt="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"/>
+        <br />
+        {
+          User._id !== user.user._id? "":<Button
           variant="contained"
           startIcon={<CloudUploadIcon />}
           color="success"
@@ -135,6 +142,8 @@ const Profile = ({User}) => {
         >
           Upload
         </Button>
+        }
+        
         <Modal
           open={photo_modal}
           onClose={photoClose}
@@ -155,7 +164,8 @@ const Profile = ({User}) => {
                   onChange={handlePhoto}
                 />
 
-                <button
+                {
+                   User._id !== user.user._id? "":<button
                   type="submit"
                   className="51"
                   role="button"
@@ -163,6 +173,8 @@ const Profile = ({User}) => {
                 >
                   Update
                 </button>
+                }
+                
               </form>
             </div>
           </Box>
@@ -177,9 +189,11 @@ const Profile = ({User}) => {
           <blockquote>
             <i>About -</i> {User.about}
           </blockquote>
-          <Button color="secondary" onClick={handleOpen}>
-            Update
-          </Button>
+          {
+            User._id !== user.user._id? "": <Button color="secondary" onClick={handleOpen}>
+            Update</Button>
+          }
+          
           <Modal
             open={name_about_modal}
             onClose={handleClose}
@@ -206,10 +220,7 @@ const Profile = ({User}) => {
                     <button
                       className="button-36"
                       role="button"
-                      onClick={() => updatePersonalInfo(User.username)}
-                    >
-                      Update
-                    </button>
+                      onClick={() => updatePersonalInfo(User.username)}>Update</button>
                   </form>
                 </Typography>
               </div>
@@ -218,109 +229,43 @@ const Profile = ({User}) => {
         </div>
         <div> {User.email}</div>
       </div>
-      <div>
         <div className='btndiv'>
         <button onClick={handleClick} > { User._id == user.user._id? "open to": "+ Connect"}</button>
-        <button className='postBtn' onClick={()=>{
+        {
+          User._id !== user.user._id? "":<button className='postBtn' onClick={()=>{
           navigate("/user/jobpostform");
         }}>Post Job Here</button>
-        <button className='messenger' onClick={()=>{
+        }
+        {
+          User._id !== user.user._id? "": <button className='messenger' onClick={()=>{
           navigate("/user/messenger");
         }}>Messenger</button>
-        </div></div>
+        }
+        
+        </div>
+        
       {/* --------------------------------------------- */}
       <div className="education">
         {/* Array of education */}
         <h2>Education</h2>
-        <CollegeDesc props={User.education} />
+        <CollegeDesc props={User.education} User={User} user={user}/>
       </div>
       {/* --------------------------------- */}
-      <div className="flyby">
+      <div className="workExp">
         {/* Array of work experience */}
         <h2>Work Experience</h2>
-        <WorkEx props={User.workexperience} />
+        <WorkEx props={User.workexperience}  User={User} user={user}/>
       </div>
 
       {/* --------------------------------- */}
-      <div className="flyby">
+      <div className="skills">
         {/* array of skills */}
         <h2>Skills</h2>
-        <Skills props={User.skills} />
+        <Skills props={User.skills}  User={User} user={user}/>
       </div>
     </div>
   );
 };
 
-const FriendsList = function AlignItemsList() {
-  return (
-    <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-      <h2 style={{ textAlign: "center" }}>Friends</h2>
-      <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-        </ListItemAvatar>
-        <ListItemText
-          primary="Brunch this weekend?"
-          secondary={
-            <React.Fragment>
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-              >
-                Ali Connors
-              </Typography>
-              {" — I'll be in your neighborhood doing errands this…"}
-            </React.Fragment>
-          }
-        />
-      </ListItem>
-      <Divider variant="inset" component="li" />
-      <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-        </ListItemAvatar>
-        <ListItemText
-          primary="Summer BBQ"
-          secondary={
-            <React.Fragment>
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-              >
-                to Scott, Alex, Jennifer
-              </Typography>
-              {" — Wish I could come, but I'm out of town this…"}
-            </React.Fragment>
-          }
-        />
-      </ListItem>
-      <Divider variant="inset" component="li" />
-      <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-        </ListItemAvatar>
-        <ListItemText
-          primary="Oui Oui"
-          secondary={
-            <React.Fragment>
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-              >
-                Sandra Adams
-              </Typography>
-              {" — Do you have Paris recommendations? Have you ever…"}
-            </React.Fragment>
-          }
-        />
-      </ListItem>
-    </List>
-  );
-};
-export { Profile, FriendsList };
+
+export { Profile };

@@ -38,9 +38,11 @@ app.use(cookieParser());
 
 // routes
 app.use("/", mainRouter);
+app.use("/in", upgradeRouter);
 app.use("/user", loginRouter);
 app.use("/user", userRouter);
-app.use("/in", upgradeRouter);app.use("/conversations", conversationRoute);
+
+app.use("/conversations", conversationRoute);
 app.use("/messages", messageRoute);
 
 //404 route

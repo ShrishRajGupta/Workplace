@@ -87,7 +87,12 @@ const userSchema = Schema({
         username:{
             type:String,
         }
-    }]
+    }],
+    posts:[{
+        type: Schema.Types.ObjectId,
+        default:[],
+        ref:"BlogDB"
+    }],
 },{
     timestamps:true
 });

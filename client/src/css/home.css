@@ -1,9 +1,71 @@
-
+.homediv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.userInfodiv{
+    flex:2.5;
+    display: flex;
+    flex-direction: column;
+}
+.notidiv{
+    flex:8;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    max-width: 100%;
+}
+/* notifications.css */
+  
+  .notidiv h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .notification-list h1 {
+    text-align: center;
+    color: #ff0000;
+  }
+  
+  .post-card {
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .post-card p {
+    margin: 5px 0;
+    font-size: 16px;
+  }
+  .friendRequestsdiv{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .home{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  
+  }
 .home > img{
     filter: blur(8px);
-    z-index: -1;
-    
+    width: 100%;
+      height: 100%;
+      object-fit: cover;
 }
+
 .innerdiv1{
     
     position: absolute;
@@ -25,8 +87,35 @@
     z-index: 1;
 }
 .reg > img{
-    height: 100%;
-    width: 100%;
     filter: blur(8px);
-    z-index: -1;
+    width: 100%;
+    height: 650px;
+      object-fit: cover;   
+}
+
+
+.loading {
+   display: none;
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   justify-content: center;
+   align-items: center;
+   background: rgba(255, 255, 255, 0.8);
+   z-index: 1000;
+
+}
+
+.spinner {
+   border: 8px solid #f3f3f3;
+   border-top: 8px solid #3498db;
+   border-radius: 50%;
+   width: 120px;
+   height: 120px;
+   animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+   0% { transform: rotate(0deg); }
+   100% { transform: rotate(360deg); }
 }

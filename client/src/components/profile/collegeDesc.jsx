@@ -12,7 +12,9 @@ import {
 import {
     Delete as DeleteIcon,
   } from "@mui/icons-material";
+  
 const home = "http://localhost:3001";
+
 const style = {
     position: "absolute",
     top: "50%",
@@ -25,7 +27,7 @@ const style = {
     p: 4,
   };
 
-const CollegeDesc = ({props})=>{
+const CollegeDesc = ({props,User,user})=>{
     const addCollege = async (e) => {
         e.preventDefault();
         const collegeName = e.target[0].value;
@@ -47,28 +49,31 @@ const CollegeDesc = ({props})=>{
         }
         }
         const [open, setOpen] = useState(false);
-    useEffect(()=>{
-    }
-    ,[]);
+    
     return(
         <>
         <div className="College">
         {props !== undefined && typeof props !== 'undefined' && props.length > 0  ? (
             props.map((edu) => (
-            <div className="flyby" key={edu._id}>
-                <Button variant="outlined" startIcon={<DeleteIcon />}>
-                Delete
-                </Button>
+            <div key={edu._id}>
                 <p>College = {edu.collegeName}</p>
                 <p>Degree = {edu.degree}</p>
                 <p>Year = {edu.year}</p>
+                <Button variant="outlined" startIcon={<DeleteIcon />}>
+                Delete
+                </Button>
+
             </div>
+            
             ))
         ) : (
             <h3>Empty</h3>
         )}
         </div>
-        <Button onClick={()=>setOpen(true)}>Add</Button>
+        {
+          User._id !== user.user._id?"":<Button onClick={()=>setOpen(true)}>Add</Button>
+        }
+        
         <Modal
         open={open}
         onClose={()=>setOpen(false)}

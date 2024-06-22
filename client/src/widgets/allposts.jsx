@@ -36,8 +36,6 @@ const Allposts = ()=>{
             {
                 posts.map(postCard)
             }
-       
-        
         </div>
         
     )

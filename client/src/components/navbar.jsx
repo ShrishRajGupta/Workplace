@@ -10,6 +10,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../css/navbar.css";
 import LogoutFunc from "./logout"
+import "../css/SearchResult.css";
+import "../css/SearchResultsList.css";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -44,10 +46,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar({ setResults }) {
+export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const navigate = useNavigate();
+  
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -143,24 +146,52 @@ export default function PrimarySearchAppBar({ setResults }) {
   );
 
   const [input, setInput] = useState("");
-
+  const [results,setResults] = useState([]);
   const fetchData = async (value) => {
     try {
-      const response = await axios.get(`/search/${value}`, null, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        params: {
-          jobTitle: value,
-        },
-      });
-
-      if (response.status === 200) {
-        console.log(response.data);
-        setResults(response.data.user);
-      }
-    } catch (error) {
+      if(value !== ""){
+        const response = await axios.get(`/search/${value}`, null, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          params: {
+            jobTitle: value,
+          },
+        });
+        
+        if (response.status === 200) {
+          console.log(response.data);
+          setResults(response.data.user);
+        } 
+    } else {
+      console.log(results);
+      setResults([]);
+    }
+    
+  }catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+  
+   const SearchResultsList = ({results})=> {
+    
+    return (
+    <div className="searchBar">
+    <div className="dropdown-content"> 
+        {
+        results?.map((result) => {
+          const handleClick = async (e)=>{
+                navigate(`/user/profile/${result._id}`);
+                setInput("");
+                setResults([]);
+           }
+          return (
+            <div className="search-result" onClick={handleClick}><h5 style={{color:"black"}}>{result.username}</h5></div>
+          )
+        }
+    )}
+    </div>
+    </div>
+  )};
+
 
   const handleChange = (value) => {
     setInput(value);
@@ -188,7 +219,7 @@ export default function PrimarySearchAppBar({ setResults }) {
           >
             WorkPlace
           </Typography>
-          <div className="my-nav" style={{ display: "flex" }}>
+          <div className="my-nav">
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -198,10 +229,13 @@ export default function PrimarySearchAppBar({ setResults }) {
                 inputProps={{ "aria-label": "search" }}
                 value={input}
                 onChange={(e) => handleChange(e.target.value)}
+
               />
             </Search>
-
-            <button style={{ backgroundColor: "blue" }}>Filter</button>
+            {
+              <SearchResultsList results={results} />
+            }
+          
           </div>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>

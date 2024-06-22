@@ -18,7 +18,7 @@ const style = {
   p: 4,
 };
 const home = "http://localhost:3001";
-const Skills = ({ props }) => {
+const Skills = ({ props,User,user }) => {
   const addSkills = async (e) => {
     e.preventDefault();
     const description = e.target[0].value;
@@ -55,7 +55,10 @@ const Skills = ({ props }) => {
         ) : (
           <h3>Empty</h3>
         )}
-        <Button onClick={() => setOpen(true)}>Add</Button>
+        {
+          User._id !== user.user._id?"":<Button onClick={() => setOpen(true)}>Add</Button>
+        }
+  
         <Modal
           open={open}
           onClose={() => setOpen(false)}
@@ -79,7 +82,7 @@ const Skills = ({ props }) => {
   );
 };
 
-const WorkEx = ({ props }) => {
+const WorkEx = ({ props ,User,user}) => {
   const addWorkEx = async (e) => {
     e.preventDefault();
     const companyName = e.target[0].value;
@@ -118,7 +121,10 @@ const WorkEx = ({ props }) => {
         ) : (
           <h3>Empty</h3>
         )}
-        <Button onClick={() => setOpen(true)}>Add</Button>
+        {
+          User._id !== user.user._id?"":<Button onClick={() => setOpen(true)}>Add</Button>
+        }
+        
         <Modal
           open={open}
           onClose={() => setOpen(false)}
