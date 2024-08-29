@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Express } from "express";
 import Message from "../models/Message";
 
@@ -33,3 +34,33 @@ router.get("/:conversationId", async(req,res)=>{
 });
 
 export default router;
+=======
+import Router from "express";
+const messageRoute = Router();
+import Message from "../models/Message.js";
+
+//add
+messageRoute.post("/",async (req,res)=>{
+    const newMessage = new Message(req.body);
+    try{
+        const savedMessage = await newMessage.save();
+        res.status(200).json(savedMessage);
+    }catch(err){
+        res.status(500).json(err);
+    }
+})
+
+//get
+messageRoute.get("/:conversationId",async (req,res)=>{
+    try{
+        const messages = await Message.find({
+            conversationId: req.params.conversationId
+        })
+        console.log(messages);
+        res.status(200).json(messages);
+    }catch(err){
+        res.status(500).json(err);
+    }
+})
+export default messageRoute;
+>>>>>>> 07b57c13b5588f2ba5b9899d3c94225d94e57b73

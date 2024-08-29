@@ -1,11 +1,30 @@
 /* styles.css */
-.dashboard {
+.parentdiv{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.profileSection{
+  flex: 3;
+}
+.activitySection{
+  flex: 5;
+}
+.friendSection{
+  flex: 4;
+}
+  .activitydiv{
+    text-align: center;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-
+    justify-content: space-between;
   }
-  
+.noPost{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
   .profile {
   
     padding: 10px;
@@ -28,6 +47,28 @@
   
   h2 {
     font-size: 24px;
+  }
+  
+  
+  .friend-card {
+    margin: 10px;
+    padding: 20px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 300px;
+    background-color: #fff;
+  }
+  
+  .friend-card p {
+    margin-bottom: 8px;
+  }
+  
+  .friend-card p.bold {
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
   }
   /* You can add more specific styling for each component as needed */
   

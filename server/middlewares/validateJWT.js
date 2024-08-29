@@ -8,9 +8,6 @@ const secretKey = process.env.ACCESS_TOKEN;
 const authenticateToken = (req, res, next) => {
 
     if (req.isAuthenticated) { return next() }
-    else { 
-        console.log(`Not authenticated via passport`);
-    }
     const token = req.cookies.authorization;
 
     if (!token) {

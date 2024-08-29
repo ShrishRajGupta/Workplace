@@ -1,70 +1,71 @@
+
+import React, { useContext, useState,useRef,useEffect } from "react";
 import axios from "axios";
-import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Link, Navigate } from "react-router-dom";
-import { Context } from "../index";
+import { Navigate, useNavigate } from "react-router-dom";
+import {AuthContext} from "../context/AuthContext";
+import {loginCall} from "../apiCalls";
+import "../css/home.css";
+import { removeCookie, setCookie } from "../hooks/cookie";
 
+const server = `http://localhost:3001`;
 const Login = () => {
-  const { isAuthenticated, setisAuthenticated} =
-    useContext(Context);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userId,setuserId] = useState();
-  const submitHandler = async (e) => {
+  const email = useRef();
+  const password = useRef();
+  const navigate = useNavigate();
+  const { user,dispatch } = useContext(AuthContext);
+  
+  const handleClick = async (e) => {
     e.preventDefault();
-    
+    await loginCall(
+      { email: email.current.value, password: password.current.value },
+      dispatch
+    );
 
-    try {
-      const response = await axios.post("/user/login",
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+    removeCookie("user");
+    // setCookie("user", {id:user.user._id,username: user.user.username});
+    localStorage.setItem("isLogged", true);
 
-      toast.success(response.message);
-      setisAuthenticated(true);
-      
-      setuserId(response.data.user._id);
-    } catch (error) {
-      
-      setisAuthenticated(false);
-    }
+      if(user){
+        navigate(`/user/profile/${user.user._id}`);
+        const emailDispatch = await axios.post(`${server}/email/intro`, {userEmail: user.user.email, userName: user.user.username});
+        console.log(emailDispatch.data);
+      }  
   };
-
-  if (isAuthenticated) return <Navigate to={`/user/profile/${userId}`} />;
-
+  
   return (
-    <div className="login">
-      <section>
-        <form onSubmit={submitHandler}>
+    <div className="reg" style={{fontFamily: "sans-serif", fontSize: "20px", display:"flex", justifyContent:"center"}}>
+        <img src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"></img>
+      
+      <div className="innerdiv">
+      <h1>Login</h1>
+      
+        <form onSubmit={handleClick}>
           <input
-            type="email"
             placeholder="Email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+              className="loginInput"
+              ref={email}
           />
           <input
-            type="password"
-            required
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+              minLength="6"
+              className="loginInput"
+              ref={password}
           />
-          <button type="submit">
+          <button type="submit" style={{width:"35%"}}>
             Login
           </button>
-          <h4>Or</h4>
-          <Link to="/user/register">Sign Up</Link>
+          
         </form>
-      </section>
+        <h4>Don't have an Account ?</h4>
+          <span onClick={()=>{
+            navigate("/user/register");
+          }} style={{cursor:"pointer" , color:"purple", fontWeight:"bold"}}>SignUp</span>
+      </div>
     </div>
   );
 };

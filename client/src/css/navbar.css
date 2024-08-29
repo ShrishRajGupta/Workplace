@@ -17,10 +17,22 @@ nav {
   
   a {
     text-decoration: none;
-    color: white;
+    color: black;
   }
   
   a:hover {
     text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .home{
+    cursor: pointer;
+    margin-right: 5px;
+    padding: 5px;
+  }
+  .mynav{
+    display: flex;
+    flex-direction: column;
+    width:80%;
   }
   

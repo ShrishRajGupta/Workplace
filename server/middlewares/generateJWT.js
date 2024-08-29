@@ -10,9 +10,8 @@ const checkF = function (user) {
         },
         process.env.ACCESS_TOKEN,
         {
-            expiresIn: "2h"
+            expiresIn: "24h"
         });
-   
         return token;
     } catch (error) {
         console.error(error); // Log the error for debugging

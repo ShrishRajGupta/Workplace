@@ -1,32 +1,11 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import { createContext } from 'react';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { AuthContextProvider } from "./context/AuthContext";
 
-export const Context = createContext({ isAuthenticated: false });
-
-const AppWrapper = () => {
-  const [isAuthenticated, setisAuthenticated] = useState(false);
-  const [user,setUser] = useState({});
-  return (
-    <Context.Provider
-      value={{
-        isAuthenticated,
-        setisAuthenticated,
-        user,
-        setUser
-      }}
-    >
+ReactDOM.render(
+    <AuthContextProvider>
       <App />
-    </Context.Provider>
-  );
-};
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-
-// Wrap the entire tree, including AppWrapper, with React.StrictMode
-root.render(
-  <React.StrictMode>
-    <AppWrapper />
-  </React.StrictMode>
+    </AuthContextProvider>,
+  document.getElementById("root")
 );

@@ -1,5 +1,6 @@
 import Router from "express";
-import { getLoginForm, loginUser, logoutUser ,registerUser} from '../controllers/loginControllers.js';
+import {loginUser, logoutUser ,registerUser} from '../controllers/loginControllers.js';
+import authenticateToken from "../middlewares/validateJWT.js";
 const loginRouter = Router();
 
 // route begins with 'user'
