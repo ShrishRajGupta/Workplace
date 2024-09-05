@@ -4,27 +4,30 @@ import UserWidget from "../widgets/UserWidget"
 import axios from "axios"
 import { AuthContext } from "../context/AuthContext";
 import "../css/home.css";
+import Divider from '@mui/material/Divider';
+
 const PostCard = (props)=>{
 
     return <div className="post-card">
-        <div style={{display:"flex",justifyContent:"space-between"}}>
-        <p>JOB Title: {props.jobTitle}</p>
-        <a href="/user/applyform"><button className="apply-button" >Apply Now</button></a>
+        <div style={{display:"flex",justifyContent:"space-between", marginRight:"400px"}}>
+        <b><u>Job Title: {props.jobTitle}</u></b>
+        <br /><br />
         </div>
-        <p>Company Name : {props.companyName}</p>
-        <p>WorkPlace : {props.workPlace}</p>
-        <p>Job Location : {props.jobLocation}</p>
-        <p>Job Type : {props.jobType}</p>
-        <p>Salary : {props.salary}</p>
+        <b>Company Name : </b>{props.companyName}<br /><br />
+        <b>WorkPlace : </b>{props.workPlace}<br /><br />
+        <b>Job Location : </b>{props.jobLocation}<br /><br />
+        <b>Job Type : </b>{props.jobType}<br /><br />
+        <b>Salary : </b>{props.salary}<br /><br />
+        <a href={`/user/applyform/${props.user_id}`}><button className="apply-button" >Apply Now</button></a>
     </div>
 }
 
 const Requests = (props)=>{
-  const {user} = useContext(AuthContext);
+  // const {user} = useContext(AuthContext);
   const handleClick = async (e)=>{
     const value = e.target.value;
     try{
-      const response = await axios.put(`/user/connect/${props.from}/${props.to}/${value}/${props._id}`);
+      const response = await axios.put(`/user/connect/${props.user.from}/${props.user.to}/${value}/${props._id}`);
       console.log(response);
     }
     catch(error){
@@ -33,11 +36,10 @@ const Requests = (props)=>{
    }
     return <div style={{margin:"2px 2px 2px 2px",border:"2px solid black"}}>
     
-        <h1>You have a new friend Request from {props.username}</h1>
+        <h1>You have a new friend Request from {props.user.username}</h1>
           <button onClick={handleClick} value="Accept">Accept</button>
 
         <button onClick = {handleClick} value="Reject">Reject</button>
-        
         
     </div>
 }
@@ -114,17 +116,31 @@ const Home = ()=>{
           </div>
 
           <div className="notidiv">
-              <h2>Notifications</h2>
-              <div>
-              <div className="friendRequestsdiv"> 
-                {console.log("CHIFFA",user?.friendRequests)}
-              {
-                (user?.friendRequests ? user.friendRequests.map(Requests): <h1>You are not logged in</h1>)
-              }
-              </div>
+              {/* <h2>Job Openings and Friend Requests</h2> */}
+              <div className="allnotis">
+              
+              <div className="postsCard">
               {
                 posts.map(PostCard)
               }
+              </div>
+              <div class="divider"></div>
+
+              <div className="friendRequestsdiv"> 
+              {/* {
+                (user?.friendRequests ? user.friendRequests.map((friend)=> <Requests user={friend} />): <h1>You are not logged in</h1>)
+              } */}
+              {
+                user?.friendRequests && user.friendRequests.length > 0 ? (
+                  user.friendRequests.map((friendreq, index) => (
+                    <Requests key={index} user={friendreq} />
+                  ))
+                ) : (
+                  <h2>Your Friend Requests would show up here!!</h2>
+                )
+              }
+
+              </div>
               </div>
           </div>
         </div>

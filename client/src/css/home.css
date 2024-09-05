@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin: 0 50px 0 10px;
 }
 .userInfodiv{
     flex:2.5;
@@ -14,7 +15,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
+    background-color: rgb(230, 225, 225);
     max-width: 100%;
 }
 /* notifications.css */
@@ -40,7 +41,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+    background-color: #faf1f1;
   }
   
   .post-card p {
@@ -49,8 +50,10 @@
   }
   .friendRequestsdiv{
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    /* flex-direction: column; */
+    gap: 100px;
+    justify-content: flex-end;
+    margin: 0 0 0 50px;
   }
   
   .home{
@@ -118,4 +121,31 @@
 @keyframes spin {
    0% { transform: rotate(0deg); }
    100% { transform: rotate(360deg); }
+}
+
+.postsCard{
+  margin-left: 10px;
+  width: 800px;
+  justify-content: center;
+  background-color: #d2d7da;
+  padding: 10px 10px 10px 10px;
+}
+
+.allnotis{
+  display: flex;
+}
+
+.divider {
+  width: 1px; /* Thickness of the vertical line */
+  background-color: #ccc; /* Color of the vertical line */
+  height: 80%; /* Adjust the height of the vertical line */
+}
+
+.apply-button{
+  display: flex;
+  margin-left: 0px;
+}
+
+.p-tag-in-home{
+  
 }

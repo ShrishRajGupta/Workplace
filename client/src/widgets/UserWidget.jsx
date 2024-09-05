@@ -46,6 +46,10 @@ const UserWidget = () => {
     getUser();
   }, []);
 
+  useEffect(()=>{
+    console.log("CHIGGA",user)
+  },[user])
+
   return (
     <div className="widgetdiv" >
       <div className="card">
@@ -55,14 +59,12 @@ const UserWidget = () => {
         <div className="card-body">
           <span onClick={() => {
                   navigate(`/user/profile/${user._id}`);
-                }} style={{cursor: "pointer"}}><h5>{user.username}</h5></span>
-          <p className="card-text">Software Engineer with 5 years of experience in full-stack development.</p>
+                }} style={{cursor: "pointer"}}><h3>{user.username}</h3></span>
+                <br />
+          <i className="card-text">{user?.about}</i>
+          <br /><br />
+          <b>Education: </b>{(user?.education?.length>0) ? (user?.education[0]?.collegeName) : "N.A."}
         </div>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item">Location: San Francisco</li>
-          <li className="list-group-item">Education: MIT</li>
-          <li className="list-group-item">Interests: Hiking, Reading, Traveling</li>
-        </ul>
         <div className="card-body">
           <a href="#" className="card-link">LinkedIn</a>
           <a href="#" className="card-link">GitHub</a>

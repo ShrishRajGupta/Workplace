@@ -28,7 +28,7 @@ nav {
   .home{
     cursor: pointer;
     margin-right: 5px;
-    padding: 5px;
+    padding: 10px;
   }
   .mynav{
     display: flex;

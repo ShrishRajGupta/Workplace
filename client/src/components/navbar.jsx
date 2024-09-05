@@ -198,6 +198,8 @@ export default function PrimarySearchAppBar() {
     fetchData(value);
   };
 
+  const username = localStorage.getItem('username');
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -211,14 +213,18 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            WorkPlace
-          </Typography>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } , cursor: 'pointer', // Change cursor to pointer on hover
+              '&:hover': {
+                color: 'black', // Optional: change color on hover
+              }}}
+              onClick={()=>navigate(`/home/${username}`)}
+            >
+              WorkPlace
+            </Typography>
           <div className="my-nav">
             <Search>
               <SearchIconWrapper>
@@ -238,10 +244,7 @@ export default function PrimarySearchAppBar() {
           
           </div>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <p className="home" onClick={() => [navigate("/home")]}>
-              <HomeIcon />
-            </p>
+          <Box sx={{ display: { xs: "none", md: "flex"} }}>
 
             <IconButton
               size="large"

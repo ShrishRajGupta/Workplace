@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import './applyform.css'; // Import the CSS file for styling
+import { useNavigate } from 'react-router';
 
 const ApplyForm = () => {
+
+  const navigate = useNavigate();
+
+  const handleClick = ()=>{
+    const username = localStorage.getItem('username');
+    navigate(`/home/${username}`);
+  }
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -79,7 +88,7 @@ const ApplyForm = () => {
           required
         />
       </div>
-      <button type="submit">Apply Now</button>
+      <button type="submit" onClick={handleClick}>Apply Now</button>
     </form>
   );
 };
