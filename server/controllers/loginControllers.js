@@ -55,7 +55,6 @@ export const registerUser = async (req, res) => {
       .json({
         success: true,
         message: "Registration successful!",
-        user: member,
       });
   } catch (err) {
     console.log(err);

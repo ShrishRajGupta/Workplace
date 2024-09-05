@@ -215,4 +215,6 @@ input[type=submit] {
     text-align: right;
   }
   
-  
+.h2-done{
+  background-color: gainsboro;
+}

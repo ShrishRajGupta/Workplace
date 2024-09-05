@@ -25,7 +25,7 @@ function App() {
         <Route path="/user/register" element={<><RegistrationForm /></>}></Route>
         <Route path="/user/login" element={<><Login/></>}></Route>
         <Route path="/resume" element={isLogged?<><Resume /></>:<><Login/> </>}></Route>
-        <Route path ="/home" element={isLogged?<><Navbar /><Home /></>:<><Login/></>}></Route>
+        <Route path ="/home/:userId" element={isLogged?<><Navbar /><Home /></>:<><Login/></>}></Route>
         <Route path ="/user/jobpostform" element={isLogged?<><Navbar /><JobForm /></>:<><Login/></>}></Route>
         <Route path="/user/createProfile" element={isLogged?<><MyForm /></>:<><Login/></>}></Route>
         <Route path ="/user/profile/:userId" element={isLogged?<><Navbar /><Dashboard /></>:<><Login/></>}></Route>

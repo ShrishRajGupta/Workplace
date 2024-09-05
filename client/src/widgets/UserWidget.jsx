@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
     ManageAccountsOutlined,
     EditOutlined,
@@ -11,51 +10,37 @@ import {Box, Typography, Divider, useTheme } from "@mui/material";
 import userimage from "../components/userimage";
 import FlexBetween from "../components/FlexBetween";
 import widgetwrapper from "../components/widgetwrapper";
-=======
->>>>>>> 07b57c13b5588f2ba5b9899d3c94225d94e57b73
 
-import { useTheme } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 
 import axios from "axios";
 import "../css/widget.css";
+import { AuthContext } from "../context/AuthContext";
 const home = "http://localhost:3001";
 
 const UserWidget = () => {
   const [user, setUser] = useState([]);
   const { palette } = useTheme();
   const navigate = useNavigate();
+  const {User} = useContext(AuthContext);
 
   // const dark = palette.neutral.dark;
   // const medium = palette.neutral.medium;
   // const main = palette.neutral.main;
 
-<<<<<<< HEAD
     const getUser = async() => {
-        const response = await fetch("#", { 
+      console.log(User)
+        const response = await fetch(`/user/profile/`, { 
             method: "GET",
             headers: {Authorization: `Bearer ${Token}`},
         });
 
         const data = await response.json();
-        setUser(data);
+        setUser(data.user);
     };
-=======
-  const getUser = async () => {
-    try {
-      let response = await axios.get("/user/profile");
-      if (response.status === 200) {
-        console.log(response.data.user);
-        setUser(response.data.user);
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
->>>>>>> 07b57c13b5588f2ba5b9899d3c94225d94e57b73
 
   useEffect(() => {
     getUser();

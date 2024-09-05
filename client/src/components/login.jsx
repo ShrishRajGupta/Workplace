@@ -27,7 +27,8 @@ const Login = () => {
     localStorage.setItem("isLogged", true);
 
       if(user){
-        navigate(`/user/profile/${user.user._id}`);
+        // navigate(`/user/profile/${user.user._id}`);
+        navigate(`/home/${user.user.username}`)
         const emailDispatch = await axios.post(`${server}/email/intro`, {userEmail: user.user.email, userName: user.user.username});
         console.log(emailDispatch.data);
       }  

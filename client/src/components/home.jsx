@@ -1,5 +1,5 @@
 import { useEffect, useState ,useContext} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import UserWidget from "../widgets/UserWidget"
 import axios from "axios"
 import { AuthContext } from "../context/AuthContext";
@@ -42,8 +42,30 @@ const Requests = (props)=>{
     </div>
 }
 const Home = ()=>{
-      const {user} = useContext(AuthContext);
-      console.log(user);
+
+  const [user,setUser] = useState(null);
+  const getUser = async () => {
+      try{
+        const response = await axios.get("/user/profile");
+        console.log(response)
+        if(response.status === 200){
+          console.log(response.data);
+          setUser(response.data.user);
+          console.log(user)
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
+  }
+
+  useEffect(()=>{
+    getUser()
+  },[])
+
+
+      // const {user} = useContext(AuthContext);
+      // console.log(user);
         
         document.addEventListener('DOMContentLoaded', function() {
           const loading = document.getElementById('loading');
@@ -94,9 +116,10 @@ const Home = ()=>{
           <div className="notidiv">
               <h2>Notifications</h2>
               <div>
-              <div className="friendRequestsdiv">
+              <div className="friendRequestsdiv"> 
+                {console.log("CHIFFA",user?.friendRequests)}
               {
-                (user.user.friendRequests !== undefined ?user.user.friendRequests.map(Requests): <h1>You are not logged in</h1>)
+                (user?.friendRequests ? user.friendRequests.map(Requests): <h1>You are not logged in</h1>)
               }
               </div>
               {
