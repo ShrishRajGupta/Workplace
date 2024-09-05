@@ -61,10 +61,6 @@
     React.js </a>
   </ul>
   <ul>
-    <a href = "https://redux.js.org/">
-    Redux </a>
-  </ul>
-  <ul>
     <a href = "https://mui.com/">
     Material-UI </a>
   </ul>
