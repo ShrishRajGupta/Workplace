@@ -35,4 +35,8 @@ nav {
     flex-direction: column;
     width:80%;
   }
-  
+  .searchBar{
+    z-index: 99;
+    background-color: aliceblue;
+    border: 20px black;
+  }

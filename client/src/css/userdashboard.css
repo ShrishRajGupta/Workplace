@@ -12,6 +12,10 @@
 }
 .friendSection{
   flex: 4;
+  margin-left: 10px;
+}
+.h222{
+  margin-right: 200px;
 }
   .activitydiv{
     text-align: center;

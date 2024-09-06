@@ -47,6 +47,9 @@ app.use("/in", upgradeRouter);
 app.use("/user", loginRouter);
 app.use("/user", userRouter);
 
+app.use("/conversations", conversationRoute);
+app.use("/messages", messageRoute);
+
 //404 route
 app.use((req, res) => {
   res.status(404).send("Sorry can't find that!");

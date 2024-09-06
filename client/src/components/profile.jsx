@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
+  Divider,
   Modal,
   Typography,
 } from "@mui/material";
@@ -106,7 +107,7 @@ const Profile = ({User}) => {
     setNewAuthor({ photo: e.target.files[0] });
   };
   // Add username to local storage
-  localStorage.setItem("username", User.username);
+  // localStorage.setItem("username", User.username);
   const [isFriend, setIsFriend] = useState(false);
   const checkFriend = async () => {
     try {
@@ -128,7 +129,9 @@ const Profile = ({User}) => {
   return (
     <div className=" wrapper">
       <div className="profile">
-        <h2 className="h2-done">Profile</h2>
+        <h2 className="h2-wala">Profile</h2>
+        <Divider />
+        <br />
         <img className="card-img-top"  style={{ }}
           src={`${User.photo}`}
           alt="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"/>
@@ -180,20 +183,25 @@ const Profile = ({User}) => {
           </Box>
         </Modal>
 
-        <div>
+        <div className="nice-wala">
           <p>
             {" "}
-            <h3>Username {User.username}</h3>
+            <h2>{User.username}</h2>
           </p>
-          <p>Name {User.name}</p>
+          <p>
+          {" "}
+          </p>
+          <div className="block-div">
           <blockquote>
             <i>About -</i> {User.about}
           </blockquote>
+          </div>
+          <div className="ctr-div">
           {
             User._id !== user.user._id? "": <Button color="secondary" onClick={handleOpen}>
             Update</Button>
           }
-          
+          </div>
           <Modal
             open={name_about_modal}
             onClose={handleClose}
@@ -227,7 +235,7 @@ const Profile = ({User}) => {
             </Box>
           </Modal>
         </div>
-        <div> {User.email}</div>
+        <div className="ctr2-div"><b>{User.email}</b></div>
       </div>
         <div className='btndiv'>
         <button onClick={handleClick} > { User._id == user.user._id? "open to": "+ Connect"}</button>
@@ -248,12 +256,16 @@ const Profile = ({User}) => {
       <div className="education">
         {/* Array of education */}
         <h2>Education</h2>
+        <Divider />
+        <br />
         <CollegeDesc props={User.education} User={User} user={user}/>
       </div>
       {/* --------------------------------- */}
       <div className="workExp">
         {/* Array of work experience */}
         <h2>Work Experience</h2>
+        <Divider />
+        <br />
         <WorkEx props={User.workexperience}  User={User} user={user}/>
       </div>
 
@@ -261,6 +273,8 @@ const Profile = ({User}) => {
       <div className="skills">
         {/* array of skills */}
         <h2>Skills</h2>
+        <Divider />
+        <br />
         <Skills props={User.skills}  User={User} user={user}/>
       </div>
     </div>

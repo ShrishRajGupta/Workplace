@@ -2,14 +2,15 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        margin: 20px 10px 20px 10px;
 }
 .workExp{
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
         background-color: white;
-        margin-bottom: 5px;
-        margin-top: 5px;
+        margin-bottom: 10px;
+        margin-top: 10px;
 }
 .skills{
         padding: 10px;
@@ -146,6 +147,16 @@ input[type=submit] {
 .wrapper {
   /* display: flex; */
   gap: 32px;
+  margin: 0 20px 0 20px;
+}
+.h2-wala{
+  background-color: white;
+  text-decoration-color: #673FD7;
+}
+
+.profile{
+  background-color: #00132C;
+  margin: 0 0 0 0;
 }
 
 .box {
@@ -217,4 +228,28 @@ input[type=submit] {
   
 .h2-done{
   background-color: gainsboro;
+}
+
+.card-img-top{
+  border: 2px solid rgb(123, 6, 6);
+}
+
+.nice-wala{
+  margin: 10px 0 0 0;
+}
+
+.block-div{
+  margin: 10px 10px 10px 10px;
+}
+
+.ctr-div{
+  margin: 10px 100px 0px 100px
+}
+
+.ctr2-div{
+  margin: 10px 100px 0px 75px;
+}
+
+.education{
+  margin: 10px 0 0 0px;
 }

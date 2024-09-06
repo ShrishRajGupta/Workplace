@@ -56,9 +56,10 @@ const CollegeDesc = ({props,User,user})=>{
         {props !== undefined && typeof props !== 'undefined' && props.length > 0  ? (
             props.map((edu) => (
             <div key={edu._id}>
-                <p>College = {edu.collegeName}</p>
-                <p>Degree = {edu.degree}</p>
-                <p>Year = {edu.year}</p>
+                <p><b>College</b> : {edu.collegeName}</p>
+                <p><b>Degree</b> : {edu.degree}</p>
+                <p><b>Year</b> : {edu.year}</p>
+                <br />
                 <Button variant="outlined" startIcon={<DeleteIcon />}>
                 Delete
                 </Button>

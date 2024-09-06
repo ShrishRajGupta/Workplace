@@ -1,35 +1,28 @@
-import express from "express";
+import Router from "express";
+const messageRoute = Router();
 import Message from "../models/Message.js";
 
-const router = express.Router();
-
-//Save message corresponding to a particular conversation Id
-router.post("/", async (req,res)=>{
-
-    const message = new Message(req.body);
-
+//add
+messageRoute.post("/",async (req,res)=>{
+    const newMessage = new Message(req.body);
     try{
-        const savedMessage = await message.save();
+        const savedMessage = await newMessage.save();
         res.status(200).json(savedMessage);
-    }
-    catch(err){
+    }catch(err){
         res.status(500).json(err);
     }
-});
+})
 
-//Get the messages with the help of conversation Id..
-router.get("/:conversationId", async(req,res)=>{
-    
+//get
+messageRoute.get("/:conversationId",async (req,res)=>{
     try{
-
-        const message = await Message.find({
-            conversationId: req.params.conversationId,
-        });
-        res.status(500).json(message);
-    }
-    catch(err){
+        const messages = await Message.find({
+            conversationId: req.params.conversationId
+        })
+        console.log(messages);
+        res.status(200).json(messages);
+    }catch(err){
         res.status(500).json(err);
     }
-});
-
-export default router;
+})
+export default messageRoute;

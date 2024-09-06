@@ -23,11 +23,13 @@ const Login = () => {
     );
 
     removeCookie("user");
-    // setCookie("user", {id:user.user._id,username: user.user.username});
+    // localStorage.setItem("user", {id:user.user._id,username: user.user.username});
     localStorage.setItem("isLogged", true);
 
       if(user){
         // navigate(`/user/profile/${user.user._id}`);
+        localStorage.setItem("userId", user.user._id);
+        localStorage.setItem("username",user.user.username);
         navigate(`/home/${user.user.username}`)
         const emailDispatch = await axios.post(`${server}/email/intro`, {userEmail: user.user.email, userName: user.user.username});
         console.log(emailDispatch.data);

@@ -86,7 +86,7 @@ const Dashboard = () => {
     getUserFriends();
     getUser();
     getPosts();
-  },[userId]);
+  },[]);
 
   return (
     <div style={{display: "flex"}} className="parentdiv">
@@ -98,7 +98,7 @@ const Dashboard = () => {
       </div>
       <div className="activitySection">
           <div className="activitydiv">
-          Your Activity
+          <b>Your Activity</b>
           <div className="notidiv">
 
               <div>
@@ -112,7 +112,7 @@ const Dashboard = () => {
           </div>
       </div>
       <div className="friendSection">
-      <h2>Friends</h2>
+      <h2 className="h222">Friends</h2>
       
         {userFriends.map((friend) => (
           <div key={friend._id} style={{
