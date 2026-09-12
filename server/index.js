@@ -8,9 +8,9 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-const PORT = 3001;
+const PORT = Number(process.env.PORT) || 3001;
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 const app = express();
-app.use(cors());
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
@@ -29,7 +29,9 @@ import connectDB from "./config/conn.js";
 connectDB();
 
 // middleware & statics
-app.use(cors());
+// credentials:true lets the browser send the httpOnly auth cookie on cross-origin calls;
+// that requires a concrete origin, not "*".
+app.use(cors({ origin: CLIENT_URL, credentials: true }));
 app.use(express.static("public"));
 app.use(express.json());
 // Body-parser middleware

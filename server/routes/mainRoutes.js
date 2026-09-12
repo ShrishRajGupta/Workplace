@@ -2,6 +2,7 @@ import Router from "express";
 import UserDB from "../models/userModel.js";
 import BlogDB from "../models/postModel.js";
 import authenticateToken from "../middlewares/validateJWT.js";
+import escapeRegex from "../utils/escapeRegex.js";
 const mainRouter = Router();
 //@desc search Bar get request to search user
 //@route /search/:username
@@ -9,7 +10,7 @@ mainRouter.get("/search/:username",async function(req,res){
         const username = req.params.username.toLowerCase();
         try{
             
-               const users = await UserDB.find({"username": {$regex:username,$options:"i"}});
+               const users = await UserDB.find({"username": {$regex:escapeRegex(username),$options:"i"}}).limit(20);
             if(users)
             res.status(200).json({
                 message: "Found users",

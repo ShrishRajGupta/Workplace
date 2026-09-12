@@ -22,8 +22,8 @@ const userSchema = Schema({
     },
     password:{
         type:String,
-        default: ''
-        // required:[true,"Enter your Password"]
+        default: '',
+        select: false // never loaded unless explicitly asked for with .select('+password')
     },
     googleId:{
         type:String,
@@ -94,7 +94,13 @@ const userSchema = Schema({
         ref:"BlogDB"
     }],
 },{
-    timestamps:true
+    timestamps:true,
+    toJSON: {
+        transform(doc, ret) {
+            delete ret.password; // belt-and-braces for documents loaded with +password
+            return ret;
+        }
+    }
 });
 
 export default model("UserDB",userSchema);

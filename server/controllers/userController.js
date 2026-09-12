@@ -19,23 +19,7 @@ const getDashboard = async (req, res) => {
     return res.status(200).json(user);
 };
 
-// @desc : --------For Testing Only--------
-// @route : POST /in/populate
-const populateDashboard = async (req, res) => {
-    const { username,name, email, password } = req.body;
-
-    const form= await UserDB.create({
-        username,name,email,password
-    });
-
-    res.status(200).json({ msg: "populateDashboard" });
-};
-
-export {
-    getDashboard,
-    populateDashboard
-    
-};
+export { getDashboard };
 // import UserDB from "../models/userModel.js";
 import BlogDB from "../models/postModel.js";
 // Create profile

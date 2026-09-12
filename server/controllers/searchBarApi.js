@@ -1,24 +1,22 @@
 import UserDB from "../models/userModel.js";
 import BlogDB from "../models/postModel.js";
+import escapeRegex from "../utils/escapeRegex.js";
 
 const searchApi = async (req, res) => {
   const value = req.params.value.toLowerCase();
   const { jobTitle, companyName, workPlace, jobLocation, jobType } = req.query;
   let qObj = {};
-  if (jobTitle) qObj.jobTitle = { $regex: jobTitle, $options: "i" };
-  if (companyName) qObj.companyName = { $regex: companyName, $options: "i" };
-  if (jobLocation) qObj.jobLocation = { $regex: jobLocation, $options: "i" };
+  if (jobTitle) qObj.jobTitle = { $regex: escapeRegex(jobTitle), $options: "i" };
+  if (companyName) qObj.companyName = { $regex: escapeRegex(companyName), $options: "i" };
+  if (jobLocation) qObj.jobLocation = { $regex: escapeRegex(jobLocation), $options: "i" };
   if (workPlace) qObj.workPlace = workPlace;
   if (jobType) qObj.jobType = jobType;
 
   try {
     let users = await UserDB.find({
-      username: {
-        $regex: ".*" + value + ".*",
-        $options: "i",
-      },
-    });
-    let result = await BlogDB.find(qObj);
+      username: { $regex: escapeRegex(value), $options: "i" },
+    }).limit(20);
+    let result = await BlogDB.find(qObj).limit(50);
     users = users.concat(result);
 
     if (users)
