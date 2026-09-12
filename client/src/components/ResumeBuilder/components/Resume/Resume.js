@@ -1,4 +1,5 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+
 import {
   AtSign,
   Calendar,
@@ -11,6 +12,9 @@ import {
 
 import styles from "./Resume.module.css";
 
+// User-entered profile links may omit the protocol.
+const externalHref = (value) => (/^https?:\/\//i.test(value) ? value : `https://${value}`);
+
 const Resume = forwardRef((props, ref) => {
   const information = props.information;
   const sections = props.sections;
@@ -19,6 +23,9 @@ const Resume = forwardRef((props, ref) => {
   const [columns, setColumns] = useState([[], []]);
   const [source, setSource] = useState("");
   const [target, seTarget] = useState("");
+  // The drop target is read when the drag ends, without re-running the swap on every hover.
+  const targetRef = useRef(target);
+  targetRef.current = target;
 
   const info = {
     workExp: information[sections.workExp],
@@ -258,8 +265,9 @@ const Resume = forwardRef((props, ref) => {
     ),
   };
 
-  const swapSourceTarget = (source, target) => {
+  const swapSourceTarget = useCallback((source, target) => {
     if (!source || !target) return;
+    setColumns((columns) => {
     const tempColumns = [[...columns[0]], [...columns[1]]];
 
     let sourceRowIndex = tempColumns[0].findIndex((item) => item === source);
@@ -282,19 +290,24 @@ const Resume = forwardRef((props, ref) => {
 
     tempColumns[targetColumnIndex][targetRowIndex] = tempSource;
 
-    setColumns(tempColumns);
-  };
+    return tempColumns;
+    });
+  }, []);
 
   useEffect(() => {
     setColumns([
       [sections.project, sections.education, sections.summary],
       [sections.workExp, sections.achievement, sections.other],
     ]);
-  }, []);
+  }, [sections]);
 
+  // A drag has ended: swap the dragged section with the last hovered one, then reset so the
+  // same section can be dragged again.
   useEffect(() => {
-    swapSourceTarget(source, target);
-  }, [source]);
+    if (!source) return;
+    swapSourceTarget(source, targetRef.current);
+    setSource("");
+  }, [source, swapSourceTarget]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -312,28 +325,28 @@ const Resume = forwardRef((props, ref) => {
 
           <div className={styles.links}>
             {info.basicInfo?.detail?.email ? (
-              <a className={styles.link} type="email">
+              <a className={styles.link} href={`mailto:${info.basicInfo.detail.email}`}>
                 <AtSign /> {info.basicInfo?.detail?.email}
               </a>
             ) : (
               <span />
             )}
             {info.basicInfo?.detail?.phone ? (
-              <a className={styles.link}>
+              <a className={styles.link} href={`tel:${info.basicInfo.detail.phone}`}>
                 <Phone /> {info.basicInfo?.detail?.phone}
               </a>
             ) : (
               <span />
             )}
             {info.basicInfo?.detail?.linkedin ? (
-              <a className={styles.link}>
+              <a className={styles.link} href={externalHref(info.basicInfo.detail.linkedin)} target="_blank" rel="noreferrer">
                 <Linkedin /> {info.basicInfo?.detail?.linkedin}
               </a>
             ) : (
               <span />
             )}
             {info.basicInfo?.detail?.github ? (
-              <a className={styles.link}>
+              <a className={styles.link} href={externalHref(info.basicInfo.detail.github)} target="_blank" rel="noreferrer">
                 <GitHub /> {info.basicInfo?.detail?.github}
               </a>
             ) : (

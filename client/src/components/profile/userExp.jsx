@@ -1,151 +1,111 @@
-// Component of Skills and Work Ex
-
-import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import "../../css/profile.css";
+// Skills and Work Experience sections of the profile card
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { Box, Button, Modal, Typography } from "@mui/material";
-
 import { Delete as DeleteIcon } from "@mui/icons-material";
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-const home = "http://localhost:3001";
-const Skills = ({ props,User,user }) => {
-  const addSkills = async (e) => {
+import { addSkill, addWorkExperience } from "../../api/users";
+import { getErrorMessage } from "../../api/client";
+import { modalStyle } from "../profile";
+import "../../css/profile.css";
+
+const DeleteButton = () => (
+  <Button variant="outlined" startIcon={<DeleteIcon />} disabled title="Coming soon">
+    Delete
+  </Button>
+);
+
+const Skills = ({ entries = [], editable, onUserUpdated }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleAdd = async (e) => {
     e.preventDefault();
-    const description = e.target[0].value;
-    const username = localStorage.getItem("username");
+    const description = e.target.elements[0].value;
     try {
-      const response = await axios.post(`/in/addSkills/${username}`, {
-        description,
-      });
-      if (response.status === 200) {
-        window.location.reload();
-      }
+      const skills = await addSkill({ description });
+      onUserUpdated({ skills });
+      setOpen(false);
     } catch (error) {
-      console.log(error);
+      toast.error(getErrorMessage(error, "Could not add the skill"));
     }
   };
 
-  useEffect(() => {}, []);
-  const [open, setOpen] = useState(false);
-
   return (
-    <>
-      <div className="Skills">
-        {props !== undefined &&
-        typeof props !== "undefined" &&
-        props.length > 0 ? (
-          props.map((skill) => (
-            <div className="flyby" key={skill._id}>
-              <Button variant="outlined" startIcon={<DeleteIcon />}>
-                Delete
-              </Button>
-              <p>Desc = {skill.description}</p>
-            </div>
-          ))
-        ) : (
-          <h3>Empty</h3>
-        )}
-        {
-          User._id !== user.user._id?"":<Button onClick={() => setOpen(true)}>Add</Button>
-        }
-  
-        <Modal
-          open={open}
-          onClose={() => setOpen(false)}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Add Skills
-            </Typography>
-            <form onSubmit={addSkills}>
-              <input type="text" placeholder="Description" />
-              <button className="button-36" role="button" type="submit">
-                Add
-              </button>
-            </form>
-          </Box>
-        </Modal>
-      </div>
-    </>
+    <div className="Skills">
+      {entries.length > 0 ? (
+        entries.map((skill) => (
+          <div className="flyby" key={skill._id}>
+            {editable && <DeleteButton />}
+            <p>Desc = {skill.description}</p>
+          </div>
+        ))
+      ) : (
+        <h3>Empty</h3>
+      )}
+      {editable && <Button onClick={() => setOpen(true)}>Add</Button>}
+
+      <Modal open={open} onClose={() => setOpen(false)} aria-labelledby="add-skill-title">
+        <Box sx={modalStyle}>
+          <Typography id="add-skill-title" variant="h6" component="h2">
+            Add Skills
+          </Typography>
+          <form onSubmit={handleAdd}>
+            <input type="text" placeholder="Description" required />
+            <button className="button-36" type="submit">
+              Add
+            </button>
+          </form>
+        </Box>
+      </Modal>
+    </div>
   );
 };
 
-const WorkEx = ({ props ,User,user}) => {
-  const addWorkEx = async (e) => {
+const WorkEx = ({ entries = [], editable, onUserUpdated }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleAdd = async (e) => {
     e.preventDefault();
-    const companyName = e.target[0].value;
-    const year = e.target[1].value;
-    const username = localStorage.getItem("username");
+    const [companyName, year] = Array.from(e.target.elements, (el) => el.value);
     try {
-      const response = await axios.post(`/in/addWorkEx/${username}`, {
-        companyName,
-        year,
-      });
-      if (response.status === 200) {
-        window.location.reload();
-      }
+      const workexperience = await addWorkExperience({ companyName, year });
+      onUserUpdated({ workexperience });
+      setOpen(false);
     } catch (error) {
-      console.log(error);
+      toast.error(getErrorMessage(error, "Could not add the work experience"));
     }
   };
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-  }, []);
+
   return (
-    <>
-      <div className="WorkEx">
-        {props !== undefined &&
-        typeof props !== "undefined" &&
-        props.length > 0 ? (
-          props.map((work) => (
-            <div className="flyby" key={work._id}>
-              <Button variant="outlined" startIcon={<DeleteIcon />}>
-                Delete
-              </Button>
-              <p>Company Name = {work.companyName}</p>
-              <p>Year = {work.year}</p>
-            </div>
-          ))
-        ) : (
-          <h3>Empty</h3>
-        )}
-        {
-          User._id !== user.user._id?"":<Button onClick={() => setOpen(true)}>Add</Button>
-        }
-        
-        <Modal
-          open={open}
-          onClose={() => setOpen(false)}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Add Work Experience
-            </Typography>
-            <form onSubmit={addWorkEx}>
-              <input type="text" placeholder="Company Name" />
-              <input type="text" placeholder="Year" />
-              <button className="button-36" role="button" type="submit">
-                Add
-              </button>
-            </form>
-          </Box>
-        </Modal>
-      </div>
-    </>
+    <div className="WorkEx">
+      {entries.length > 0 ? (
+        entries.map((work) => (
+          <div className="flyby" key={work._id}>
+            {editable && <DeleteButton />}
+            <p>Company Name = {work.companyName}</p>
+            <p>Year = {work.year}</p>
+          </div>
+        ))
+      ) : (
+        <h3>Empty</h3>
+      )}
+      {editable && <Button onClick={() => setOpen(true)}>Add</Button>}
+
+      <Modal open={open} onClose={() => setOpen(false)} aria-labelledby="add-work-title">
+        <Box sx={modalStyle}>
+          <Typography id="add-work-title" variant="h6" component="h2">
+            Add Work Experience
+          </Typography>
+          <form onSubmit={handleAdd}>
+            <input type="text" placeholder="Company Name" required />
+            <input type="text" placeholder="Year" />
+            <button className="button-36" type="submit">
+              Add
+            </button>
+          </form>
+        </Box>
+      </Modal>
+    </div>
   );
 };
+
 export { Skills, WorkEx };

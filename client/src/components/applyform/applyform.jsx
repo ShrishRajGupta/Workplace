@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './applyform.css'; // Import the CSS file for styling
+import { toast } from 'react-hot-toast';
+import './applyform.css';
 
 const ApplyForm = () => {
   const [formData, setFormData] = useState({
@@ -20,8 +21,8 @@ const ApplyForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic (e.g., send data to server)
-    console.log('Form data:', formData);
+    // Submitting applications is not wired to the API yet.
+    toast.error('Applications are not available yet.');
   };
 
   return (

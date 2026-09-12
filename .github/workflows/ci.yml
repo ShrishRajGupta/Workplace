@@ -32,8 +32,5 @@ jobs:
         run: npm run lint
 
       - name: Build client
-        # CI=true makes react-scripts treat ESLint warnings as errors.
-        # Kept off until the existing warnings are cleared; then remove this env.
-        env:
-          CI: "false"
+        # CI=true in GitHub Actions makes react-scripts treat ESLint warnings as errors.
         run: npm run build

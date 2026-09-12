@@ -25,7 +25,10 @@ export const errorHandler = (err, req, res, next) => {
     status = 400;
   }
 
-  if (status >= 500) {
+  // Only unexpected errors (no explicit status) are masked and logged with their stack;
+  // deliberate 5xx such as "email not configured" keep their message.
+  const unexpected = !err.status && !err.statusCode && status >= 500;
+  if (unexpected) {
     console.error(err);
     message = "Internal server error";
   }

@@ -28,11 +28,16 @@ Only variables prefixed `REACT_APP_` reach the browser. See `.env.example`.
 
 ```
 src/
-├── App.js            # routes
-├── apiCalls.js       # auth API helper
-├── context/          # AuthContext (login state)
+├── App.js            # route tree (public, anonymous-only, protected + layout)
+├── api/              # one axios instance (client.js) + per-domain calls (auth, users, posts, chat)
+├── context/          # AuthContext: session user, login/register/logout, refreshUser
+├── routes/           # ProtectedRoute / AnonymousRoute guards, AppLayout (navbar), NotFound
 ├── components/       # screens and feature components
-├── widgets/          # home/feed widgets
+├── widgets/          # home feed widgets
 ├── pages/messenger/  # real-time chat
+├── utils/            # logger, avatar fallback
 └── css/              # global stylesheets
 ```
+
+All server calls go through `src/api/`; components never import axios directly. The auth cookie is
+httpOnly and is sent automatically (same-origin via the proxy, or `withCredentials` cross-origin).
