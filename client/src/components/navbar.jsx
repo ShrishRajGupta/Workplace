@@ -1,17 +1,27 @@
 import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
-import {AppBar,Box,Toolbar,IconButton,Typography,InputBase,Badge,Menu,MenuItem,} 
-from "@mui/material";
-import {Logout as LogoutIcon, Menu as MenuIcon,Search as SearchIcon,AccountCircle,Mail as MailIcon,Notifications as NotificationsIcon,MoreVert as MoreIcon,Home as HomeIcon,PictureAsPdf as PictureAsPdfIcon,} 
-from "@mui/icons-material";
-
-import { useState } from "react";
-import axios from "axios";
+import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, Badge, Menu, MenuItem } from "@mui/material";
+import {
+  Logout as LogoutIcon,
+  Menu as MenuIcon,
+  Search as SearchIcon,
+  AccountCircle,
+  Mail as MailIcon,
+  Notifications as NotificationsIcon,
+  MoreVert as MoreIcon,
+  Home as HomeIcon,
+  PictureAsPdf as PictureAsPdfIcon,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { searchUsers } from "../api/users";
+import logger from "../utils/logger";
 import "../css/navbar.css";
-import LogoutFunc from "./logout"
 import "../css/SearchResult.css";
 import "../css/SearchResultsList.css";
+
+const SEARCH_DEBOUNCE_MS = 300;
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -29,14 +39,20 @@ const Search = styled("div")(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({ padding: theme.spacing(0, 2), height: "100%", position: "absolute", pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center",
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -46,50 +62,88 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const SearchResultsList = ({ results, onSelect }) => (
+  <div className="searchBar">
+    <div className="dropdown-content">
+      {results.map((result) => (
+        <div key={result._id} className="search-result" onClick={() => onSelect(result)}>
+          <h5 style={{ color: "black" }}>{result.username}</h5>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const navigate = useNavigate();
-  
+  const { user, logout } = useAuth();
+  const pendingRequests = user?.friendRequests?.length ?? 0;
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
+  const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
+  const handleMobileMenuOpen = (event) => setMobileMoreAnchorEl(event.currentTarget);
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
+  const goToProfile = () => {
+    handleMenuClose();
+    if (user) navigate(`/user/profile/${user._id}`);
+  };
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
+
+  // Search: debounced request per keystroke, results cleared on selection.
+  const [input, setInput] = useState("");
+  const [results, setResults] = useState([]);
+  const debounceRef = useRef();
+
+  useEffect(() => {
+    clearTimeout(debounceRef.current);
+    const term = input.trim();
+    if (!term) {
+      setResults([]);
+      return undefined;
+    }
+    let cancelled = false;
+    debounceRef.current = setTimeout(() => {
+      searchUsers(term)
+        .then((users) => !cancelled && setResults(users))
+        .catch((error) => logger.error("Search failed:", error));
+    }, SEARCH_DEBOUNCE_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(debounceRef.current);
+    };
+  }, [input]);
+
+  const selectResult = (result) => {
+    setInput("");
+    setResults([]);
+    navigate(`/user/profile/${result._id}`);
   };
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={menuId}
       keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={goToProfile}>Profile</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
 
@@ -97,47 +151,29 @@ export default function PrimarySearchAppBar() {
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={mobileMenuId}
       keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
+      <MenuItem onClick={() => { handleMobileMenuClose(); navigate("/user/messenger"); }}>
+        <IconButton size="large" aria-label="messages" color="inherit">
+          <MailIcon />
         </IconButton>
         <p>Messages</p>
       </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
+      <MenuItem onClick={() => { handleMobileMenuClose(); navigate("/home"); }}>
+        <IconButton size="large" aria-label={`${pendingRequests} pending connection requests`} color="inherit">
+          <Badge badgeContent={pendingRequests} color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
+        <IconButton size="large" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" color="inherit">
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
@@ -145,78 +181,14 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
 
-  const [input, setInput] = useState("");
-  const [results,setResults] = useState([]);
-  const fetchData = async (value) => {
-    try {
-      if(value !== ""){
-        const response = await axios.get(`/search/${value}`, null, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          params: {
-            jobTitle: value,
-          },
-        });
-        
-        if (response.status === 200) {
-          console.log(response.data);
-          setResults(response.data.user);
-        } 
-    } else {
-      console.log(results);
-      setResults([]);
-    }
-    
-  }catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-  
-   const SearchResultsList = ({results})=> {
-    
-    return (
-    <div className="searchBar">
-    <div className="dropdown-content"> 
-        {
-        results?.map((result) => {
-          const handleClick = async (e)=>{
-                navigate(`/user/profile/${result._id}`);
-                setInput("");
-                setResults([]);
-           }
-          return (
-            <div className="search-result" onClick={handleClick}><h5 style={{color:"black"}}>{result.username}</h5></div>
-          )
-        }
-    )}
-    </div>
-    </div>
-  )};
-
-
-  const handleChange = (value) => {
-    setInput(value);
-    fetchData(value);
-  };
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
+          <IconButton size="large" edge="start" color="inherit" aria-label="open drawer" sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
+          <Typography variant="h6" noWrap component="div" sx={{ display: { xs: "none", sm: "block" } }}>
             WorkPlace
           </Typography>
           <div className="my-nav">
@@ -228,42 +200,30 @@ export default function PrimarySearchAppBar() {
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
                 value={input}
-                onChange={(e) => handleChange(e.target.value)}
-
+                onChange={(e) => setInput(e.target.value)}
               />
             </Search>
-            {
-              <SearchResultsList results={results} />
-            }
-          
+            {results.length > 0 && <SearchResultsList results={results} onSelect={selectResult} />}
           </div>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <p className="home" onClick={() => [navigate("/home")]}>
+            <IconButton size="large" color="inherit" title="Home" aria-label="home" onClick={() => navigate("/home")}>
               <HomeIcon />
-            </p>
-
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              {/* Resume Bulider  */}
-              <p className="home" title="Resume Bulider" onClick={() => [navigate("/resume")]}>
-                <PictureAsPdfIcon />
-              </p>
-              
-
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
+            </IconButton>
+            <IconButton size="large" color="inherit" title="Resume Builder" aria-label="resume builder" onClick={() => navigate("/resume")}>
+              <PictureAsPdfIcon />
+            </IconButton>
+            <IconButton size="large" color="inherit" title="Messages" aria-label="messages" onClick={() => navigate("/user/messenger")}>
+              <MailIcon />
             </IconButton>
             <IconButton
               size="large"
-              aria-label="show 10 new notifications"
               color="inherit"
+              title="Notifications"
+              aria-label={`${pendingRequests} pending connection requests`}
+              onClick={() => navigate("/home")}
             >
-              <Badge badgeContent={5} color="error">
+              <Badge badgeContent={pendingRequests} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -284,24 +244,9 @@ export default function PrimarySearchAppBar() {
               <MoreIcon />
             </IconButton>
           </Box>
-
-          {/* logout button */}
-          <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-              onClick={() => LogoutFunc()}
-            >
-              <button title="Logout" className="home">
-                <LogoutIcon/>
-              </button>              
-
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-
-          
+          <IconButton size="large" color="inherit" title="Logout" aria-label="logout" onClick={handleLogout}>
+            <LogoutIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       {renderMobileMenu}

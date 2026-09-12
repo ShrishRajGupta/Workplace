@@ -1,159 +1,106 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Profile} from "./profile";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Profile } from "./profile";
+import { useAuth } from "../context/AuthContext";
+import { getFriends, getUser } from "../api/users";
+import { getUserPosts } from "../api/posts";
+import { getErrorMessage } from "../api/client";
+import { avatarUrl, onAvatarError } from "../utils/avatar";
 import "../css/userdashboard.css";
-import axios from "axios";
-import { useNavigate, useParams } from 'react-router-dom';
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-const home = "http://localhost:3001";
 
-// @desc    User dashboard
-// @route   GET /in/:username/dashboard
-
-const Dashboard = () => {
-  const [userFriends, setUserFriends] = useState([]);
-  const [User,setUser] = useState([]);
-  const {userId}  = useParams();
-  const navigate = useNavigate();
-  
-  const getUser = async () => {
-      try{
-        const response = await axios.get(`/user/profile/${userId}`);
-        if(response.status === 200){
-          console.log(response.data);
-          setUser(response.data.user);
-        }
-      }
-      catch(err){
-        console.log(err);
-      }
-  }
-
-  const getUserFriends = async () => {
-    try {
-      const response = await axios.get(`/user/profile/${userId}`);
-      if (response.status === 200) {
-        // Assuming response.data.user.friends contains friend IDs
-        const friendIds = response.data.user.friends;
-
-        // Fetch details for each friend
-        const friendDetailsPromises = friendIds.map(async (friendId) => {
-          const friendResponse = await axios.get(`/user/${friendId}`);
-          return friendResponse.data.user;
-        });
-
-        // Wait for all friend details to be fetched
-        const friendDetails = await Promise.all(friendDetailsPromises);
-
-        setUserFriends(friendDetails);
-      }
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-  };
-    const [post,setPost] = useState([]);
-    const getPosts = async () => {
-    try {
-      const response = await axios.get(`/user/allposts/${userId}`);
-      if (response.status === 200) {
-        console.log(response.data);
-        setPost(response.data.allposts);
-      }
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    
-    }
-  }
-  const PostCard = (props)=>{
-    const {user} = useContext(AuthContext);
-    return <div className="post-card">
-        <div style={{display:"flex",justifyContent:"space-between"}}>
-        <p>JOB Title: {props.jobTitle}</p>
-        {
-          user.user._id !== userId ? <a href={`/user/applyform/${props._id}`}><button className="apply-button" >Apply Now</button></a> :""
-        }
-       
-        </div>
-        <p>Company Name : {props.companyName}</p>
-        <p>WorkPlace : {props.workPlace}</p>
-        <p>Job Location : {props.jobLocation}</p>
-        <p>Job Type : {props.jobType}</p>
-        <p>Salary : {props.salary}</p>
+const PostCard = ({ post, canApply }) => (
+  <div className="post-card">
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <p>JOB Title: {post.jobTitle}</p>
+      {canApply && (
+        <Link to={`/user/applyform/${post._id}`}>
+          <button className="apply-button">Apply Now</button>
+        </Link>
+      )}
     </div>
-  }
+    <p>Company Name : {post.companyName}</p>
+    <p>WorkPlace : {post.workPlace}</p>
+    <p>Job Location : {post.jobLocation}</p>
+    <p>Job Type : {post.jobType}</p>
+    <p>Salary : {post.salary}</p>
+  </div>
+);
+
+const FriendCard = ({ friend, onOpen }) => (
+  <div className="friend-card">
+    <img className="friend-photo" src={avatarUrl(friend.photo)} alt="" onError={onAvatarError} />
+    <p className="friend-name" onClick={onOpen}>
+      {friend.username}
+    </p>
+  </div>
+);
+
+// Profile page for any user (/user/profile/:userId). Own profile is editable.
+const Dashboard = () => {
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const { user: me, updateUser } = useAuth();
+  const [profileUser, setProfileUser] = useState(null);
+  const [friends, setFriends] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const isOwnProfile = me?._id === userId;
+
   useEffect(() => {
-    getUserFriends();
-    getUser();
-    getPosts();
-  },[userId]);
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    Promise.all([getUser(userId), getFriends(userId), getUserPosts(userId)])
+      .then(([fetchedUser, fetchedFriends, fetchedPosts]) => {
+        if (cancelled) return;
+        setProfileUser(fetchedUser);
+        setFriends(fetchedFriends);
+        setPosts(fetchedPosts);
+      })
+      .catch((err) => !cancelled && setError(getErrorMessage(err, "Could not load this profile")))
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  // Edits made on the profile card update this page and, for the own profile, the session user.
+  const handleUserUpdated = (patch) => {
+    setProfileUser((prev) => ({ ...prev, ...patch }));
+    if (isOwnProfile) updateUser(patch);
+  };
+
+  if (loading) return <p style={{ padding: "1rem" }}>Loading profile…</p>;
+  if (error || !profileUser) return <p style={{ padding: "1rem" }} role="alert">{error || "Profile not found"}</p>;
 
   return (
-    <div style={{display: "flex"}} className="parentdiv">
+    <div style={{ display: "flex" }} className="parentdiv">
       <div className="profileSection">
-        <Profile 
-          User={User}
-        />
-        
+        <Profile User={profileUser} onUserUpdated={handleUserUpdated} />
       </div>
       <div className="activitySection">
-          <div className="activitydiv">
-          Your Activity
+        <div className="activitydiv">
+          {isOwnProfile ? "Your Activity" : `${profileUser.username}'s posts`}
           <div className="notidiv">
-
-              <div>
-              {
-                post.length === 0 ? <div>No posts to show</div> :
-                post.map(PostCard)
-              }
-              </div>
+            {posts.length === 0 ? (
+              <div>No posts to show</div>
+            ) : (
+              posts.map((post) => <PostCard key={post._id} post={post} canApply={!isOwnProfile} />)
+            )}
           </div>
-
-          </div>
+        </div>
       </div>
       <div className="friendSection">
-      <h2>Friends</h2>
-      
-        {userFriends.map((friend) => (
-          <div key={friend._id} style={{
-           margin: "10px",
-           padding: "20px",
-          border: "2px solid #333",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          textAlign: "left",
-          maxWidth: "300px",
-          backgroundColor: "#fff",
-          display: "flex",
-          flexDirection: "column",
-        }}>
-        <div style={{display:"flex"}}>
-        <div>
-        <img
-          src={`${friend.photo}`}
-          alt="Profile"
-          style={{
-            width: "50px",
-            height: "50px",
-            borderRadius: "50%",
-            marginRight: "10px",
-          }} />
-        </div>
-            <div>
-            <p style={{ fontWeight: "bold", fontSize: "18px", marginBottom: "8px",cursor:"pointer"}} onClick={()=>{
-            navigate(`/user/profile/${friend._id}`)
-            }}>{friend.username}</p>
-            <p style={{ marginBottom: "8px" }}>Education: {friend.Education}</p>
-            <p style={{ marginBottom: "8px" }}>Work Experience: {friend.workExperience}</p>
-            </div>
-        </div>
-      </div>
+        <h2>Friends</h2>
+        {friends.length === 0 && <p>No connections yet.</p>}
+        {friends.map((friend) => (
+          <FriendCard key={friend._id} friend={friend} onOpen={() => navigate(`/user/profile/${friend._id}`)} />
         ))}
-      
       </div>
     </div>
   );
 };
 
 export default Dashboard;
-

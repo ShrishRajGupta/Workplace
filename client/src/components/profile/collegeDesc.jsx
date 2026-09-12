@@ -1,102 +1,66 @@
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
+import { Box, Button, Modal, Typography } from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
+import { addEducation } from "../../api/users";
+import { getErrorMessage } from "../../api/client";
+import { modalStyle } from "../profile";
+import "../../css/profile.css";
 
-import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import "../../css/profile.css"
-import {
-    Box,
-    Button,
-    Modal,
-    Typography,
-  } from "@mui/material";
+const CollegeDesc = ({ entries = [], editable, onUserUpdated }) => {
+  const [open, setOpen] = useState(false);
 
-import {
-    Delete as DeleteIcon,
-  } from "@mui/icons-material";
-  
-const home = "http://localhost:3001";
-
-const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
+  const addCollege = async (e) => {
+    e.preventDefault();
+    const [collegeName, degree, year] = Array.from(e.target.elements, (el) => el.value);
+    try {
+      const education = await addEducation({ collegeName, degree, year });
+      onUserUpdated({ education });
+      setOpen(false);
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not add the college"));
+    }
   };
 
-const CollegeDesc = ({props,User,user})=>{
-    const addCollege = async (e) => {
-        e.preventDefault();
-        const collegeName = e.target[0].value;
-        const degree = e.target[1].value;
-        const year = e.target[2].value;
-        const username = localStorage.getItem("username");
-        try {
-          const response = await axios.post(`${home}/in/addCollege/${username}`, {
-            collegeName,
-            degree,
-            year
-          });
-          if (response.status === 200) {
-            console.log(response.data);
-            window.location.reload();
-          }
-        } catch (error) {
-          console.log(error);
-        }
-        }
-        const [open, setOpen] = useState(false);
-    
-    return(
-        <>
-        <div className="College">
-        {props !== undefined && typeof props !== 'undefined' && props.length > 0  ? (
-            props.map((edu) => (
+  return (
+    <>
+      <div className="College">
+        {entries.length > 0 ? (
+          entries.map((edu) => (
             <div key={edu._id}>
-                <p>College = {edu.collegeName}</p>
-                <p>Degree = {edu.degree}</p>
-                <p>Year = {edu.year}</p>
-                <Button variant="outlined" startIcon={<DeleteIcon />}>
-                Delete
+              <p>College = {edu.collegeName}</p>
+              <p>Degree = {edu.degree}</p>
+              <p>Year = {edu.year}</p>
+              {editable && (
+                <Button variant="outlined" startIcon={<DeleteIcon />} disabled title="Coming soon">
+                  Delete
                 </Button>
-
+              )}
             </div>
-            
-            ))
+          ))
         ) : (
-            <h3>Empty</h3>
+          <h3>Empty</h3>
         )}
-        </div>
-        {
-          User._id !== user.user._id?"":<Button onClick={()=>setOpen(true)}>Add</Button>
-        }
-        
-        <Modal
-        open={open}
-        onClose={()=>setOpen(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        >
-        <Box sx={style}>
-            <Typography variant="h6" id="modal-modal-title" component="h2">
+      </div>
+      {editable && <Button onClick={() => setOpen(true)}>Add</Button>}
+
+      <Modal open={open} onClose={() => setOpen(false)} aria-labelledby="add-college-title">
+        <Box sx={modalStyle}>
+          <Typography variant="h6" id="add-college-title" component="h2">
             Add College
-            </Typography>
-            <form onSubmit={addCollege}>
+          </Typography>
+          <form onSubmit={addCollege}>
             <input type="text" placeholder="College Name" required />
             <input type="text" placeholder="Degree" required />
             <input type="text" placeholder="Year" required />
-            <button className="button-36" role="button" type="submit">
-                Add
-              </button>
-            </form>
+            <button className="button-36" type="submit">
+              Add
+            </button>
+          </form>
         </Box>
-        </Modal>
-        </>
-    )
+      </Modal>
+    </>
+  );
 };
 
 export default CollegeDesc;
-  

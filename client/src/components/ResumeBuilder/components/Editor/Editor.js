@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X } from "react-feather";
 
 import InputControl from "../InputControl/InputControl";
@@ -8,6 +8,9 @@ import styles from "./Editor.module.css";
 function Editor(props) {
   const sections = props.sections;
   const information = props.information;
+  // Latest information for effects that must only re-run on a section change.
+  const informationRef = useRef(information);
+  informationRef.current = information;
 
   const [activeSectionKey, setActiveSectionKey] = useState(
     Object.keys(sections)[0]
@@ -478,6 +481,8 @@ function Editor(props) {
         }));
         break;
       }
+      default:
+        break;
     }
   };
 
@@ -516,7 +521,7 @@ function Editor(props) {
   };
 
   useEffect(() => {
-    const activeInfo = information[sections[activeSectionKey]];
+    const activeInfo = informationRef.current[sections[activeSectionKey]];
     setActiveInformation(activeInfo);
     setSectionTitle(sections[activeSectionKey]);
     setActiveDetailIndex(0);
@@ -561,33 +566,32 @@ function Editor(props) {
       summary: typeof activeInfo?.detail !== "object" ? activeInfo.detail : "",
       other: typeof activeInfo?.detail !== "object" ? activeInfo.detail : "",
     });
-  }, [activeSectionKey]);
+  }, [activeSectionKey, sections]);
 
   useEffect(() => {
     setActiveInformation(information[sections[activeSectionKey]]);
-  }, [information]);
+  }, [information, sections, activeSectionKey]);
 
+  // Load the selected detail (work experience #n, project #n, ...) into the form.
   useEffect(() => {
-    const details = activeInformation?.details;
-    if (!details) return;
-
     const activeInfo = information[sections[activeSectionKey]];
+    if (!activeInfo?.details) return;
+    const detail = activeInfo.details[activeDetailIndex];
     setValues({
-      overview: activeInfo.details[activeDetailIndex]?.overview || "",
-      link: activeInfo.details[activeDetailIndex]?.link || "",
-      certificationLink:
-        activeInfo.details[activeDetailIndex]?.certificationLink || "",
-      companyName: activeInfo.details[activeDetailIndex]?.companyName || "",
-      location: activeInfo.details[activeDetailIndex]?.location || "",
-      startDate: activeInfo.details[activeDetailIndex]?.startDate || "",
-      endDate: activeInfo.details[activeDetailIndex]?.endDate || "",
-      points: activeInfo.details[activeDetailIndex]?.points || "",
-      title: activeInfo.details[activeDetailIndex]?.title || "",
-      linkedin: activeInfo.details[activeDetailIndex]?.linkedin || "",
-      github: activeInfo.details[activeDetailIndex]?.github || "",
-      college: activeInfo.details[activeDetailIndex]?.college || "",
+      overview: detail?.overview || "",
+      link: detail?.link || "",
+      certificationLink: detail?.certificationLink || "",
+      companyName: detail?.companyName || "",
+      location: detail?.location || "",
+      startDate: detail?.startDate || "",
+      endDate: detail?.endDate || "",
+      points: detail?.points || "",
+      title: detail?.title || "",
+      linkedin: detail?.linkedin || "",
+      github: detail?.github || "",
+      college: detail?.college || "",
     });
-  }, [activeDetailIndex]);
+  }, [activeDetailIndex, activeSectionKey, information, sections]);
 
   return (
     <div className={styles.container}>
