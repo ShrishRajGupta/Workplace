@@ -1,8 +1,14 @@
-const io = require("socket.io")(8900,{
+require("dotenv").config();
+
+const PORT = Number(process.env.PORT) || 8900;
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+
+const io = require("socket.io")(PORT, {
     cors:{
-        origin:"http://localhost:3000"
+        origin: CLIENT_URL
     },
 });
+console.log(`Socket server listening on ${PORT}, allowing origin ${CLIENT_URL}`);
 let users = [];
 
 const addUser = (userId,socketId)=>{

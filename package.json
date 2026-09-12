@@ -1,0 +1,21 @@
+{
+  "name": "workplace",
+  "private": true,
+  "description": "Dev orchestrator for the Workplace client, API server and socket server. Each app keeps its own package.json.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "install:all": "npm install && npm --prefix client install && npm --prefix server install && npm --prefix socket install",
+    "dev": "concurrently -k -n client,server,socket -c blue,green,magenta \"npm --prefix client start\" \"npm --prefix server run dev\" \"npm --prefix socket run dev\"",
+    "build": "npm --prefix client run build",
+    "lint": "npm run lint:client && npm run lint:server && npm run lint:socket",
+    "lint:client": "npm --prefix client run lint",
+    "lint:server": "find server -name '*.js' -not -path '*/node_modules/*' -exec node --check {} ';'",
+    "lint:socket": "find socket -name '*.js' -not -path '*/node_modules/*' -exec node --check {} ';'"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
