@@ -24,7 +24,7 @@ const Skills = ({ props,User,user }) => {
     const description = e.target[0].value;
     const username = localStorage.getItem("username");
     try {
-      const response = await axios.post(`${home}/in/addSkills/${username}`, {
+      const response = await axios.post(`/in/addSkills/${username}`, {
         description,
       });
       if (response.status === 200) {
@@ -89,7 +89,7 @@ const WorkEx = ({ props ,User,user}) => {
     const year = e.target[1].value;
     const username = localStorage.getItem("username");
     try {
-      const response = await axios.post(`${home}/in/addWorkEx/${username}`, {
+      const response = await axios.post(`/in/addWorkEx/${username}`, {
         companyName,
         year,
       });

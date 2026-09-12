@@ -1,90 +1,94 @@
 import UserDB from "../models/userModel.js";
 
-// @desc : Get dashboard of user
-// @route : GET /in/update/:username/:typeId
-// @type : post request
-const updateInfo = async (req, res) => {
-  const { username } = req.params;
+const MAX_FIELD_LENGTH = 500;
 
-  const { name, about } = req.body;
-  try {
-    const user = await UserDB.findOne({ username: username });
-    if (!user) 
-      return res.status(404).json({ msg: "User not found" });
-    if (name !== undefined && name !== null && name !== "") 
-      user.name = name;
-    if (about !== undefined && about !== null && about !== "")
-      user.about = about;
-
-    await user.save();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ msg: "Server error" });
-  }
-
-  // console.log(req.body);
-  return res.status(200).json({ message: "success",name,about });
+const cleanString = (value) => {
+  if (typeof value !== "string") return "";
+  return value.trim().slice(0, MAX_FIELD_LENGTH);
 };
 
-const addEducation = async (req, res) => {
-  const { username } = req.params;
-  username.toString();
-  console.log(username);
-  // console.log(req.body);
-  const { collegeName, degree, year } = req.body;
+// Loads the logged-in user or sends a 404. Returns null when a response was already sent.
+const loadCurrentUser = async (req, res) => {
+  const user = await UserDB.findById(req.user.id);
+  if (!user) {
+    res.status(404).json({ success: false, message: "User not found" });
+    return null;
+  }
+  return user;
+};
+
+// @route POST /in/update — update name / about of the logged-in user
+const updateInfo = async (req, res) => {
+  const name = cleanString(req.body.name);
+  const about = cleanString(req.body.about);
   try {
-    const user= await UserDB.findOne({ "username": username});
-    if (!user) 
-      return res.status(404).json({ msg: "User not found" });
+    const user = await loadCurrentUser(req, res);
+    if (!user) return;
+    if (name) user.name = name;
+    if (about) user.about = about;
+    await user.save();
+    return res.status(200).json({ message: "success", name: user.name, about: user.about });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// @route POST /in/addCollege — append an education entry
+const addEducation = async (req, res) => {
+  const collegeName = cleanString(req.body.collegeName);
+  const degree = cleanString(req.body.degree);
+  const year = cleanString(req.body.year);
+  if (!collegeName) {
+    return res.status(400).json({ success: false, message: "collegeName is required" });
+  }
+  try {
+    const user = await loadCurrentUser(req, res);
+    if (!user) return;
     user.education.push({ collegeName, degree, year });
     await user.save();
+    return res.status(200).json({ message: "success" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
-  catch (error) {
-    console.log(error);
-    return res.status(500).json({ msg: "Server error" });
-  }
-  return res.status(200).json({ message: "success" });
-}
+};
 
-const addWorkEx = async (req,res) =>{
-  const { username } = req.params;
-  console.log(req.body);
-  const { companyName, year } = req.body;
+// @route POST /in/addWorkEx — append a work-experience entry
+const addWorkEx = async (req, res) => {
+  const companyName = cleanString(req.body.companyName);
+  const year = cleanString(req.body.year);
+  if (!companyName) {
+    return res.status(400).json({ success: false, message: "companyName is required" });
+  }
   try {
-    const user= await UserDB.findOne({ username: username});
-    if (!user) 
-      return res.status(404).json({ msg: "User not found" });
+    const user = await loadCurrentUser(req, res);
+    if (!user) return;
     user.workexperience.push({ companyName, year });
     await user.save();
+    return res.status(200).json({ message: "success" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
-  catch (error) {
-    console.log(error);
-    return res.status(500).json({ msg: "Server error" });
+};
+
+// @route POST /in/addSkills — append a skill
+const addSkills = async (req, res) => {
+  const description = cleanString(req.body.description);
+  if (!description) {
+    return res.status(400).json({ success: false, message: "description is required" });
   }
-  return res.status(200).json({ message: "success" });
-
-}
-
-const addSkills = async (req,res) =>{
-  const { username } = req.params;
-  console.log(req.body);
-  const { description } = req.body;
   try {
-    const user= await UserDB.findOne({ username: username});
-    if (!user) 
-      return res.status(404).json({ msg: "User not found" });
+    const user = await loadCurrentUser(req, res);
+    if (!user) return;
     user.skills.push({ description });
     await user.save();
+    return res.status(200).json({ message: "success" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
-  catch (error) {
-    console.log(error);
-    return res.status(500).json({ msg: "Server error",description });
-  }
-  return res.status(200).json({ message: "success" });
+};
 
-}
-
-export { updateInfo,
-addEducation,
-addWorkEx,
-addSkills };
+export { updateInfo, addEducation, addWorkEx, addSkills };

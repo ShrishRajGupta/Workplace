@@ -35,7 +35,7 @@ const CollegeDesc = ({props,User,user})=>{
         const year = e.target[2].value;
         const username = localStorage.getItem("username");
         try {
-          const response = await axios.post(`${home}/in/addCollege/${username}`, {
+          const response = await axios.post(`/in/addCollege/${username}`, {
             collegeName,
             degree,
             year

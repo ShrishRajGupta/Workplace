@@ -29,7 +29,7 @@ const RegistrationForm = () => {
         removeCookie("user");
         setCookie("user", {id: response.data.user._id ,username: response.data.user.username});
         localStorage.setItem("isLogged", true);
-        const email= await axios.post("http://localhost:3001/email/intro", {userEmail: user.email, userName: user.username});
+        const email= await axios.post("/email/intro", {userEmail: user.email, userName: user.username});
         console.log(email);
         navigate("/user/login");
       } catch (err) {

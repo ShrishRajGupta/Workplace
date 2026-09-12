@@ -1,44 +1,38 @@
-import dotenv from "dotenv";
-dotenv.config();
-import UserDB from "../models/userModel.js"
+import { unlink } from "fs/promises";
+import { v2 as cloudinary } from "cloudinary";
+import UserDB from "../models/userModel.js";
 
-import multer from "multer";
-import {v2 as cloudinary} from 'cloudinary';
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUDNAME,
+  api_key: process.env.CLOUDINARY_APIKEY,
+  api_secret: process.env.CLOUDINARY_APISECRET,
+});
 
-cloudinary.config({ 
-    cloud_name: process.env.CLOUDINARY_CLOUDNAME, 
-    api_key: process.env.CLOUDINARY_APIKEY, 
-    api_secret: process.env.CLOUDINARY_APISECRET 
-  });
+// Best-effort removal of multer's temp file; the upload already succeeded or failed by now.
+const removeTempFile = (path) => unlink(path).catch(() => {});
 
-const uploadPhoto = async (req,res) =>{
-    const id=req.body.user;
-  if(req.file===undefined||req.file=== null)
-    return res.status(300).json({MSG:"No Upload"});
-
-  const user = await UserDB.findOne({ _id:id });
-  if (!user) 
-  return res.status(404).json({ msg: "User not found" });
-  else{
-    const upload= await cloudUp(req.file.path);
-    user.photo = upload.secure_url;  
-    await user
-    .save()
-    .then(() => res.json({url:upload.secure_url}))
-    .catch((err) => res.status(400).json("Error: " + err));
+// @route POST /in/add — replace the logged-in user's profile photo (multipart field "photo")
+const uploadPhoto = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: "No photo uploaded" });
   }
-}
 
-
-const cloudUp = async(filepath)=>{
-    try {
-      const result = await cloudinary.uploader.upload(filepath);
-      // console.log(result);
-      return result;
-    } catch (error) {
-      console.error(error);
+  try {
+    const user = await UserDB.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
-  
-  }
-export default uploadPhoto;
 
+    const result = await cloudinary.uploader.upload(req.file.path, { folder: "workplace/profile" });
+    user.photo = result.secure_url;
+    await user.save();
+    return res.status(200).json({ url: result.secure_url });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Photo upload failed" });
+  } finally {
+    await removeTempFile(req.file.path);
+  }
+};
+
+export default uploadPhoto;

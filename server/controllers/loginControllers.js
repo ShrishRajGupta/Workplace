@@ -1,4 +1,5 @@
 import checkF from "../middlewares/generateJWT.js";
+import { authCookieOptions, clearAuthCookieOptions } from "../utils/cookieOptions.js";
 import BlogDB from "../models/userModel.js";
 import { genSaltSync, hashSync } from "bcrypt";
 import UserDB from "../models/userModel.js";
@@ -47,10 +48,7 @@ export const registerUser = async (req, res) => {
     console.log(checkF(member));
 
     return res
-      .cookie("authorization", checkF(member), {
-        httpOnly: true,
-        secure: false,
-      })
+      .cookie("authorization", checkF(member), authCookieOptions)
       .status(200)
       .json({
         success: true,
@@ -85,7 +83,7 @@ export const loginUser = async (req, res) => {
     }
 
     //Checking DB for unique UserDB and passwd
-    const user = await UserDB.findOne({ email: email });
+    const user = await UserDB.findOne({ email: email }).select("+password");
     if (!user)
       return res.status(401).json({
         success: false,
@@ -102,10 +100,7 @@ export const loginUser = async (req, res) => {
     if (user && check) {
       const token = checkF(user);
       return res
-        .cookie("authorization", token, {
-          httpOnly: true,
-          secure: false,
-        })
+        .cookie("authorization", token, authCookieOptions)
         .status(200)
         .json({
           success: true,
@@ -133,9 +128,8 @@ export const logoutUser = (req, res) => {
   try{
 
     console.log(`logout success from server`);
-    req.session=null;
     // logout user and delete cookie  and redirect to login
-    res.clearCookie("authorization");
+    res.clearCookie("authorization", clearAuthCookieOptions);
     res
     .status(200)
     .json({

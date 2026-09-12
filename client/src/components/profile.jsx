@@ -73,7 +73,7 @@ const Profile = ({User}) => {
     }
  
   const updatePersonalInfo = (username) => {
-    fetch(`${home}/in/update/${username}`, {
+    fetch(`/in/update/${username}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const Profile = ({User}) => {
     formData.append("photo", newUser.photo);
     formData.append("user", User._id);
 
-    const local = await axios.post(`${home}/in/add/`, formData);
+    const local = await axios.post(`/in/add/`, formData);
     User.photo = local.data.url;
     setLoading(false);
     photoClose();
