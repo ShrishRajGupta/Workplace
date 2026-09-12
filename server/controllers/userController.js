@@ -1,173 +1,89 @@
 import UserDB from "../models/userModel.js";
+import HttpError from "../utils/httpError.js";
 
-// @desc : Get dashboard of user
-// @route : GET /in/:username
-const getDashboard = async (req, res) => {
-    const username=req.params.username.toString();
-    let user;
-    try {
-        user = await UserDB.findOne({username:username});
-        if(!user)
-            return res.status(404).json({msg:"User not found"});
-        
-        
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({msg:"Server error"});
-    }    
-    console.log(user);
-    return res.status(200).json(user);
+const asArray = (value) => (Array.isArray(value) ? value : []);
+const idsEqual = (a, b) => String(a) === String(b);
+
+const findUserOr404 = async (id) => {
+  const user = await UserDB.findById(id);
+  if (!user) throw new HttpError(404, "User not found");
+  return user;
 };
 
-export { getDashboard };
-// import UserDB from "../models/userModel.js";
-import BlogDB from "../models/postModel.js";
-// Create profile
-const createProfile = async function(req,res){
-    const {username,About,Education,workExperience,Skills} = req.body;
-    
-    try{
-        let user_id = req.user.id;
-        
-    const new_data = {
-       "$set": {
-        "About": About,
-        "Education": Education,
-        "workExperience": workExperience,
-        "Skills": Skills
-       }
-    };
-    const updatedUser = await UserDB.findOneAndUpdate({"_id" : user_id},new_data);
-    console.log(updatedUser);
-    if(updatedUser){
-        return res.status(200).json({
-            success:true,
-            message:"Profile created Successfully",
-            user:updatedUser
-        })
-    }else{
-        return console.log("ERROR");
-    }
-    }
-    catch(err){
-        console.log(err);
-        res.status(400).json({
-            success:false,
-            message:"error while creating Profile"
-        })
-    }
-    
-};
-// Profile page
-const Profile = async function(req,res){
-    try{
-        let user_id = req.user.id;
-        let matchedUser = await UserDB.findOne({"_id": user_id});
-
-        if(matchedUser){
-            return res.status(200).json({
-                success: true,
-                message:"User Profile",
-                user: matchedUser
-            })
-        }
-    }
-    catch(err){
-        console.log(err);
-    }
-
+// @route GET /user/profile — the logged-in user
+export const getMyProfile = async (req, res) => {
+  const user = await findUserOr404(req.user.id);
+  res.status(200).json({ success: true, message: "User profile", user });
 };
 
-const allposts = async function(req,res){
-        
-    try{
-        let currentUser_id = req.user.id;
-        const allPosts = await BlogDB.find({"user_id": currentUser_id});
-        if(allPosts){
-            return res.status(200).json({
-                message: "All Posts Recovered",
-                allposts: allPosts
-            });
-        }else{
-            return res.status(200).json({
-                message:"User dont have post"
-            });
-        }
-    }
-    catch(err){
-        console.log(err);
-    }
+// @route GET /user/profile/:userId  and  GET /user/:userId — any user's public profile
+export const getUserById = async (req, res) => {
+  const user = await findUserOr404(req.params.userId);
+  res.status(200).json({ success: true, message: "User retrieved", user });
 };
 
-const anyUserPosts = async function(req,res){
-    const userId = req.params.userId.toString();
-    try{
-        const allPosts = await BlogDB.find({"user_id": userId});
-        if(allPosts){
-            return res.status(200).json({
-                message: "All Posts Recovered",
-                allposts: allPosts
-            });
-        }else{
-            return res.status(200).json({
-                message:"User dont have post"
-            });
-        }
-    }
-    catch(err){
-        res.status(500).json({message:"Internal Server Error"});
-        console.log(err);
-    }
-}
-const connectFriends = async function(req,res){
-    try {
-        const friends_userid = req.params.userid.toString();
-        const user_id = req.user.id.toString();
-        const existingUser = await UserDB.findById({"_id": user_id}).populate('friends');
-        const friend = await UserDB.findById({ "_id": friends_userid }).populate('friends');
-        // const existingRequest = await User.findOne({
-        //     "_id": user_id,
-        //     "existingUser.friends._id": friends_userid,
-        //   });
-      
-        //   if (existingRequest) {
-        //     return res.json({ success: false, message: 'Connection request already sent.' });
-        //   }
-        if(user_id === friends_userid){
-            return res.json({ success: false, message: 'Same User' })
-        }
-        const FriendRequest = {
-            from:user_id,
-            to:friends_userid,
-            status:'pending',
-            username: existingUser.username
-        }
-        friend.friendRequests.push(FriendRequest);
-        // Save changes to the database
-        await Promise.all([existingUser.save(), friend.save()]);
-        res.status(200).json({
-          message: "Friends connected",
-          user: existingUser
-        });
-      } catch (err) {
-        console.log(err);
-      }
-        
+// @route POST /user/createProfile — set about / education / work experience / skills
+// Accepts the capitalised keys the current client sends as well as the schema's names.
+export const createProfile = async (req, res) => {
+  const body = req.body || {};
+  const update = {};
+  const about = body.about ?? body.About;
+  if (typeof about === "string") update.about = about.trim().slice(0, 500);
+  if (body.education ?? body.Education) update.education = asArray(body.education ?? body.Education);
+  if (body.workexperience ?? body.workExperience) {
+    update.workexperience = asArray(body.workexperience ?? body.workExperience);
+  }
+  if (body.skills ?? body.Skills) update.skills = asArray(body.skills ?? body.Skills);
 
+  const user = await UserDB.findByIdAndUpdate(req.user.id, { $set: update }, { new: true, runValidators: true });
+  if (!user) throw new HttpError(404, "User not found");
+  res.status(200).json({ success: true, message: "Profile saved", user });
 };
 
-const friends = async function(req,res){
-    const friend_id = req.params.friend_id.toString();
-    try{
-        const friend = await UserDB.findOne({"_id": friend_id});
-        res.status(200).json({
-            message: "Friends retrieved success",
-            user: friend 
-        })
-    }
-    catch(err){
-        console.log(err);
-    }
+// @route GET /user/profile/:userId/connect — send a friend request to :userId
+export const sendFriendRequest = async (req, res) => {
+  const me = req.user.id;
+  const targetId = req.params.userId;
+  if (idsEqual(me, targetId)) throw new HttpError(400, "You cannot connect with yourself");
+
+  const [sender, target] = await Promise.all([findUserOr404(me), findUserOr404(targetId)]);
+  if (target.friends.some((id) => idsEqual(id, me))) throw new HttpError(409, "Already connected");
+  if (target.friendRequests.some((r) => idsEqual(r.from, me) && r.status === "pending")) {
+    throw new HttpError(409, "Connection request already sent");
+  }
+
+  target.friendRequests.push({ from: me, to: targetId, status: "pending", username: sender.username });
+  await target.save();
+  res.status(200).json({ success: true, message: "Connection request sent", user: sender });
 };
 
-export {createProfile,Profile,allposts,connectFriends,friends,anyUserPosts};
+// @route PUT /user/connect/:userId/:friendsId/:status/:requestId
+// :userId is the requester, :friendsId is the recipient (must be the caller),
+// :status is "Accept" or "Reject", :requestId is the friendRequests sub-document id.
+export const respondFriendRequest = async (req, res) => {
+  const { userId: requesterId, friendsId: recipientId, status, requestId } = req.params;
+  if (!idsEqual(recipientId, req.user.id)) throw new HttpError(403, "Only the recipient can respond to a request");
+
+  const recipient = await findUserOr404(recipientId);
+  const request = recipient.friendRequests.id(requestId);
+  if (!request || !idsEqual(request.from, requesterId)) throw new HttpError(404, "Friend request not found");
+
+  const accepted = status.toLowerCase() === "accept";
+  if (accepted) {
+    await Promise.all([
+      UserDB.updateOne({ _id: recipientId }, { $addToSet: { friends: requesterId } }),
+      UserDB.updateOne({ _id: requesterId }, { $addToSet: { friends: recipientId } }),
+    ]);
+  }
+  await UserDB.updateOne({ _id: recipientId }, { $pull: { friendRequests: { _id: requestId } } });
+
+  const user = await UserDB.findById(recipientId);
+  res.status(200).json({ success: true, message: accepted ? "Request accepted" : "Request rejected", user });
+};
+
+// @route GET /user/friends/:userId — id, username and photo of each friend (bare array)
+export const listFriends = async (req, res) => {
+  const user = await UserDB.findById(req.params.userId).populate("friends", "username photo");
+  if (!user) throw new HttpError(404, "User not found");
+  res.status(200).json(user.friends.map(({ _id, username, photo }) => ({ _id, username, photo })));
+};

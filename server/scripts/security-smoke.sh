@@ -59,6 +59,45 @@ check "chat: carol reading thread -> 403" "$(code -b $J/carol.jar $B/messages/$C
 check "chat: carol posting to thread -> 403" "$(code -b $J/carol.jar -X POST $B/messages -H 'Content-Type: application/json' -d "{\"conversationId\":\"$CID\",\"text\":\"spam\"}")" 403
 check "chat: bob reading thread -> 200" "$(code -b $J/bob.jar $B/messages/$CID)" 200
 
+
+# ---- correctness checks (added with the backend restructure) ----
+check "register duplicate username -> 409" "$(code -X POST $B/user/register -H 'Content-Type: application/json' -d '{"username":"alice","email":"other@x.test","password":"pw"}')" 409
+check "unknown route -> JSON 404" "$(curl -s $B/nope/route | grep -c '"success":false')" 1
+check "invalid ObjectId -> 400 (not a hang)" "$(code --max-time 3 -b $J/alice.jar $B/user/profile/not-an-id)" 400
+check "GET /in/:username unknown -> 404" "$(code $B/in/nobody)" 404
+
+# profile save actually persists (was a silent no-op with capitalised keys)
+curl -s -o /dev/null -b $J/alice.jar -X POST $B/user/createProfile -H 'Content-Type: application/json' -d '{"About":"I build things","Skills":[{"description":"node"}]}'
+check "createProfile persists about + skills" "$(curl -s -b $J/alice.jar $B/user/profile | grep -c '"about":"I build things"')$(curl -s -b $J/alice.jar $B/user/profile | grep -c '"description":"node"')" 11
+
+# friend request lifecycle: bob -> alice, alice accepts, request removed, both friends, no duplicates
+check "self-connect -> 400" "$(code -b $J/bob.jar $B/user/profile/$BID/connect)" 400
+check "bob sends request to alice -> 200" "$(code -b $J/bob.jar $B/user/profile/$AID/connect)" 200
+check "duplicate request -> 409" "$(code -b $J/bob.jar $B/user/profile/$AID/connect)" 409
+RID=$(curl -s -b $J/alice.jar $B/user/profile | python3 -c 'import sys,json; r=json.load(sys.stdin)["user"]["friendRequests"]; print(r[0]["_id"] if r else "")')
+check "request visible to alice with status pending" "$(curl -s -b $J/alice.jar $B/user/profile | grep -c '"status":"pending"')" 1
+check "carol cannot answer alice's request -> 403" "$(code -b $J/carol.jar -X PUT $B/user/connect/$BID/$AID/Accept/$RID)" 403
+check "alice accepts -> 200" "$(code -b $J/alice.jar -X PUT $B/user/connect/$BID/$AID/Accept/$RID)" 200
+AP=$(curl -s -b $J/alice.jar $B/user/profile)
+check "request removed after accept" "$(echo "$AP" | grep -c '"friendRequests":\[\]')" 1
+check "alice has bob as friend" "$(echo "$AP" | grep -c "\"friends\":\[\"$BID\"\]")" 1
+check "bob has alice as friend" "$(curl -s -b $J/bob.jar $B/user/profile | grep -c "\"friends\":\[\"$AID\"\]")" 1
+check "already connected -> 409" "$(code -b $J/bob.jar $B/user/profile/$AID/connect)" 409
+check "friends list is a bare array with username" "$(curl -s -b $J/alice.jar $B/user/friends/$AID | grep -c '^\[{"_id":"[a-f0-9]*","username":"bob"')" 1
+
+# posts
+check "create post missing fields -> 400" "$(code -b $J/alice.jar -X POST $B/user/jobpostform -H 'Content-Type: application/json' -d '{"salary":10}')" 400
+PP=$(curl -s -b $J/alice.jar -X POST $B/user/jobpostform -H 'Content-Type: application/json' -d '{"jobTitle":"Node Engineer","companyName":"Acme","salary":"120"}')
+check "create post -> post returned with createdAt" "$(echo "$PP" | grep -c '"createdAt"')" 1
+check "GET /home lists it under posts" "$(curl -s $B/home | grep -c '"jobTitle":"Node Engineer"')" 1
+check "GET /user/allposts (self) works" "$(curl -s -b $J/alice.jar $B/user/allposts | grep -c '"allposts":\[{')" 1
+check "GET /user/allposts/:id works" "$(curl -s -b $J/bob.jar $B/user/allposts/$AID | grep -c '"jobTitle":"Node Engineer"')" 1
+check "post appended to user.posts" "$(curl -s -b $J/alice.jar $B/user/profile | grep -c '"posts":\["')" 1
+
+# search: users and posts come back in separate keys
+SR=$(curl -s "$B/search/node")
+check "search: user key holds users only" "$(echo "$SR" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(all("username" in u for u in d["user"]), len(d["posts"])>0)')" "True True"
+
 curl -s -D $J/logout.h -b $J/alice.jar $B/user/logout > /dev/null
 check "logout clears cookie" "$(grep -i set-cookie $J/logout.h | grep -ci 'authorization=;')" 1
 echo; echo "passed=$pass failed=$fail"

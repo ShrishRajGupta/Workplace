@@ -23,19 +23,14 @@ const getTransporter = () => {
 // @route POST /email/intro — welcome email to the logged-in user
 const sendIntroEmail = async (req, res) => {
   const { email, username } = req.user;
-  try {
-    const html = await ejs.renderFile(TEMPLATE, { name: username });
-    await getTransporter().sendMail({
-      from: process.env.GMAIL_USER,
-      to: email,
-      subject: "Welcome to Workplace",
-      html,
-    });
-    return res.status(200).json({ success: true, message: "Email sent" });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ success: false, message: "Could not send email" });
-  }
+  const html = await ejs.renderFile(TEMPLATE, { name: username });
+  await getTransporter().sendMail({
+    from: process.env.GMAIL_USER,
+    to: email,
+    subject: "Welcome to Workplace",
+    html,
+  });
+  res.status(200).json({ success: true, message: "Email sent" });
 };
 
 export { sendIntroEmail };

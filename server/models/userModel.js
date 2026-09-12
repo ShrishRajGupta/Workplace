@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const userSchema = Schema({
+const userSchema = new Schema({
     username:{
         type: String,
         required:[true,"Enter your username"],
@@ -12,8 +12,10 @@ const userSchema = Schema({
     },
     email:{
         type: String,
-        default: '',
-        required:[true,"ENTER YOUR EMAIL"]
+        required:[true,"ENTER YOUR EMAIL"],
+        unique:true,
+        lowercase:true,
+        trim:true
     },
     photo:
     {
@@ -66,23 +68,23 @@ const userSchema = Schema({
     }],
     friends:[{
         type: Schema.Types.ObjectId,
-        default:[],
         ref:"UserDB"
     }],
     friendRequests:[{
         from:{
             type: Schema.Types.ObjectId,
-            default:[],
-            ref:"UserDB"
+            ref:"UserDB",
+            required:true
         },
         to:{
             type: Schema.Types.ObjectId,
-            default:[],
-            ref:"UserDB"
+            ref:"UserDB",
+            required:true
         },
         status:{
             type:String,
-            enum:['pending','accepted','rejected']
+            enum:['pending','accepted','rejected'],
+            default:'pending'
         },
         username:{
             type:String,
@@ -90,8 +92,7 @@ const userSchema = Schema({
     }],
     posts:[{
         type: Schema.Types.ObjectId,
-        default:[],
-        ref:"BlogDB"
+        ref:"JobPost"
     }],
 },{
     timestamps:true,
