@@ -28,7 +28,7 @@ const Login = () => {
 
       if(user){
         navigate(`/user/profile/${user.user._id}`);
-        const emailDispatch = await axios.post(`${server}/email/intro`, {userEmail: user.user.email, userName: user.user.username});
+        const emailDispatch = await axios.post(`/email/intro`, {userEmail: user.user.email, userName: user.user.username});
         console.log(emailDispatch.data);
       }  
   };

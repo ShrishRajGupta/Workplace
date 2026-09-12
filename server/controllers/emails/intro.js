@@ -1,54 +1,36 @@
 // Introductory email to newly registered users
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-import ejs from 'ejs'
-dotenv.config();
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import ejs from "ejs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const TEMPLATE = join(__dirname, "..", "..", "views", "Templates", "intro.ejs");
 
-// @route = /email/intro
-const sendIntroEmail = async (req, res) => {
-  const { userEmail, userName } = req.body;
-  try {
-    const transporter = nodemailer.createTransport({
+// One pooled transporter for the process instead of a new connection per request.
+let transporter;
+const getTransporter = () => {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
       service: "gmail",
-      host: "smtp.gmail.com",
-      port: 587,
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
+      pool: true,
+      auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_PASS },
     });
-    ejs.renderFile(`${__dirname}/../../views/Templates/intro.ejs`,
-      { name: userName },
-      function (err, data) {
-        if (err) {
-          console.log(err);
-        } else {
-          var mainOptions = {
-            from: process.env.GMAIL_USER,
-            to: userEmail,
-            subject: "Welcome to our website",
-            html: data,
-          };
-          transporter.sendMail(mainOptions, function (err, info) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Message sent: " + info);
-            }
-          });
-        }
-      }
-    );
-    res.status(200).json({ message: "Email sent" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
   }
+  return transporter;
+};
+
+// @route POST /email/intro — welcome email to the logged-in user
+const sendIntroEmail = async (req, res) => {
+  const { email, username } = req.user;
+  const html = await ejs.renderFile(TEMPLATE, { name: username });
+  await getTransporter().sendMail({
+    from: process.env.GMAIL_USER,
+    to: email,
+    subject: "Welcome to Workplace",
+    html,
+  });
+  res.status(200).json({ success: true, message: "Email sent" });
 };
 
 export { sendIntroEmail };
