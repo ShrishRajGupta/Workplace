@@ -31,13 +31,15 @@ src/
 ├── App.js            # route tree (public, anonymous-only, protected + layout)
 ├── api/              # one axios instance (client.js) + per-domain calls (auth, users, posts, chat)
 ├── context/          # AuthContext: session user, login/register/logout, refreshUser
-├── routes/           # ProtectedRoute / AnonymousRoute guards, AppLayout (navbar), NotFound
-├── components/       # screens and feature components
-├── widgets/          # home feed widgets
-├── pages/messenger/  # real-time chat
-├── utils/            # logger, avatar fallback
-└── css/              # global stylesheets
+├── routes/           # ProtectedRoute / AnonymousRoute guards, AppLayout (navbar)
+├── pages/            # one folder per routed screen: <Name>Page.jsx (+ <Name>Page.css)
+├── features/         # domain components: profile/, chat/, jobs/
+├── components/       # shared primitives: Navbar, ModalBox, HeroLayout
+├── styles/base.css   # global reset
+└── utils/            # logger, avatar fallback
 ```
 
-All server calls go through `src/api/`; components never import axios directly. The auth cookie is
-httpOnly and is sent automatically (same-origin via the proxy, or `withCredentials` cross-origin).
+Conventions: PascalCase file names, one component per file, CSS co-located with the component
+that owns it (the resume builder keeps its CSS modules under `pages/ResumeBuilder/components`).
+All server calls go through `src/api/`; components never import axios directly. The auth cookie
+is httpOnly and is sent automatically (same-origin via the proxy, or `withCredentials` cross-origin).
