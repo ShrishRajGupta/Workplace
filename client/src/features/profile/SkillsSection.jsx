@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import ModalBox from "../../components/ModalBox/ModalBox";
-import { addSkill } from "../../api/users";
+import { addSkill, removeSkill } from "../../api/users";
 import { getErrorMessage } from "../../api/client";
 
 const SkillsSection = ({ entries = [], editable, onUserUpdated }) => {
@@ -19,6 +19,14 @@ const SkillsSection = ({ entries = [], editable, onUserUpdated }) => {
     }
   };
 
+  const handleRemove = async (entryId) => {
+    try {
+      onUserUpdated({ skills: await removeSkill(entryId) });
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not remove the skill"));
+    }
+  };
+
   return (
     <>
       <div className="profile-card__section-head">
@@ -30,6 +38,11 @@ const SkillsSection = ({ entries = [], editable, onUserUpdated }) => {
           {entries.map((skill) => (
             <li className="entry--chip" key={skill._id}>
               {skill.description}
+              {editable && (
+                <button type="button" className="chip__remove" onClick={() => handleRemove(skill._id)} aria-label={`Remove ${skill.description}`}>
+                  ×
+                </button>
+              )}
             </li>
           ))}
         </ul>

@@ -57,3 +57,35 @@ export const addSkills = async (req, res) => {
   await user.save();
   res.status(200).json({ success: true, message: "success", skills: user.skills });
 };
+
+// DELETE /in/education/:entryId, /in/workEx/:entryId, /in/skills/:entryId — remove one entry
+const removeEntry = (field) => async (req, res) => {
+  const user = await findMeOr404(req);
+  const entry = user[field].id(req.params.entryId);
+  if (!entry) throw new HttpError(404, "Entry not found");
+  entry.deleteOne();
+  await user.save();
+  res.status(200).json({ success: true, message: "Removed", [field]: user[field] });
+};
+export const removeEducation = removeEntry("education");
+export const removeWorkEx = removeEntry("workexperience");
+export const removeSkill = removeEntry("skills");
+
+// @route GET /in/resume — the logged-in user's saved resume builder state (or null)
+export const getResume = async (req, res) => {
+  const user = await findMeOr404(req);
+  res.status(200).json({ success: true, resume: user.resume ?? null });
+};
+
+// @route PUT /in/resume — body { information, color }
+const MAX_RESUME_BYTES = 200 * 1024;
+export const saveResume = async (req, res) => {
+  const { information, color } = req.body || {};
+  if (!information || typeof information !== "object") throw new HttpError(400, "information is required");
+  if (JSON.stringify(information).length > MAX_RESUME_BYTES) throw new HttpError(413, "Resume is too large");
+  const user = await findMeOr404(req);
+  user.resume = { information, color: typeof color === "string" ? color : "", updatedAt: new Date() };
+  user.markModified("resume");
+  await user.save();
+  res.status(200).json({ success: true, resume: user.resume });
+};

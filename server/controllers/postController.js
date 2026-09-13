@@ -3,7 +3,8 @@ import UserDB from "../models/userModel.js";
 import HttpError from "../utils/httpError.js";
 import escapeRegex from "../utils/escapeRegex.js";
 
-const MAX_LIST = 100;
+const DEFAULT_PAGE_SIZE = 20;
+const MAX_PAGE_SIZE = 100;
 const MAX_SEARCH_USERS = 20;
 const MAX_SEARCH_POSTS = 50;
 
@@ -29,10 +30,15 @@ export const createPost = async (req, res) => {
   res.status(201).json({ success: true, message: "Post created successfully", post });
 };
 
-// @route GET /home — newest posts first
+// @route GET /home?page=1&limit=20 — newest posts first, paginated
 export const listAllPosts = async (req, res) => {
-  const posts = await JobPost.find({}).sort({ createdAt: -1 }).limit(MAX_LIST);
-  res.status(200).json({ success: true, message: "Posts retrieved", posts });
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, Number(req.query.limit) || DEFAULT_PAGE_SIZE));
+  const [posts, total] = await Promise.all([
+    JobPost.find({}).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
+    JobPost.countDocuments(),
+  ]);
+  res.status(200).json({ success: true, message: "Posts retrieved", posts, page, limit, total });
 };
 
 // @route GET /user/allposts — the logged-in user's posts

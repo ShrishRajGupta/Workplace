@@ -9,18 +9,29 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_APISECRET,
 });
 
+export const isCloudinaryConfigured = () =>
+  Boolean(process.env.CLOUDINARY_CLOUDNAME && process.env.CLOUDINARY_APIKEY && process.env.CLOUDINARY_APISECRET);
+
+// Uploads a multer temp file to Cloudinary and always removes the temp file afterwards.
+export const uploadTempFile = async (file, options) => {
+  if (!isCloudinaryConfigured()) throw new HttpError(503, "File uploads are not configured on this server");
+  try {
+    return await cloudinary.uploader.upload(file.path, options);
+  } finally {
+    await unlink(file.path).catch(() => {});
+  }
+};
+
 // @route POST /in/add — replace the logged-in user's profile photo (multipart field "photo")
 export const uploadPhoto = async (req, res) => {
   if (!req.file) throw new HttpError(400, "No photo uploaded");
-  try {
-    const user = await UserDB.findById(req.user.id);
-    if (!user) throw new HttpError(404, "User not found");
-
-    const result = await cloudinary.uploader.upload(req.file.path, { folder: "workplace/profile" });
-    user.photo = result.secure_url;
-    await user.save();
-    res.status(200).json({ success: true, url: result.secure_url });
-  } finally {
-    await unlink(req.file.path).catch(() => {}); // multer's temp file; best effort
+  const user = await UserDB.findById(req.user.id);
+  if (!user) {
+    await unlink(req.file.path).catch(() => {});
+    throw new HttpError(404, "User not found");
   }
+  const result = await uploadTempFile(req.file, { folder: "workplace/profile" });
+  user.photo = result.secure_url;
+  await user.save();
+  res.status(200).json({ success: true, url: result.secure_url });
 };

@@ -20,3 +20,11 @@ export const uploadPhoto = (file) => {
   formData.append("photo", file);
   return api.post("/in/add", formData).then((r) => r.data.url);
 };
+
+export const removeEducation = (entryId) => api.delete(`/in/education/${entryId}`).then((r) => r.data.education);
+export const removeWorkExperience = (entryId) => api.delete(`/in/workEx/${entryId}`).then((r) => r.data.workexperience);
+export const removeSkill = (entryId) => api.delete(`/in/skills/${entryId}`).then((r) => r.data.skills);
+
+// Resume builder state: { information, color } or null when nothing has been saved yet.
+export const getResume = () => api.get("/in/resume").then((r) => r.data.resume);
+export const saveResume = (resume) => api.put("/in/resume", resume).then((r) => r.data.resume);

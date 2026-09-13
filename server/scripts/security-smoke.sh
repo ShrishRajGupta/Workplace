@@ -98,6 +98,35 @@ check "post appended to user.posts" "$(curl -s -b $J/alice.jar $B/user/profile |
 SR=$(curl -s "$B/search/node")
 check "search: user key holds users only" "$(echo "$SR" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(all("username" in u for u in d["user"]), len(d["posts"])>0)')" "True True"
 
+
+# ---- applications, resume, entry removal, chat participants ----
+PID=$(echo "$PP" | python3 -c 'import sys,json; print(json.load(sys.stdin)["post"]["_id"])')
+check "GET /user/posts/:id -> 200 with poster" "$(curl -s -b $J/bob.jar $B/user/posts/$PID | grep -c '"username":"alice"')" 1
+check "apply to own post -> 400" "$(code -b $J/alice.jar -X POST $B/user/posts/$PID/apply -F fullName=Alice -F email=alice@x.test)" 400
+check "apply missing fields -> 400" "$(code -b $J/bob.jar -X POST $B/user/posts/$PID/apply -F phone=123)" 400
+check "apply wrong file type -> 400" "$(code -b $J/bob.jar -X POST $B/user/posts/$PID/apply -F fullName=Bob -F email=bob@x.test -F 'resume=@/tmp/x.txt;type=text/plain')" 400
+check "bob applies -> 201" "$(code -b $J/bob.jar -X POST $B/user/posts/$PID/apply -F fullName=Bob -F email=bob@x.test -F 'coverNote=Keen to join')" 201
+check "duplicate application -> 409" "$(code -b $J/bob.jar -X POST $B/user/posts/$PID/apply -F fullName=Bob -F email=bob@x.test)" 409
+check "carol cannot list alice's applicants -> 403" "$(code -b $J/carol.jar $B/user/posts/$PID/applicants)" 403
+check "alice lists applicants, sees bob" "$(curl -s -b $J/alice.jar $B/user/posts/$PID/applicants | grep -c '"fullName":"Bob"')" 1
+check "applicant count for owner" "$(curl -s -b $J/alice.jar $B/user/posts/$PID/applications/count | grep -c '"count":1')" 1
+check "bob's applications list the post" "$(curl -s -b $J/bob.jar $B/user/applications | grep -c '"jobTitle":"Node Engineer"')" 1
+check "unknown post apply -> 404" "$(code -b $J/bob.jar -X POST $B/user/posts/000000000000000000000000/apply -F fullName=Bob -F email=bob@x.test)" 404
+
+check "resume empty -> null" "$(curl -s -b $J/alice.jar $B/in/resume | grep -c '"resume":null')" 1
+check "resume save -> 200" "$(code -b $J/alice.jar -X PUT $B/in/resume -H 'Content-Type: application/json' -d '{"information":{"Basic Info":{"detail":{"name":"Alice"}}},"color":"#239ce2"}')" 200
+check "resume round-trips" "$(curl -s -b $J/alice.jar $B/in/resume | grep -c '"name":"Alice"')" 1
+check "resume without information -> 400" "$(code -b $J/alice.jar -X PUT $B/in/resume -H 'Content-Type: application/json' -d '{"color":"x"}')" 400
+
+curl -s -o /dev/null -b $J/alice.jar -X POST $B/in/addCollege -H 'Content-Type: application/json' -d '{"collegeName":"Temp U","degree":"BA","year":"2001"}'
+EID=$(curl -s -b $J/alice.jar $B/user/profile | python3 -c 'import sys,json; e=json.load(sys.stdin)["user"]["education"]; print([x for x in e if x["collegeName"]=="Temp U"][0]["_id"])')
+check "remove education entry -> gone" "$(curl -s -b $J/alice.jar -X DELETE $B/in/education/$EID | grep -c 'Temp U')" 0
+check "remove unknown entry -> 404" "$(code -b $J/alice.jar -X DELETE $B/in/education/$EID)" 404
+check "carol cannot remove alice's entries (acts on self) -> 404" "$(code -b $J/carol.jar -X DELETE $B/in/education/$EID)" 404
+
+check "conversations include participants" "$(curl -s -b $J/alice.jar $B/conversations/$AID | grep -c '"participants":\[{')" 1
+check "home pagination fields" "$(curl -s "$B/home?page=1&limit=1" | grep -c '"total":')" 1
+
 curl -s -D $J/logout.h -b $J/alice.jar $B/user/logout > /dev/null
 check "logout clears cookie" "$(grep -i set-cookie $J/logout.h | grep -ci 'authorization=;')" 1
 echo; echo "passed=$pass failed=$fail"

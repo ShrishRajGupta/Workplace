@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getMyPosts } from "../../api/posts";
 import { getErrorMessage } from "../../api/client";
 import PostCard from "../../features/jobs/PostCard";
@@ -28,7 +29,7 @@ const MyPostsPage = () => {
       {!loading && !error && posts.length === 0 && <p className="text-muted">You have not posted any jobs yet.</p>}
       <div className="my-posts__list">
         {posts.map((post) => (
-          <PostCard key={post._id} post={post} />
+          <PostCard key={post._id} post={post} footer={<Link to={`/user/posts/${post._id}/applicants`}>View applicants</Link>} />
         ))}
       </div>
     </main>

@@ -487,11 +487,11 @@ function Editor(props) {
   };
 
   const handleAddNew = () => {
-    const details = activeInformation?.details;
-    if (!details) return;
-    const lastDetail = details.slice(-1)[0];
-    if (!Object.keys(lastDetail).length) return;
-    details?.push({});
+    if (!activeInformation?.details) return;
+    const details = [...activeInformation.details];
+    const lastDetail = details[details.length - 1];
+    if (lastDetail && !Object.keys(lastDetail).length) return; // the previous one is still blank
+    details.push({});
 
     props.setInformation((prev) => ({
       ...prev,
@@ -517,7 +517,7 @@ function Editor(props) {
       },
     }));
 
-    setActiveDetailIndex((prev) => (prev === index ? 0 : prev - 1));
+    setActiveDetailIndex((prev) => (prev === index ? 0 : Math.max(0, prev - 1)));
   };
 
   useEffect(() => {
@@ -570,6 +570,25 @@ function Editor(props) {
 
   useEffect(() => {
     setActiveInformation(information[sections[activeSectionKey]]);
+  }, [information, sections, activeSectionKey]);
+
+  // Sections without a detail list (basic info, summary, other, achievements) read straight
+  // from information, so an externally loaded resume shows up without switching sections.
+  useEffect(() => {
+    const activeInfo = information[sections[activeSectionKey]];
+    if (!activeInfo || activeInfo.details) return;
+    setValues((prev) => ({
+      ...prev,
+      name: activeInfo.detail?.name || "",
+      title: activeInfo.detail?.title || "",
+      linkedin: activeInfo.detail?.linkedin || "",
+      github: activeInfo.detail?.github || "",
+      email: activeInfo.detail?.email || "",
+      phone: activeInfo.detail?.phone || "",
+      points: activeInfo.points ? [...activeInfo.points] : prev.points,
+      summary: typeof activeInfo.detail !== "object" ? activeInfo.detail : "",
+      other: typeof activeInfo.detail !== "object" ? activeInfo.detail : "",
+    }));
   }, [information, sections, activeSectionKey]);
 
   // Load the selected detail (work experience #n, project #n, ...) into the form.

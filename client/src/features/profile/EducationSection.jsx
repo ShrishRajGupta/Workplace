@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import ModalBox from "../../components/ModalBox/ModalBox";
-import { addEducation } from "../../api/users";
+import { addEducation, removeEducation } from "../../api/users";
 import { getErrorMessage } from "../../api/client";
 
 const EducationSection = ({ entries = [], editable, onUserUpdated }) => {
@@ -19,6 +19,14 @@ const EducationSection = ({ entries = [], editable, onUserUpdated }) => {
     }
   };
 
+  const handleRemove = async (entryId) => {
+    try {
+      onUserUpdated({ education: await removeEducation(entryId) });
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not remove the entry"));
+    }
+  };
+
   return (
     <>
       <div className="profile-card__section-head">
@@ -33,6 +41,11 @@ const EducationSection = ({ entries = [], editable, onUserUpdated }) => {
                 <p className="entry__title">{edu.collegeName}</p>
                 <p className="entry__meta">{[edu.degree, edu.year].filter(Boolean).join(" · ")}</p>
               </div>
+              {editable && (
+                <button className="btn--ghost entry__remove" onClick={() => handleRemove(edu._id)} aria-label={`Remove ${edu.collegeName}`}>
+                  Remove
+                </button>
+              )}
             </li>
           ))}
         </ul>

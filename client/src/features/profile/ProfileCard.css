@@ -132,3 +132,24 @@
   border-radius: 50%;
   animation: spinner 0.9s linear infinite;
 }
+
+.entry__remove {
+  padding: 6px 10px;
+  font-size: var(--wp-text-sm);
+  flex-shrink: 0;
+}
+.entry--chip {
+  align-items: center;
+  gap: 6px;
+}
+button.chip__remove {
+  padding: 0 4px;
+  line-height: 1;
+  font-size: var(--wp-text-base);
+  color: var(--wp-primary);
+  background: transparent;
+}
+button.chip__remove:hover {
+  background: transparent;
+  color: var(--wp-primary-hover);
+}

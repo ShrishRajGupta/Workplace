@@ -23,9 +23,10 @@ export default function MessengerPage() {
   const socket = useRef(null);
   const scrollRef = useRef();
 
-  // One socket per mount; registered as this user; torn down on unmount.
+  // One socket per mount. The server identifies the user from the auth cookie sent with the
+  // handshake (withCredentials); torn down on unmount.
   useEffect(() => {
-    const s = io(SOCKET_URL);
+    const s = io(SOCKET_URL, { withCredentials: true });
     socket.current = s;
     s.on("getMessage", (data) => {
       setArrivalMessage({ sender: data.senderId, text: data.text, conversationId: data.conversationId, createdAt: Date.now() });
@@ -33,8 +34,9 @@ export default function MessengerPage() {
     s.on("getUsers", (users) => {
       setOnlineUsers(user.friends?.filter((f) => users.some((u) => u.userId === f)) ?? []);
     });
-    s.emit("addUser", user._id);
+    s.on("connect_error", (err) => logger.error("Socket connection failed:", err.message));
     return () => {
+      s.off("connect_error");
       s.off("getMessage");
       s.off("getUsers");
       s.disconnect();
@@ -91,7 +93,7 @@ export default function MessengerPage() {
       setMessages((prev) => [...prev, saved]);
       setNewMessage("");
       const receiverId = currentChat.members.find((member) => member !== user._id);
-      socket.current?.emit("sendMessage", { senderId: user._id, receiverId, text, conversationId: currentChat._id });
+      socket.current?.emit("sendMessage", { receiverId, text, conversationId: currentChat._id });
     } catch (error) {
       toast.error(getErrorMessage(error, "Could not send the message"));
     }

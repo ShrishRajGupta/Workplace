@@ -26,10 +26,24 @@ export const createConversation = async (req, res) => {
 };
 
 // @route GET /conversations/:userId — the caller's conversations (:userId must be the caller)
+// `members` stays an array of id strings (the client keys on it); `participants` carries the
+// populated username/photo so the sidebar needs no per-row user request.
 export const listConversations = async (req, res) => {
   if (String(req.params.userId) !== String(req.user.id)) throw new HttpError(403, "Forbidden");
-  const conversations = await Conversation.find({ members: { $in: [String(req.user.id)] } }).sort({ updatedAt: -1 });
-  res.status(200).json(conversations);
+  const conversations = await Conversation.find({ members: { $in: [String(req.user.id)] } })
+    .sort({ updatedAt: -1 })
+    .populate("members", "username photo");
+  res.status(200).json(
+    conversations.map((conversation) => {
+      const raw = conversation.toObject();
+      const populated = raw.members.filter((m) => m && typeof m === "object");
+      return {
+        ...raw,
+        members: raw.members.map((m) => String(m?._id ?? m)),
+        participants: populated.map(({ _id, username, photo }) => ({ _id: String(_id), username, photo })),
+      };
+    })
+  );
 };
 
 // @route GET /conversations/find/:firstUserId/:secondUserId — one of the two must be the caller

@@ -28,8 +28,8 @@
 - Job posting and management for employers
 - Real-time chat between employers and job seekers
 - Email notifications for sign-up and account events
-- Inbuilt resume builder for job seekers
-- Job searching and application for job seekers
+- Inbuilt resume builder for job seekers, saved to your account
+- Job searching and one-click applications (with optional resume upload); employers see applicants per post
 - Profile management (education, work experience, skills, photo) for both roles
 
 ## Screenshots
@@ -58,7 +58,7 @@ Workplace runs as three processes. In development they all run from one command 
 |---|---|---|---|
 | `client/` | CRA dev server | 3000 | React UI. API calls are proxied to the server via the `proxy` field in `client/package.json`. |
 | `server/` | Express | 3001 | REST API, auth, MongoDB, Cloudinary uploads, email. |
-| `socket/` | socket.io | 8900 | Real-time chat delivery. Chat history itself is persisted through the REST API. |
+| `socket/` | socket.io | 8900 | Real-time chat delivery. Verifies the same auth cookie as the API (shared `ACCESS_TOKEN`); chat history itself is persisted through the REST API. |
 
 All three must be running for the full app to work. Without `socket/`, everything except live chat still works.
 
@@ -85,7 +85,7 @@ Each app reads its own `.env` from its own directory. Copy the examples and fill
 
 ```bash
 cp server/.env.example server/.env   # MONGO_URL, ACCESS_TOKEN, Cloudinary, Gmail
-cp socket/.env.example socket/.env   # PORT, CLIENT_URL (defaults work for local dev)
+cp socket/.env.example socket/.env   # PORT, CLIENT_URL, ACCESS_TOKEN (same value as the server's)
 cp client/.env.example client/.env   # REACT_APP_PUBLIC_FOLDER (optional)
 ```
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ProfileCard from "../../features/profile/ProfileCard";
 import PostCard from "../../features/jobs/PostCard";
 import { useAuth } from "../../context/AuthContext";
@@ -67,7 +67,12 @@ const ProfilePage = () => {
         ) : (
           <div className="profile-page__list">
             {posts.map((post) => (
-              <PostCard key={post._id} post={post} applyTo={isOwnProfile ? undefined : `/user/applyform/${post._id}`} />
+              <PostCard
+                key={post._id}
+                post={post}
+                applyTo={isOwnProfile ? undefined : `/user/applyform/${post._id}`}
+                footer={isOwnProfile ? <Link to={`/user/posts/${post._id}/applicants`}>View applicants</Link> : undefined}
+              />
             ))}
           </div>
         )}

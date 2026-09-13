@@ -63,3 +63,10 @@
   gap: 30px;
   width: 100%;
 }
+
+.saveState {
+  margin-left: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--wp-text-muted);
+}

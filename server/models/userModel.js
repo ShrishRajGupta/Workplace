@@ -94,6 +94,11 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref:"JobPost"
     }],
+    // Resume builder state: { information, color, updatedAt }; shape owned by the client.
+    resume:{
+        type: Schema.Types.Mixed,
+        default: null
+    },
 },{
     timestamps:true,
     toJSON: {

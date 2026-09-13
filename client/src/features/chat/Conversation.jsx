@@ -6,8 +6,11 @@ import "./Conversation.css";
 
 export default function Conversation({ conversation, currentUser }) {
   const [friend, setFriend] = useState(null);
+  // Newer API responses include the other participant; fall back to a lookup for older shapes.
+  const participant = conversation.participants?.find((p) => p._id !== currentUser._id);
 
   useEffect(() => {
+    if (participant) return undefined;
     const friendId = conversation.members.find((m) => m !== currentUser._id);
     if (!friendId) return undefined;
     let cancelled = false;
@@ -17,12 +20,14 @@ export default function Conversation({ conversation, currentUser }) {
     return () => {
       cancelled = true;
     };
-  }, [currentUser._id, conversation.members]);
+  }, [currentUser._id, conversation.members, participant]);
+
+  const shown = participant ?? friend;
 
   return (
     <div className="conversation">
-      <img className="conversationImg" src={avatarUrl(friend?.photo)} alt="" onError={onAvatarError} />
-      <span className="conversationName">{friend?.username ?? "…"}</span>
+      <img className="conversationImg" src={avatarUrl(shown?.photo)} alt="" onError={onAvatarError} />
+      <span className="conversationName">{shown?.username ?? "…"}</span>
     </div>
   );
 }

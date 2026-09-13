@@ -141,6 +141,8 @@ export default function Navbar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={goToProfile}>Profile</MenuItem>
+      <MenuItem onClick={() => { handleMenuClose(); navigate("/user/allposts"); }}>My job posts</MenuItem>
+      <MenuItem onClick={() => { handleMenuClose(); navigate("/user/applications"); }}>My applications</MenuItem>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );

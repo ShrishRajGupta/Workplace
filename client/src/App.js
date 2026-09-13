@@ -10,6 +10,8 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import MyPostsPage from "./pages/MyPosts/MyPostsPage";
 import MessengerPage from "./pages/Messenger/MessengerPage";
 import ApplyPage from "./pages/Apply/ApplyPage";
+import MyApplicationsPage from "./pages/Applications/MyApplicationsPage";
+import ApplicantsPage from "./pages/Applicants/ApplicantsPage";
 import ResumeBuilderPage from "./pages/ResumeBuilder/ResumeBuilderPage";
 import NotFoundPage from "./pages/NotFound/NotFoundPage";
 import AppLayout from "./routes/AppLayout";
@@ -36,6 +38,8 @@ function App() {
               <Route path="/user/allposts" element={<MyPostsPage />} />
               <Route path="/user/messenger" element={<MessengerPage />} />
               <Route path="/user/applyform/:postId" element={<ApplyPage />} />
+              <Route path="/user/applications" element={<MyApplicationsPage />} />
+              <Route path="/user/posts/:postId/applicants" element={<ApplicantsPage />} />
               <Route path="/resume" element={<ResumeBuilderPage />} />
             </Route>
           </Route>

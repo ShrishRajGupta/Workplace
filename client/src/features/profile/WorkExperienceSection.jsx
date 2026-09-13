@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import ModalBox from "../../components/ModalBox/ModalBox";
-import { addWorkExperience } from "../../api/users";
+import { addWorkExperience, removeWorkExperience } from "../../api/users";
 import { getErrorMessage } from "../../api/client";
 
 const WorkExperienceSection = ({ entries = [], editable, onUserUpdated }) => {
@@ -19,6 +19,14 @@ const WorkExperienceSection = ({ entries = [], editable, onUserUpdated }) => {
     }
   };
 
+  const handleRemove = async (entryId) => {
+    try {
+      onUserUpdated({ workexperience: await removeWorkExperience(entryId) });
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not remove the entry"));
+    }
+  };
+
   return (
     <>
       <div className="profile-card__section-head">
@@ -33,6 +41,11 @@ const WorkExperienceSection = ({ entries = [], editable, onUserUpdated }) => {
                 <p className="entry__title">{work.companyName}</p>
                 {work.year && <p className="entry__meta">{work.year}</p>}
               </div>
+              {editable && (
+                <button className="btn--ghost entry__remove" onClick={() => handleRemove(work._id)} aria-label={`Remove ${work.companyName}`}>
+                  Remove
+                </button>
+              )}
             </li>
           ))}
         </ul>
