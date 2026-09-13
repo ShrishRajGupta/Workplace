@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { sendWelcomeEmail } from "../../api/auth";
 import { getErrorMessage } from "../../api/client";
@@ -40,32 +40,22 @@ const RegisterPage = () => {
 
   return (
     <HeroLayout variant="auth">
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input placeholder="Username" required ref={username} className="loginInput" />
-        </label>
-        <label>
-          Email:
-          <input placeholder="Email" required ref={email} className="loginInput" type="email" />
-        </label>
-        <label>
-          Password:
-          <input placeholder="Password" required ref={password} className="loginInput" type="password" minLength="6" onChange={clearMismatch} />
-        </label>
-        <label>
-          Password Again:
-          <input placeholder="Password Again" required ref={passwordAgain} className="loginInput" type="password" onChange={clearMismatch} />
-        </label>
-        <button type="submit" style={{ width: "35%" }} disabled={pending}>
-          {pending ? "Signing up…" : "Sign Up"}
-        </button>
-      </form>
-      <h4>Already have an account ?</h4>
-      <span onClick={() => navigate("/user/login")} style={{ cursor: "pointer", color: "purple", fontWeight: "bold" }}>
-        Login
-      </span>
+      <div className="auth-card">
+        <h2>Create your account</h2>
+        <p className="auth-card__sub">Free for job seekers and employers.</p>
+        <form onSubmit={handleSubmit}>
+          <input placeholder="Username" required autoComplete="username" ref={username} />
+          <input placeholder="Email" type="email" required autoComplete="email" ref={email} />
+          <input placeholder="Password (min. 6 characters)" type="password" required minLength="6" autoComplete="new-password" ref={password} onChange={clearMismatch} />
+          <input placeholder="Repeat password" type="password" required autoComplete="new-password" ref={passwordAgain} onChange={clearMismatch} />
+          <button type="submit" disabled={pending}>
+            {pending ? "Signing up…" : "Sign up"}
+          </button>
+        </form>
+        <p className="auth-card__switch">
+          Already have an account? <Link to="/user/login">Log in</Link>
+        </p>
+      </div>
     </HeroLayout>
   );
 };

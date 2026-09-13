@@ -1,20 +1,24 @@
-.conversation{
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    cursor: pointer;
-    margin-top: 20px;
+.conversation {
+  display: flex;
+  align-items: center;
+  gap: var(--wp-space-3);
+  padding: var(--wp-space-2) var(--wp-space-3);
+  border-radius: var(--wp-radius);
+  cursor: pointer;
+  transition: background-color 120ms ease;
 }
-.conversation:hover{
-    background-color: rgb(245, 243, 243);
+.conversation:hover {
+  background: var(--wp-primary-soft);
 }
-.conversationImg{
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 20px;
+.conversationImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--wp-surface-2);
+  flex-shrink: 0;
 }
-.conversationName{
-    font-weight: 700;
+.conversationName {
+  font-weight: 600;
+  white-space: nowrap;
 }

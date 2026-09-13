@@ -21,13 +21,7 @@ export default function Conversation({ conversation, currentUser }) {
 
   return (
     <div className="conversation">
-      <img
-        className="conversationImg"
-        src={avatarUrl(friend?.photo)}
-        alt=""
-        onError={onAvatarError}
-        style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "10px" }}
-      />
+      <img className="conversationImg" src={avatarUrl(friend?.photo)} alt="" onError={onAvatarError} />
       <span className="conversationName">{friend?.username ?? "…"}</span>
     </div>
   );

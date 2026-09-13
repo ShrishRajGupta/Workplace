@@ -65,7 +65,7 @@ const SearchResultsList = ({ results, onSelect }) => (
     <div className="dropdown-content">
       {results.map((result) => (
         <div key={result._id} className="search-result" onClick={() => onSelect(result)}>
-          <h5 style={{ color: "black" }}>{result.username}</h5>
+          <h5>{result.username}</h5>
         </div>
       ))}
     </div>
@@ -180,7 +180,7 @@ export default function Navbar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box component="header">
       <AppBar position="static">
         <Toolbar>
           <IconButton size="large" edge="start" color="inherit" aria-label="open drawer" sx={{ mr: 2 }}>

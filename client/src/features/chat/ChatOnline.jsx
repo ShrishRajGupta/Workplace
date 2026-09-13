@@ -33,7 +33,7 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
 
   return (
     <div className="chatOnline">
-      {onlineFriends.length === 0 && <span className="chatOnlineName">No friends online</span>}
+      {onlineFriends.length === 0 && <span className="chatOnlineName text-muted">No friends online</span>}
       {onlineFriends.map((friend) => (
         <div key={friend._id} className="chatOnlineFriend" onClick={() => handleClick(friend)}>
           <div className="chatOnlineImgContainer">

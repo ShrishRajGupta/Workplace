@@ -1,19 +1,233 @@
-/* Global reset. Carried over from the resume builder's stylesheet, where it used to apply
-   app-wide by accident; it now lives here on purpose. Design tokens come in a later pass. */
-* {
+@import "./tokens.css";
+
+/* Reset */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
 }
 
-/* Root layout: navbar and page content stacked with a gap */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--wp-font);
+  font-size: var(--wp-text-base);
+  line-height: 1.5;
+  color: var(--wp-text);
+  background: var(--wp-bg);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Root layout: navbar, then page content */
 .App {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 40px;
 }
 
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: var(--wp-text-3xl);
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: var(--wp-text-xl);
+}
+h3 {
+  font-size: var(--wp-text-lg);
+}
+h4,
+h5 {
+  font-size: var(--wp-text-base);
+}
+
+a {
+  color: var(--wp-primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.text-muted {
+  color: var(--wp-text-muted);
+}
+
+/* Native controls. MUI components carry their own classes and are excluded. */
+button:not([class*="Mui"]) {
+  font: inherit;
+  font-weight: 600;
+  color: var(--wp-on-primary);
+  background: var(--wp-primary);
+  border: 1px solid transparent;
+  border-radius: var(--wp-radius-sm);
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+button:not([class*="Mui"]):hover {
+  background: var(--wp-primary-hover);
+}
+button:not([class*="Mui"]):active {
+  transform: translateY(1px);
+}
+button:not([class*="Mui"]):disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+button.btn--ghost {
+  color: var(--wp-primary);
+  background: var(--wp-primary-soft);
+}
+button.btn--ghost:hover {
+  background: #e0ddfb;
+}
+button.btn--danger {
+  background: var(--wp-danger);
+}
+button.btn--danger:hover {
+  background: #a93226;
+}
+
+input:not([class*="Mui"]):not([type="file"]),
+textarea,
+select {
+  font: inherit;
+  width: 100%;
+  color: var(--wp-text);
+  background: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--wp-radius-sm);
+  padding: 10px 12px;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+input:not([class*="Mui"]):not([type="file"]):focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--wp-primary);
+  box-shadow: var(--wp-focus);
+}
+textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+label {
+  display: block;
+  font-size: var(--wp-text-sm);
+  font-weight: 600;
+  color: var(--wp-text-muted);
+  margin-bottom: var(--wp-space-3);
+}
+label > input,
+label > textarea {
+  margin-top: var(--wp-space-1);
+}
+
+/* Focus ring for anything keyboard-reachable */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--wp-focus);
+  border-radius: var(--wp-radius-sm);
+}
+
+/* Shared page primitives */
+.page {
+  width: 100%;
+  max-width: var(--wp-max-width);
+  margin: 0 auto;
+  padding: var(--wp-space-5) var(--wp-page-gutter) var(--wp-space-8);
+}
+.page-status {
+  padding: var(--wp-space-5) var(--wp-page-gutter);
+  color: var(--wp-text-muted);
+}
 .route-loading {
-  padding: 1rem;
+  padding: var(--wp-space-5) var(--wp-page-gutter);
+  color: var(--wp-text-muted);
+}
+.form-card {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--wp-radius-lg);
+  padding: var(--wp-space-6);
+  box-shadow: var(--wp-shadow-sm);
+}
+.form-card h1,
+.form-card h2 {
+  margin-bottom: var(--wp-space-2);
+}
+.form-card > p {
+  color: var(--wp-text-muted);
+  margin-bottom: var(--wp-space-5);
+}
+.form-card form {
+  display: flex;
+  flex-direction: column;
+}
+.form-card button[type="submit"] {
+  align-self: flex-start;
+  margin-top: var(--wp-space-2);
+}
+.section-title {
+  font-size: var(--wp-text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--wp-text-muted);
+  margin-bottom: var(--wp-space-3);
+}
+
+/* Entrance used by hero cards and dialogs */
+@keyframes wp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.page--center {
+  text-align: center;
+  padding-top: var(--wp-space-8);
+}
+.page--center h1 {
+  margin-bottom: var(--wp-space-2);
+}
+.page--center p {
+  color: var(--wp-text-muted);
+  margin-bottom: var(--wp-space-4);
 }

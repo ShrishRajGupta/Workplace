@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { Button } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
 import ModalBox from "../../components/ModalBox/ModalBox";
 import { addSkill } from "../../api/users";
 import { getErrorMessage } from "../../api/client";
@@ -22,32 +20,30 @@ const SkillsSection = ({ entries = [], editable, onUserUpdated }) => {
   };
 
   return (
-    <div className="Skills">
+    <>
+      <div className="profile-card__section-head">
+        <h2>Skills</h2>
+        {editable && <button className="btn--ghost" onClick={() => setOpen(true)}>Add</button>}
+      </div>
       {entries.length > 0 ? (
-        entries.map((skill) => (
-          <div className="flyby" key={skill._id}>
-            {editable && (
-              <Button variant="outlined" startIcon={<DeleteIcon />} disabled title="Coming soon">
-                Delete
-              </Button>
-            )}
-            <p>Desc = {skill.description}</p>
-          </div>
-        ))
+        <ul className="chip-list">
+          {entries.map((skill) => (
+            <li className="entry--chip" key={skill._id}>
+              {skill.description}
+            </li>
+          ))}
+        </ul>
       ) : (
-        <h3>Empty</h3>
+        <p className="empty-note">{editable ? "Add the skills you want to be found for." : "Nothing added yet."}</p>
       )}
-      {editable && <Button onClick={() => setOpen(true)}>Add</Button>}
 
-      <ModalBox open={open} onClose={() => setOpen(false)} title="Add Skills">
-        <form onSubmit={handleAdd}>
-          <input type="text" placeholder="Description" required />
-          <button className="button-36" type="submit">
-            Add
-          </button>
+      <ModalBox open={open} onClose={() => setOpen(false)} title="Add a skill">
+        <form className="dialog-form" onSubmit={handleAdd}>
+          <input type="text" placeholder="Skill (e.g. React, SQL, product management)" required />
+          <button type="submit">Add</button>
         </form>
       </ModalBox>
-    </div>
+    </>
   );
 };
 

@@ -133,7 +133,7 @@ export default function MessengerPage() {
               </form>
             </>
           ) : (
-            <span className="noConversationText">Open a conversation to start a chat.</span>
+            <span className="noConversationText">Pick a conversation, or a friend who is online, to start chatting.</span>
           )}
         </div>
       </div>

@@ -21,15 +21,17 @@ const MyPostsPage = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Your posts</h2>
-      {loading && <p>Loading…</p>}
+    <main className="page my-posts">
+      <h1>Your job posts</h1>
+      {loading && <p className="text-muted">Loading…</p>}
       {error && <p role="alert">{error}</p>}
-      {!loading && !error && posts.length === 0 && <p>You have not posted any jobs yet.</p>}
-      {posts.map((post) => (
-        <PostCard key={post._id} post={post} />
-      ))}
-    </div>
+      {!loading && !error && posts.length === 0 && <p className="text-muted">You have not posted any jobs yet.</p>}
+      <div className="my-posts__list">
+        {posts.map((post) => (
+          <PostCard key={post._id} post={post} />
+        ))}
+      </div>
+    </main>
   );
 };
 

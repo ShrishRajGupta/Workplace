@@ -1,61 +1,43 @@
-/* Navbar.css */
-nav {
-  background-color: #333;
-  color: white;
-  padding: 10px;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-}
-
-li {
-  margin-right: 20px;
-}
-
-a {
-  text-decoration: none;
-  color: black;
-}
-
-a:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.mynav {
+/* Search box and its results dropdown (the bar itself is MUI AppBar, themed in src/theme.js) */
+.my-nav {
+  position: relative;
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: min(420px, 45vw);
 }
 
-/* Search results dropdown */
 .searchBar {
   position: absolute;
-  display: inline-block;
-  left: 14%;
-  width: 20%;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  z-index: 20;
 }
 
-.searchBar.dropdown-content {
-  position: absolute;
-  display: inline;
-  width: 25%;
-  border: 1px solid #e0dfdf;
-  background-color: rgb(237, 230, 230);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+.dropdown-content {
+  background: var(--wp-surface);
+  color: var(--wp-text);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--wp-radius);
+  box-shadow: var(--wp-shadow);
+  overflow: hidden;
+  animation: wp-rise 150ms ease-out both;
 }
 
 .search-result {
-  padding: 10px 20px;
+  padding: 10px 16px;
   cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.search-result h5 {
+  font-weight: 600;
+}
+.search-result:hover {
+  background: var(--wp-primary-soft);
 }
 
-.search-result:hover {
-  background-color: #efefef;
+@media (max-width: 600px) {
+  .my-nav {
+    width: 100%;
+  }
 }

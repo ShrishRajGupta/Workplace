@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { Button } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
 import ModalBox from "../../components/ModalBox/ModalBox";
 import { addEducation } from "../../api/users";
 import { getErrorMessage } from "../../api/client";
@@ -23,34 +21,31 @@ const EducationSection = ({ entries = [], editable, onUserUpdated }) => {
 
   return (
     <>
-      <div className="College">
-        {entries.length > 0 ? (
-          entries.map((edu) => (
-            <div key={edu._id}>
-              <p>College = {edu.collegeName}</p>
-              <p>Degree = {edu.degree}</p>
-              <p>Year = {edu.year}</p>
-              {editable && (
-                <Button variant="outlined" startIcon={<DeleteIcon />} disabled title="Coming soon">
-                  Delete
-                </Button>
-              )}
-            </div>
-          ))
-        ) : (
-          <h3>Empty</h3>
-        )}
+      <div className="profile-card__section-head">
+        <h2>Education</h2>
+        {editable && <button className="btn--ghost" onClick={() => setOpen(true)}>Add</button>}
       </div>
-      {editable && <Button onClick={() => setOpen(true)}>Add</Button>}
+      {entries.length > 0 ? (
+        <ul className="entry-list">
+          {entries.map((edu) => (
+            <li className="entry" key={edu._id}>
+              <div>
+                <p className="entry__title">{edu.collegeName}</p>
+                <p className="entry__meta">{[edu.degree, edu.year].filter(Boolean).join(" · ")}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="empty-note">{editable ? "Add where you studied." : "Nothing added yet."}</p>
+      )}
 
-      <ModalBox open={open} onClose={() => setOpen(false)} title="Add College">
-        <form onSubmit={handleAdd}>
-          <input type="text" placeholder="College Name" required />
+      <ModalBox open={open} onClose={() => setOpen(false)} title="Add education">
+        <form className="dialog-form" onSubmit={handleAdd}>
+          <input type="text" placeholder="College or university" required />
           <input type="text" placeholder="Degree" required />
           <input type="text" placeholder="Year" required />
-          <button className="button-36" type="submit">
-            Add
-          </button>
+          <button type="submit">Add</button>
         </form>
       </ModalBox>
     </>

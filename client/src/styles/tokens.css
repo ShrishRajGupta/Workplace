@@ -1,0 +1,54 @@
+/* Design tokens. Every colour, radius, shadow and spacing value in the app comes from here;
+   src/theme.js maps the same values into the MUI theme. */
+:root {
+  --wp-font: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* surfaces and text */
+  --wp-bg: #f6f5f1;
+  --wp-surface: #ffffff;
+  --wp-surface-2: #efede6;
+  --wp-border: #e3e1d8;
+  --wp-text: #1c1c1e;
+  --wp-text-muted: #6b6b70;
+
+  /* one accent */
+  --wp-primary: #4f46e5;
+  --wp-primary-hover: #4338ca;
+  --wp-primary-soft: #eceafd;
+  --wp-on-primary: #ffffff;
+
+  /* state */
+  --wp-success: #1a7f4b;
+  --wp-danger: #c0392b;
+  --wp-online: #22c55e;
+
+  /* shape and depth */
+  --wp-radius-sm: 6px;
+  --wp-radius: 10px;
+  --wp-radius-lg: 16px;
+  --wp-shadow-sm: 0 1px 2px rgba(28, 28, 30, 0.06);
+  --wp-shadow: 0 8px 24px rgba(28, 28, 30, 0.08);
+  --wp-focus: 0 0 0 3px rgba(79, 70, 229, 0.35);
+
+  /* spacing scale */
+  --wp-space-1: 4px;
+  --wp-space-2: 8px;
+  --wp-space-3: 12px;
+  --wp-space-4: 16px;
+  --wp-space-5: 24px;
+  --wp-space-6: 32px;
+  --wp-space-8: 48px;
+
+  /* type scale */
+  --wp-text-xs: 0.75rem;
+  --wp-text-sm: 0.875rem;
+  --wp-text-base: 1rem;
+  --wp-text-lg: 1.125rem;
+  --wp-text-xl: 1.375rem;
+  --wp-text-2xl: 1.75rem;
+  --wp-text-3xl: 2.5rem;
+
+  /* layout */
+  --wp-max-width: 1200px;
+  --wp-page-gutter: clamp(16px, 4vw, 40px);
+}

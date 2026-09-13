@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { toast } from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getErrorMessage } from "../../api/client";
 import HeroLayout from "../../components/HeroLayout/HeroLayout";
@@ -25,18 +25,20 @@ const LoginPage = () => {
 
   return (
     <HeroLayout variant="auth">
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input placeholder="Email" type="email" required className="loginInput" ref={email} />
-        <input placeholder="Password" type="password" required minLength="6" className="loginInput" ref={password} />
-        <button type="submit" style={{ width: "35%" }} disabled={pending}>
-          {pending ? "Logging in…" : "Login"}
-        </button>
-      </form>
-      <h4>Don't have an Account ?</h4>
-      <span onClick={() => navigate("/user/register")} style={{ cursor: "pointer", color: "purple", fontWeight: "bold" }}>
-        SignUp
-      </span>
+      <div className="auth-card">
+        <h1>Log in</h1>
+        <p className="auth-card__sub">Welcome back to Workplace.</p>
+        <form onSubmit={handleSubmit}>
+          <input placeholder="Email" type="email" required autoComplete="email" ref={email} />
+          <input placeholder="Password" type="password" required minLength="6" autoComplete="current-password" ref={password} />
+          <button type="submit" disabled={pending}>
+            {pending ? "Logging in…" : "Log in"}
+          </button>
+        </form>
+        <p className="auth-card__switch">
+          Don't have an account? <Link to="/user/register">Sign up</Link>
+        </p>
+      </div>
     </HeroLayout>
   );
 };

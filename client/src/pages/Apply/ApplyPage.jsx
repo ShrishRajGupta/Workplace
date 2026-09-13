@@ -26,9 +26,13 @@ const ApplyPage = () => {
   };
 
   return (
+    <main className="page">
+      <div className="form-card">
+        <h1>Apply for this job</h1>
+        <p>Your details go straight to the employer.</p>
     <form className="apply-form" onSubmit={handleSubmit}>
       <div className="form-group">
-        <label htmlFor="fullName">Full Name</label>
+        <label htmlFor="fullName">Full name</label>
         <input
           type="text"
           id="fullName"
@@ -71,7 +75,7 @@ const ApplyPage = () => {
         />
       </div>
       <div className="form-group">
-        <label htmlFor="coverLetter">Cover Letter</label>
+        <label htmlFor="coverLetter">Cover letter</label>
         <textarea
           id="coverLetter"
           name="coverLetter"
@@ -80,8 +84,10 @@ const ApplyPage = () => {
           required
         />
       </div>
-      <button type="submit">Apply Now</button>
+      <button type="submit">Send application</button>
     </form>
+      </div>
+    </main>
   );
 };
 

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { Button } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
 import ModalBox from "../../components/ModalBox/ModalBox";
 import { addWorkExperience } from "../../api/users";
 import { getErrorMessage } from "../../api/client";
@@ -22,34 +20,34 @@ const WorkExperienceSection = ({ entries = [], editable, onUserUpdated }) => {
   };
 
   return (
-    <div className="WorkEx">
+    <>
+      <div className="profile-card__section-head">
+        <h2>Work experience</h2>
+        {editable && <button className="btn--ghost" onClick={() => setOpen(true)}>Add</button>}
+      </div>
       {entries.length > 0 ? (
-        entries.map((work) => (
-          <div className="flyby" key={work._id}>
-            {editable && (
-              <Button variant="outlined" startIcon={<DeleteIcon />} disabled title="Coming soon">
-                Delete
-              </Button>
-            )}
-            <p>Company Name = {work.companyName}</p>
-            <p>Year = {work.year}</p>
-          </div>
-        ))
+        <ul className="entry-list">
+          {entries.map((work) => (
+            <li className="entry" key={work._id}>
+              <div>
+                <p className="entry__title">{work.companyName}</p>
+                {work.year && <p className="entry__meta">{work.year}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
       ) : (
-        <h3>Empty</h3>
+        <p className="empty-note">{editable ? "Add where you have worked." : "Nothing added yet."}</p>
       )}
-      {editable && <Button onClick={() => setOpen(true)}>Add</Button>}
 
-      <ModalBox open={open} onClose={() => setOpen(false)} title="Add Work Experience">
-        <form onSubmit={handleAdd}>
-          <input type="text" placeholder="Company Name" required />
-          <input type="text" placeholder="Year" />
-          <button className="button-36" type="submit">
-            Add
-          </button>
+      <ModalBox open={open} onClose={() => setOpen(false)} title="Add work experience">
+        <form className="dialog-form" onSubmit={handleAdd}>
+          <input type="text" placeholder="Company" required />
+          <input type="text" placeholder="Years (e.g. 2022 – 2024)" />
+          <button type="submit">Add</button>
         </form>
       </ModalBox>
-    </div>
+    </>
   );
 };
 

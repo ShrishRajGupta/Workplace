@@ -31,19 +31,21 @@ const CreateProfilePage = () => {
   };
 
   return (
-    <div>
-      <h1>Create Profile</h1>
+    <main className="page">
+      <div className="form-card">
+      <h1>Create your profile</h1>
       <p>Tell others a little about yourself. Education, work experience and skills can be added from your profile page.</p>
       <form onSubmit={handleSubmit}>
         <label>
-          About:
-          <input type="text" name="about" value={formData.about} onChange={handleInputChange} maxLength={500} />
+          About
+          <textarea name="about" value={formData.about} onChange={handleInputChange} maxLength={500} />
         </label>
         <button type="submit" disabled={saving}>
-          {saving ? "Saving…" : "Submit"}
+          {saving ? "Saving…" : "Save profile"}
         </button>
       </form>
-    </div>
+      </div>
+    </main>
   );
 };
 

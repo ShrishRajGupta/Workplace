@@ -10,11 +10,9 @@ import { avatarUrl, onAvatarError } from "../../utils/avatar";
 import "./ProfilePage.css";
 
 const FriendCard = ({ friend, onOpen }) => (
-  <div className="friend-card">
+  <div className="friend-card" onClick={onOpen} role="link" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && onOpen()}>
     <img className="friend-photo" src={avatarUrl(friend.photo)} alt="" onError={onAvatarError} />
-    <p className="friend-name" onClick={onOpen}>
-      {friend.username}
-    </p>
+    <span className="friend-name">{friend.username}</span>
   </div>
 );
 
@@ -55,36 +53,36 @@ const ProfilePage = () => {
     if (isOwnProfile) updateUser(patch);
   };
 
-  if (loading) return <p style={{ padding: "1rem" }}>Loading profile…</p>;
-  if (error || !profileUser) return <p style={{ padding: "1rem" }} role="alert">{error || "Profile not found"}</p>;
+  if (loading) return <p className="page-status">Loading profile…</p>;
+  if (error || !profileUser) return <p className="page-status" role="alert">{error || "Profile not found"}</p>;
 
   return (
-    <div className="parentdiv">
-      <div className="profileSection">
-        <ProfileCard User={profileUser} onUserUpdated={handleUserUpdated} />
-      </div>
-      <div className="activitySection">
-        <div className="activitydiv">
-          {isOwnProfile ? "Your Activity" : `${profileUser.username}'s posts`}
-          <div>
-            {posts.length === 0 ? (
-              <div>No posts to show</div>
-            ) : (
-              posts.map((post) => (
-                <PostCard key={post._id} post={post} applyTo={isOwnProfile ? undefined : `/user/applyform/${post._id}`} />
-              ))
-            )}
+    <main className="page profile-page">
+      <ProfileCard User={profileUser} onUserUpdated={handleUserUpdated} />
+
+      <section className="profile-page__section">
+        <h2>{isOwnProfile ? "Your job posts" : `${profileUser.username}'s job posts`}</h2>
+        {posts.length === 0 ? (
+          <p className="text-muted">No posts to show.</p>
+        ) : (
+          <div className="profile-page__list">
+            {posts.map((post) => (
+              <PostCard key={post._id} post={post} applyTo={isOwnProfile ? undefined : `/user/applyform/${post._id}`} />
+            ))}
           </div>
+        )}
+      </section>
+
+      <section className="profile-page__section">
+        <h2>Connections</h2>
+        {friends.length === 0 && <p className="text-muted">No connections yet.</p>}
+        <div className="profile-page__list">
+          {friends.map((friend) => (
+            <FriendCard key={friend._id} friend={friend} onOpen={() => navigate(`/user/profile/${friend._id}`)} />
+          ))}
         </div>
-      </div>
-      <div className="friendSection">
-        <h2>Friends</h2>
-        {friends.length === 0 && <p>No connections yet.</p>}
-        {friends.map((friend) => (
-          <FriendCard key={friend._id} friend={friend} onOpen={() => navigate(`/user/profile/${friend._id}`)} />
-        ))}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

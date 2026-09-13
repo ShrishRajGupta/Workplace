@@ -24,10 +24,14 @@ const FriendRequest = ({ request, onAnswered }) => {
   };
 
   return (
-    <div style={{ margin: "2px", border: "2px solid black" }}>
-      <h1>You have a new friend Request from {request.username}</h1>
-      <button onClick={() => answer("Accept")} disabled={busy}>Accept</button>
-      <button onClick={() => answer("Reject")} disabled={busy}>Reject</button>
+    <div className="request-card">
+      <p>
+        <strong>{request.username}</strong> wants to connect with you.
+      </p>
+      <div className="request-card__actions">
+        <button onClick={() => answer("Accept")} disabled={busy}>Accept</button>
+        <button className="btn--ghost" onClick={() => answer("Reject")} disabled={busy}>Decline</button>
+      </div>
     </div>
   );
 };
@@ -58,27 +62,34 @@ const FeedPage = () => {
   const requests = user?.friendRequests ?? [];
 
   return (
-    <div className="homediv">
-      <div className="userInfodiv">
+    <main className="page feed">
+      <aside>
         <UserSummaryCard />
+      </aside>
+      <div className="feed__main">
+        {requests.length > 0 && (
+          <section className="feed__section">
+            <h2>Connection requests</h2>
+            <div className="feed__list">
+              {requests.map((request) => (
+                <FriendRequest key={request._id} request={request} onAnswered={updateUser} />
+              ))}
+            </div>
+          </section>
+        )}
+        <section className="feed__section">
+          <h2>Latest jobs</h2>
+          {loading && <p className="text-muted">Loading…</p>}
+          {error && <p role="alert">{error}</p>}
+          {!loading && !error && posts.length === 0 && <p className="text-muted">No jobs posted yet.</p>}
+          <div className="feed__list">
+            {posts.map((post) => (
+              <PostCard key={post._id} post={post} applyTo={post.user_id === user?._id ? undefined : `/user/applyform/${post._id}`} />
+            ))}
+          </div>
+        </section>
       </div>
-      <div className="notidiv">
-        <h2>Notifications</h2>
-        <div className="friendRequestsdiv">
-          {requests.length === 0 && <p>No pending connection requests.</p>}
-          {requests.map((request) => (
-            <FriendRequest key={request._id} request={request} onAnswered={updateUser} />
-          ))}
-        </div>
-        <h2>Latest jobs</h2>
-        {loading && <p>Loading…</p>}
-        {error && <p role="alert">{error}</p>}
-        {!loading && !error && posts.length === 0 && <p>No jobs posted yet.</p>}
-        {posts.map((post) => (
-          <PostCard key={post._id} post={post} applyTo={post.user_id === user?._id ? undefined : `/user/applyform/${post._id}`} />
-        ))}
-      </div>
-    </div>
+    </main>
   );
 };
 

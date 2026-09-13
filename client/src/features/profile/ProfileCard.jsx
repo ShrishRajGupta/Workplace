@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { Button } from "@mui/material";
-import { CloudUpload as CloudUploadIcon } from "@mui/icons-material";
 import ModalBox from "../../components/ModalBox/ModalBox";
 import { useAuth } from "../../context/AuthContext";
 import { sendConnectionRequest, updateInfo, uploadPhoto } from "../../api/users";
@@ -13,13 +11,11 @@ import WorkExperienceSection from "./WorkExperienceSection";
 import SkillsSection from "./SkillsSection";
 import "./ProfileCard.css";
 
-function LoadingSpinner() {
-  return (
-    <div className="spinner-container">
-      <div className="loading-spinner"></div>
-    </div>
-  );
-}
+const LoadingSpinner = () => (
+  <div className="spinner-container">
+    <div className="loading-spinner" />
+  </div>
+);
 
 // Profile card. `User` is the profile being viewed; `onUserUpdated(patch)` lets the parent
 // merge edits into its copy (and the session user when it is the own profile).
@@ -31,8 +27,8 @@ const ProfileCard = ({ User, onUserUpdated }) => {
 
   const [uploading, setUploading] = useState(false);
   const [photoFile, setPhotoFile] = useState(null);
-  const [name, setName] = useState("");
-  const [about, setAbout] = useState("");
+  const [name, setName] = useState(User.name || "");
+  const [about, setAbout] = useState(User.about || "");
   const [requestSent, setRequestSent] = useState(false);
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const [photoModalOpen, setPhotoModalOpen] = useState(false);
@@ -76,82 +72,63 @@ const ProfileCard = ({ User, onUserUpdated }) => {
   };
 
   return (
-    <div className="wrapper">
-      <div className="profile">
-        <h2>Profile</h2>
-        <img className="card-img-top" src={avatarUrl(User.photo)} alt="" onError={onAvatarError} />
-        <br />
-        {isOwnProfile && (
-          <Button variant="contained" startIcon={<CloudUploadIcon />} color="success" onClick={() => setPhotoModalOpen(true)}>
-            Upload
-          </Button>
-        )}
+    <div className="profile-card">
+      <section className="profile-card__panel profile-card__identity">
+        <img className="profile-card__avatar" src={avatarUrl(User.photo)} alt="" onError={onAvatarError} />
+        <h1 className="profile-card__name">{User.name || User.username}</h1>
+        <p className="profile-card__handle">@{User.username}</p>
+        {User.about ? <p className="profile-card__about">{User.about}</p> : isOwnProfile && <p className="profile-card__about text-muted">Add a short bio so people know what you do.</p>}
+        <p className="profile-card__email">{User.email}</p>
 
-        <ModalBox open={photoModalOpen} onClose={() => setPhotoModalOpen(false)} title="Profile photo">
-          {uploading && <LoadingSpinner />}
-          <form onSubmit={handlePhotoSubmit} encType="multipart/form-data">
-            <input type="file" accept=".png, .jpg, .jpeg" name="photo" onChange={(e) => setPhotoFile(e.target.files[0])} />
-            <button type="submit" className="button-51" disabled={uploading || !photoFile}>
-              Update
+        <div className="profile-card__actions">
+          {isOwnProfile ? (
+            <>
+              <button onClick={() => setInfoModalOpen(true)}>Edit profile</button>
+              <button className="btn--ghost" onClick={() => setPhotoModalOpen(true)}>Change photo</button>
+              <button className="btn--ghost" onClick={() => navigate("/user/jobpostform")}>Post a job</button>
+              <button className="btn--ghost" onClick={() => navigate("/user/messenger")}>Messages</button>
+            </>
+          ) : (
+            <button onClick={handleConnect} disabled={alreadyConnected || requestSent}>
+              {alreadyConnected ? "Connected" : requestSent ? "Request sent" : "+ Connect"}
             </button>
-          </form>
-        </ModalBox>
-
-        <div>
-          <h3>Username {User.username}</h3>
-          <p>Name {User.name}</p>
-          <blockquote>
-            <i>About -</i> {User.about}
-          </blockquote>
-          {isOwnProfile && (
-            <Button color="secondary" onClick={() => setInfoModalOpen(true)}>
-              Update
-            </Button>
           )}
-
-          <ModalBox open={infoModalOpen} onClose={() => setInfoModalOpen(false)} title="Profile update">
-            <form onSubmit={handleInfoSubmit}>
-              <input type="text" placeholder="Name" defaultValue={User.name} onChange={(e) => setName(e.target.value)} />
-              <input type="text" placeholder="About" defaultValue={User.about} onChange={(e) => setAbout(e.target.value)} />
-              <button className="button-36" type="submit">
-                Update
-              </button>
-            </form>
-          </ModalBox>
         </div>
-        <div>{User.email}</div>
-      </div>
+      </section>
 
-      <div className="btndiv">
-        {!isOwnProfile && (
-          <button onClick={handleConnect} disabled={alreadyConnected || requestSent}>
-            {alreadyConnected ? "Connected" : requestSent ? "Request sent" : "+ Connect"}
+      <ModalBox open={infoModalOpen} onClose={() => setInfoModalOpen(false)} title="Edit profile">
+        <form className="dialog-form" onSubmit={handleInfoSubmit}>
+          <label>
+            Name
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} maxLength={100} />
+          </label>
+          <label>
+            About
+            <textarea value={about} onChange={(e) => setAbout(e.target.value)} maxLength={500} />
+          </label>
+          <button type="submit">Save</button>
+        </form>
+      </ModalBox>
+
+      <ModalBox open={photoModalOpen} onClose={() => setPhotoModalOpen(false)} title="Change photo">
+        {uploading && <LoadingSpinner />}
+        <form className="dialog-form" onSubmit={handlePhotoSubmit} encType="multipart/form-data">
+          <input type="file" accept=".png, .jpg, .jpeg" name="photo" onChange={(e) => setPhotoFile(e.target.files[0])} />
+          <button type="submit" disabled={uploading || !photoFile}>
+            Upload
           </button>
-        )}
-        {isOwnProfile && (
-          <>
-            <button className="postBtn" onClick={() => navigate("/user/jobpostform")}>
-              Post Job Here
-            </button>
-            <button className="messenger" onClick={() => navigate("/user/messenger")}>
-              Messenger
-            </button>
-          </>
-        )}
-      </div>
+        </form>
+      </ModalBox>
 
-      <div className="education">
-        <h2>Education</h2>
+      <section className="profile-card__panel">
         <EducationSection entries={User.education} editable={isOwnProfile} onUserUpdated={onUserUpdated} />
-      </div>
-      <div className="workExp">
-        <h2>Work Experience</h2>
+      </section>
+      <section className="profile-card__panel">
         <WorkExperienceSection entries={User.workexperience} editable={isOwnProfile} onUserUpdated={onUserUpdated} />
-      </div>
-      <div className="skills">
-        <h2>Skills</h2>
+      </section>
+      <section className="profile-card__panel">
         <SkillsSection entries={User.skills} editable={isOwnProfile} onUserUpdated={onUserUpdated} />
-      </div>
+      </section>
     </div>
   );
 };

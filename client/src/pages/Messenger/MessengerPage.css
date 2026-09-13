@@ -1,69 +1,92 @@
+.messenger {
+  --nav-height: 64px;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 240px;
+  height: calc(100vh - var(--nav-height));
+  background: var(--wp-surface);
+  border-top: 1px solid var(--wp-border);
+}
 
-.messenger{
-    height:calc(100vh-70px);
+.chatMenu,
+.chatOnline {
+  border-right: 1px solid var(--wp-border);
+  overflow-y: auto;
+}
+.chatOnline {
+  border-right: 0;
+  border-left: 1px solid var(--wp-border);
+}
+.chatMenuWrapper,
+.chatOnlineWrapper {
+  padding: var(--wp-space-4);
+}
+.chatMenuInput {
+  margin-bottom: var(--wp-space-3);
+}
+
+.chatBox {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--wp-bg);
+}
+.chatBoxWrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: var(--wp-space-4);
+  position: relative;
+}
+.chatBoxTop {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: var(--wp-space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--wp-space-3);
+}
+.chatBoxBottom {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--wp-space-2);
+  margin-top: var(--wp-space-3);
+}
+.chatMessageInput {
+  flex: 1;
+  min-height: 56px;
+  max-height: 160px;
+}
+.chatSubmitButton {
+  height: 44px;
+}
+.noConversationText {
+  margin: auto;
+  color: var(--wp-text-muted);
+  font-size: var(--wp-text-lg);
+}
+
+@media (max-width: 900px) {
+  .messenger {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: auto;
+    min-height: calc(100vh - var(--nav-height));
+  }
+  .chatMenu,
+  .chatOnline {
+    border: 0;
+    border-bottom: 1px solid var(--wp-border);
+  }
+  .chatMenuWrapper {
     display: flex;
-}
-.chatMenu{
-    flex:3.5;
-}
-.chatMenuInput{
-    width: 90%;
-    padding:10px 0;
-    border: none;
-    border-bottom: 1px solid gray;
-}
-.chatBox{
-    flex:5.5;
-}
-.chatBoxWrapper{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-}
-
-.chatBoxTop{
-    height: 450px;
-    overflow-y: scroll;
-    padding-right: 10px;
-}
-
-.chatBoxBottom{
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.chatMessageInput{
-    width: 80%;
-    height: 90px;
-    padding: 10px;
-    
-}
-
-.chatSubmitButton{
-    width: 70px;
-    height: 40px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: teal;
-    color: white;
-}
-
-
-.chatOnline{
-    flex:3;
-}
-.chatBoxWrapper,.chatMenuWrapper,.chatOnlineWrapper{
-    padding: 10px;
-    height: 100%;
-}
-.noConversationText{
-    position: absolute;
-    top: 10%;
-    font-size: 50px;
-    color: rgb(186, 183, 183);
-    cursor: default;
+    gap: var(--wp-space-2);
+    overflow-x: auto;
+  }
+  .chatMenuInput {
+    display: none;
+  }
+  .chatBoxTop {
+    min-height: 50vh;
+  }
 }
