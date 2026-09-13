@@ -1,0 +1,6 @@
+.apply-form .form-group {
+  margin-bottom: var(--wp-space-4);
+}
+.apply-form label {
+  margin-bottom: var(--wp-space-1);
+}

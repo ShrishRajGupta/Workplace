@@ -1,0 +1,124 @@
+/* Full-height indigo poster used by the landing, login and register pages. */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+  padding: var(--wp-space-8) var(--wp-page-gutter);
+  color: var(--wp-on-primary);
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(255, 255, 255, 0.18), transparent 60%),
+    radial-gradient(800px 500px at -10% 110%, rgba(255, 255, 255, 0.12), transparent 60%),
+    linear-gradient(160deg, #3730a3 0%, var(--wp-primary) 55%, #6d63f0 100%);
+}
+
+.hero__inner {
+  width: 100%;
+  max-width: var(--wp-max-width);
+  margin: 0 auto;
+  animation: wp-rise 400ms ease-out both;
+}
+
+/* Landing: brand, headline, one line, two actions */
+.hero--landing .hero__inner {
+  max-width: 720px;
+  margin-left: max(0px, calc((100vw - var(--wp-max-width)) / 2));
+}
+.hero__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wp-space-2);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: var(--wp-text-sm);
+  opacity: 0.9;
+  margin-bottom: var(--wp-space-5);
+}
+.hero__brand img {
+  width: 28px;
+  height: 28px;
+}
+.hero--landing h1 {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: var(--wp-space-4);
+}
+.hero__lede {
+  font-size: var(--wp-text-lg);
+  max-width: 34em;
+  opacity: 0.9;
+  margin-bottom: var(--wp-space-6);
+}
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wp-space-3);
+}
+.hero__actions a {
+  text-decoration: none;
+}
+.hero__actions button.btn--light {
+  color: var(--wp-primary);
+  background: var(--wp-surface);
+}
+.hero__actions button.btn--light:hover {
+  background: var(--wp-primary-soft);
+}
+.hero__actions button.btn--outline {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.hero__actions button.btn--outline:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Auth: a single card centred on the poster */
+.hero--auth .hero__inner {
+  max-width: 420px;
+}
+.auth-card {
+  background: var(--wp-surface);
+  color: var(--wp-text);
+  border-radius: var(--wp-radius-lg);
+  padding: var(--wp-space-6);
+  box-shadow: var(--wp-shadow);
+}
+.auth-card h1,
+.auth-card h2 {
+  font-size: var(--wp-text-2xl);
+  margin-bottom: var(--wp-space-1);
+}
+.auth-card__sub {
+  color: var(--wp-text-muted);
+  margin-bottom: var(--wp-space-5);
+}
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+}
+.auth-card form > input {
+  margin-bottom: var(--wp-space-3);
+}
+.auth-card button[type="submit"] {
+  width: 100%;
+  margin-top: var(--wp-space-2);
+}
+.auth-card__switch {
+  margin-top: var(--wp-space-5);
+  font-size: var(--wp-text-sm);
+  color: var(--wp-text-muted);
+  text-align: center;
+}
+.auth-card__switch a {
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    padding: var(--wp-space-6) var(--wp-space-4);
+  }
+  .auth-card {
+    padding: var(--wp-space-5);
+  }
+}

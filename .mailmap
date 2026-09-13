@@ -1,0 +1,8 @@
+# Consolidates author identities for `git shortlog` / `git log --use-mailmap`.
+# Does not rewrite history.
+Shrish Raj Gupta <shrishrg@gmail.com> ShrishRajGupta <shrishrg@gmail.com>
+Shrish Raj Gupta <shrishrg@gmail.com> Shrish Raj Gupta <97391054+ShrishRajGupta@users.noreply.github.com>
+Shrish Raj Gupta <shrishrg@gmail.com> shrish-browserstack <shrish@browserstack.com>
+Shreyansh Jaiswal <sjaiswal0902@gmail.com> Shreyansh <sjaiswal0902@gmail.com>
+Shreyansh Jaiswal <sjaiswal0902@gmail.com> Shreyansh Jaiswal <97983172+CodeBuster09@users.noreply.github.com>
+Abhishek Yadav <ay143488@gmail.com> Abhishek <ay143488@gmail.com>

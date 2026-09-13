@@ -1,0 +1,52 @@
+.post-card {
+  background: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--wp-radius);
+  padding: var(--wp-space-4) var(--wp-space-5);
+  box-shadow: var(--wp-shadow-sm);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--wp-shadow);
+}
+
+.post-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--wp-space-3);
+  margin-bottom: var(--wp-space-2);
+}
+.post-card__title {
+  font-size: var(--wp-text-lg);
+  font-weight: 700;
+}
+.post-card__company {
+  color: var(--wp-text-muted);
+  font-weight: 600;
+}
+
+.post-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wp-space-2);
+  margin-top: var(--wp-space-3);
+}
+.post-card__meta span {
+  font-size: var(--wp-text-sm);
+  color: var(--wp-text);
+  background: var(--wp-surface-2);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+.post-card__meta .post-card__salary {
+  background: var(--wp-primary-soft);
+  color: var(--wp-primary);
+  font-weight: 700;
+}
+
+.apply-button {
+  white-space: nowrap;
+  padding: 8px 14px;
+}
