@@ -1,0 +1,58 @@
+.feed {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: var(--wp-space-5);
+  align-items: start;
+}
+
+.feed__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wp-space-5);
+}
+
+.feed__section h2 {
+  margin-bottom: var(--wp-space-3);
+}
+
+.feed__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wp-space-3);
+}
+
+.request-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wp-space-3);
+  background: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  border-left: 4px solid var(--wp-primary);
+  border-radius: var(--wp-radius);
+  padding: var(--wp-space-4) var(--wp-space-5);
+}
+.request-card p strong {
+  font-weight: 700;
+}
+.request-card__actions {
+  display: flex;
+  gap: var(--wp-space-2);
+}
+
+@media (max-width: 900px) {
+  .feed {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* "Your job posts" page shares the feed list rhythm */
+.my-posts h1 {
+  margin-bottom: var(--wp-space-4);
+}
+.my-posts__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wp-space-3);
+}

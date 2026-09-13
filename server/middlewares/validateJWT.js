@@ -1,32 +1,24 @@
-import jsonwebtoken from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import jsonwebtoken from "jsonwebtoken";
 
-dotenv.config();
-
-const secretKey = process.env.ACCESS_TOKEN;
-
+// Reads the JWT from the httpOnly `authorization` cookie (set at login) or from an
+// `Authorization: Bearer <token>` header, verifies it, and exposes the payload as req.user.
 const authenticateToken = (req, res, next) => {
+  const bearer = req.headers.authorization;
+  const token =
+    req.cookies?.authorization ||
+    (bearer && bearer.startsWith("Bearer ") ? bearer.slice("Bearer ".length) : undefined);
 
-    if (req.isAuthenticated) { return next() }
-    const token = req.cookies.authorization;
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Authentication required" });
+  }
 
-    if (!token) {
-        console.log(`Token not found`);
-        res.status(400).send("token Not found");
-    }
-
-    try {
-        // Verify the token and decode its payload
-        const decodedToken = jsonwebtoken.verify(token, secretKey);
-        
-        req.user = decodedToken.user; 
-        console.log(`Token verified via JWT`);
-        // Proceed to the next middleware or route handler
-        next();
-    } catch (error) {
-        return res.status(403)
-        .json({ message: 'Invalid token' }); // redirect to /
-    }
-}
+  try {
+    const decoded = jsonwebtoken.verify(token, process.env.ACCESS_TOKEN);
+    req.user = decoded.user;
+    return next();
+  } catch (error) {
+    return res.status(401).json({ success: false, message: "Invalid or expired token" });
+  }
+};
 
 export default authenticateToken;

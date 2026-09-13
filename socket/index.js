@@ -1,46 +1,57 @@
-const io = require("socket.io")(8900,{
-    cors:{
-        origin:"http://localhost:3000"
-    },
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const cookie = require("cookie");
+
+const PORT = Number(process.env.PORT) || 8900;
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+const JWT_SECRET = process.env.ACCESS_TOKEN;
+
+if (!JWT_SECRET) {
+  console.error("[fatal] ACCESS_TOKEN is required (same value as the API server) so socket connections can be verified");
+  process.exit(1);
+}
+
+// credentials:true lets the browser send the httpOnly auth cookie with the handshake.
+const io = require("socket.io")(PORT, { cors: { origin: CLIENT_URL, credentials: true } });
+console.log(`Socket server listening on ${PORT}, allowing origin ${CLIENT_URL}`);
+
+// Identify the user from the API's auth cookie (or an explicit auth token for non-browser clients).
+io.use((socket, next) => {
+  try {
+    const cookies = cookie.parse(socket.handshake.headers.cookie || "");
+    const token = cookies.authorization || socket.handshake.auth?.token;
+    if (!token) return next(new Error("Authentication required"));
+    const { user } = jwt.verify(token, JWT_SECRET);
+    socket.data.userId = String(user.id);
+    return next();
+  } catch (err) {
+    return next(new Error("Invalid or expired token"));
+  }
 });
-let users = [];
 
-const addUser = (userId,socketId)=>{
-    !users.some((user)=>(user.userId === userId)) && 
-    users.push({userId,socketId});
-}
-const removeUser = (socketId)=>{
-    users = users.filter((user)=>(user.socketId !== socketId));
-}
-const getUser = (userId) => {
-    return users.find((user) => (user.userId === userId));
-  };
-  
-io.on("connection",(socket)=>{
-    console.log("user connected"+ socket.id);
-    io.emit("welcome","Hello this is socket server");
-    //take socketId and userId from client
-    socket.on("addUser",(userId)=>{
-        addUser(userId,socket.id);
-        io.emit("getUsers",users);
-    })
-    //send and get message
-    socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+// userId -> socketId. A reconnect replaces the stale socket id instead of keeping the dead one.
+const online = new Map();
+const presence = () => [...online].map(([userId, socketId]) => ({ userId, socketId }));
 
-        const user = getUser(receiverId);
-        console.log(users);
+io.on("connection", (socket) => {
+  const userId = socket.data.userId;
+  online.set(userId, socket.id);
+  io.emit("getUsers", presence());
 
-        io.to(user?.socketId).emit("getMessage", {
-          senderId,
-          text,
-        });
-      });
-    
+  // Deliver a message the sender has already persisted through the REST API.
+  socket.on("sendMessage", ({ receiverId, text, conversationId } = {}) => {
+    const target = online.get(String(receiverId));
+    if (!target || typeof text !== "string" || !text.trim()) return;
+    io.to(target).emit("getMessage", {
+      senderId: userId,
+      text,
+      conversationId,
+      createdAt: Date.now(),
+    });
+  });
 
-    //when disconnect
-    socket.on("disconnect",()=>{
-        console.log("user has disconnected");
-        removeUser(socket.id);
-        io.emit("getUsers",users);
-    })
-})
+  socket.on("disconnect", () => {
+    if (online.get(userId) === socket.id) online.delete(userId);
+    io.emit("getUsers", presence());
+  });
+});

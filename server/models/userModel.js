@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const userSchema = Schema({
+const userSchema = new Schema({
     username:{
         type: String,
         required:[true,"Enter your username"],
@@ -12,8 +12,10 @@ const userSchema = Schema({
     },
     email:{
         type: String,
-        default: '',
-        required:[true,"ENTER YOUR EMAIL"]
+        required:[true,"ENTER YOUR EMAIL"],
+        unique:true,
+        lowercase:true,
+        trim:true
     },
     photo:
     {
@@ -22,8 +24,8 @@ const userSchema = Schema({
     },
     password:{
         type:String,
-        default: ''
-        // required:[true,"Enter your Password"]
+        default: '',
+        select: false // never loaded unless explicitly asked for with .select('+password')
     },
     googleId:{
         type:String,
@@ -66,23 +68,23 @@ const userSchema = Schema({
     }],
     friends:[{
         type: Schema.Types.ObjectId,
-        default:[],
         ref:"UserDB"
     }],
     friendRequests:[{
         from:{
             type: Schema.Types.ObjectId,
-            default:[],
-            ref:"UserDB"
+            ref:"UserDB",
+            required:true
         },
         to:{
             type: Schema.Types.ObjectId,
-            default:[],
-            ref:"UserDB"
+            ref:"UserDB",
+            required:true
         },
         status:{
             type:String,
-            enum:['pending','accepted','rejected']
+            enum:['pending','accepted','rejected'],
+            default:'pending'
         },
         username:{
             type:String,
@@ -90,11 +92,21 @@ const userSchema = Schema({
     }],
     posts:[{
         type: Schema.Types.ObjectId,
-        default:[],
-        ref:"BlogDB"
+        ref:"JobPost"
     }],
+    // Resume builder state: { information, color, updatedAt }; shape owned by the client.
+    resume:{
+        type: Schema.Types.Mixed,
+        default: null
+    },
 },{
-    timestamps:true
+    timestamps:true,
+    toJSON: {
+        transform(doc, ret) {
+            delete ret.password; // belt-and-braces for documents loaded with +password
+            return ret;
+        }
+    }
 });
 
 export default model("UserDB",userSchema);

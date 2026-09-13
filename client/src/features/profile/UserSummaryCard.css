@@ -1,0 +1,60 @@
+.summary-card {
+  background: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--wp-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--wp-shadow-sm);
+}
+
+.summary-card__cover {
+  height: 64px;
+  background: linear-gradient(135deg, var(--wp-primary), #6d63f0);
+}
+
+.summary-card__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--wp-surface);
+  margin: -36px 0 0 var(--wp-space-4);
+  background: var(--wp-surface-2);
+}
+
+.summary-card__body {
+  padding: var(--wp-space-3) var(--wp-space-4) var(--wp-space-4);
+}
+.summary-card__name {
+  font-size: var(--wp-text-lg);
+  font-weight: 700;
+  cursor: pointer;
+}
+.summary-card__name:hover {
+  color: var(--wp-primary);
+}
+.summary-card__about {
+  color: var(--wp-text-muted);
+  font-size: var(--wp-text-sm);
+  margin-top: var(--wp-space-1);
+}
+
+.summary-card__stats {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--wp-border);
+}
+.summary-card__stats li {
+  padding: var(--wp-space-3) var(--wp-space-2);
+  text-align: center;
+}
+.summary-card__stats strong {
+  display: block;
+  font-size: var(--wp-text-lg);
+}
+.summary-card__stats span {
+  font-size: var(--wp-text-xs);
+  color: var(--wp-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

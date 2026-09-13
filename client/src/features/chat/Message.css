@@ -1,0 +1,32 @@
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 70%;
+}
+.message.own {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+.messageText {
+  display: block;
+  padding: 10px 14px;
+  border-radius: var(--wp-radius-lg);
+  border-bottom-left-radius: var(--wp-radius-sm);
+  background: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  color: var(--wp-text);
+  word-break: break-word;
+}
+.message.own .messageText {
+  background: var(--wp-primary);
+  border-color: var(--wp-primary);
+  color: var(--wp-on-primary);
+  border-radius: var(--wp-radius-lg);
+  border-bottom-right-radius: var(--wp-radius-sm);
+}
+.messageBottom {
+  font-size: var(--wp-text-xs);
+  color: var(--wp-text-muted);
+  margin-top: var(--wp-space-1);
+}

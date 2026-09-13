@@ -1,0 +1,43 @@
+/* Search box and its results dropdown (the bar itself is MUI AppBar, themed in src/theme.js) */
+.my-nav {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(420px, 45vw);
+}
+
+.searchBar {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  z-index: 20;
+}
+
+.dropdown-content {
+  background: var(--wp-surface);
+  color: var(--wp-text);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--wp-radius);
+  box-shadow: var(--wp-shadow);
+  overflow: hidden;
+  animation: wp-rise 150ms ease-out both;
+}
+
+.search-result {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.search-result h5 {
+  font-weight: 600;
+}
+.search-result:hover {
+  background: var(--wp-primary-soft);
+}
+
+@media (max-width: 600px) {
+  .my-nav {
+    width: 100%;
+  }
+}

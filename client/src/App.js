@@ -1,50 +1,55 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import JobForm from "./components/jobpostform";
-import Navbar from "./components/navbar";
-import Dashboard from "./components/userdashboard";
-import RegistrationForm from "./components/register";
-import Home from "./components/home";
-import React, { useContext, useEffect, useState } from "react";
-import MyForm from "./components/createProfile";
-import Login from "./components/login";
-import Allposts from "./widgets/allposts";
-import Homepage from "./widgets/homepage";
-import Messenger from "./pages/messenger/messenger";
-import { AuthContext } from "./context/AuthContext";import Resume from "./components/ResumeBuilder/App";
-import ApplyForm from "./components/applyform/applyform";
+import { Toaster } from "react-hot-toast";
+import LandingPage from "./pages/Landing/LandingPage";
+import LoginPage from "./pages/Login/LoginPage";
+import RegisterPage from "./pages/Register/RegisterPage";
+import CreateProfilePage from "./pages/CreateProfile/CreateProfilePage";
+import FeedPage from "./pages/Feed/FeedPage";
+import PostJobPage from "./pages/PostJob/PostJobPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
+import MyPostsPage from "./pages/MyPosts/MyPostsPage";
+import MessengerPage from "./pages/Messenger/MessengerPage";
+import ApplyPage from "./pages/Apply/ApplyPage";
+import MyApplicationsPage from "./pages/Applications/MyApplicationsPage";
+import ApplicantsPage from "./pages/Applicants/ApplicantsPage";
+import ResumeBuilderPage from "./pages/ResumeBuilder/ResumeBuilderPage";
+import NotFoundPage from "./pages/NotFound/NotFoundPage";
+import AppLayout from "./routes/AppLayout";
+import { AnonymousRoute, ProtectedRoute } from "./routes/ProtectedRoute";
 
 function App() {
-  
-  const isLogged = localStorage.getItem("isLogged");const {user} = useContext(AuthContext);
   return (
     <div className="App">
-    
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<><Homepage /></>} ></Route>
-        <Route path="/user/register" element={<><RegistrationForm /></>}></Route>
-        <Route path="/user/login" element={<><Login/></>}></Route>
-        <Route path="/resume" element={isLogged?<><Resume /></>:<><Login/> </>}></Route>
-        <Route path ="/home" element={isLogged?<><Navbar /><Home /></>:<><Login/></>}></Route>
-        <Route path ="/user/jobpostform" element={isLogged?<><Navbar /><JobForm /></>:<><Login/></>}></Route>
-        <Route path="/user/createProfile" element={isLogged?<><MyForm /></>:<><Login/></>}></Route>
-        <Route path ="/user/profile/:userId" element={isLogged?<><Navbar /><Dashboard /></>:<><Login/></>}></Route>
-        <Route path="/user/allposts" element={isLogged?<><Navbar /><Allposts /></>:<><Login/></>}></Route>
-        <Route exact path="/user/messenger" element={isLogged?<><Navbar /><Messenger /></>:<React.Fragment><Login/></React.Fragment>}></Route>
-        <Route path="/user/applyform/:userId" element={isLogged?<><Navbar /><ApplyForm /></>:<><Login/></>}></Route>
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+
+          <Route element={<AnonymousRoute />}>
+            <Route path="/user/login" element={<LoginPage />} />
+            <Route path="/user/register" element={<RegisterPage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/user/createProfile" element={<CreateProfilePage />} />
+            <Route element={<AppLayout />}>
+              <Route path="/home" element={<FeedPage />} />
+              <Route path="/user/jobpostform" element={<PostJobPage />} />
+              <Route path="/user/profile/:userId" element={<ProfilePage />} />
+              <Route path="/user/allposts" element={<MyPostsPage />} />
+              <Route path="/user/messenger" element={<MessengerPage />} />
+              <Route path="/user/applyform/:postId" element={<ApplyPage />} />
+              <Route path="/user/applications" element={<MyApplicationsPage />} />
+              <Route path="/user/posts/:postId/applicants" element={<ApplicantsPage />} />
+              <Route path="/resume" element={<ResumeBuilderPage />} />
+            </Route>
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+      <Toaster position="top-right" />
     </div>
   );
 }
 
-
-{/*
-Comment added by Shreyansh:
-  1. Add twitterlogo, linkedinlogo in UserWidget.jsx
-  2. Userwidget is added on homepage, pls correct if something bothers..
-  */
-}
-
 export default App;
-
