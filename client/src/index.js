@@ -1,11 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./App";
 import { AuthContextProvider } from "./context/AuthContext";
+import "./styles/base.css";
 
-ReactDOM.render(
+createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <AuthContextProvider>
       <App />
-    </AuthContextProvider>,
-  document.getElementById("root")
+    </AuthContextProvider>
+  </React.StrictMode>
 );

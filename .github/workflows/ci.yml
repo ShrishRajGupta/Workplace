@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main, abhishek]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+            server/package-lock.json
+            socket/package-lock.json
+
+      - name: Install
+        run: |
+          npm ci
+          npm --prefix client ci
+          npm --prefix server ci
+          npm --prefix socket ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build client
+        # CI=true in GitHub Actions makes react-scripts treat ESLint warnings as errors.
+        run: npm run build

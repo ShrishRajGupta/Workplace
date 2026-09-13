@@ -1,0 +1,19 @@
+/* Global reset. Carried over from the resume builder's stylesheet, where it used to apply
+   app-wide by accident; it now lives here on purpose. Design tokens come in a later pass. */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+/* Root layout: navbar and page content stacked with a gap */
+.App {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.route-loading {
+  padding: 1rem;
+}

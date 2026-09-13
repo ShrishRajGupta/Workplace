@@ -1,0 +1,32 @@
+.homediv {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.userInfodiv {
+  flex: 2.5;
+  display: flex;
+  flex-direction: column;
+}
+
+.notidiv {
+  flex: 8;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  max-width: 100%;
+}
+
+.notidiv h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.friendRequestsdiv {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
